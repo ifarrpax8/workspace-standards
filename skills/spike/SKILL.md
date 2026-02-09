@@ -11,13 +11,13 @@ Time-boxed research and investigation skill for answering specific technical que
 | **user-mcp-atlassian** | `jira_get_issue` | Fetch spike ticket details | Recommended |
 | | `jira_update_issue` | Update spike ticket with findings | Recommended |
 | | `jira_add_comment` | Post findings to spike ticket | Recommended |
-
-> **Important:** See [Jira Standards](../../rules/auto-apply/jira-standards.md) for custom field usage. Spikes use `customfield_14303` (Spike Description field), not the standard description field.
 | **user-github** | `search_code` | Search patterns across Pax8 org repos | Optional |
 | | `search_repositories` | Find relevant repos | Optional |
 | | `get_file_contents` | Retrieve files from GitHub repos | Optional |
 | **cursor-ide-browser** | `browser_navigate` | Fallback: Browse GitHub with SSO session | Optional |
 | | `browser_snapshot`, `browser_click` | Interact with GitHub UI | Optional |
+
+> **Important:** See [Jira Standards](../../rules/auto-apply/jira-standards.md) for custom field usage. Spikes use `customfield_14303` (Spike Description field), not the standard description field.
 
 ### Research Capabilities
 

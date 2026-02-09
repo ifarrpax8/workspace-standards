@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Codebase Scoring Script
-# Evaluates a repository against 7 categories, outputs score out of 100
+# Evaluates a repository against 8 categories, outputs score out of 100
 #
 # Usage: ./score.sh <path-to-repo>
 # Example: ./score.sh ../currency-manager
@@ -640,6 +640,61 @@ GOOD=$(echo "$GOOD" | sed 's/,$//')
 NEEDS_WORK=$(echo "$NEEDS_WORK" | sed 's/,$//')
 CRITICAL=$(echo "$CRITICAL" | sed 's/,$//')
 
+RECOMMENDATIONS=""
+REC_NUM=1
+
+add_recommendation() {
+    local category="$1"
+    local score="$2"
+    local max="$3"
+    local high_msg="$4"
+    local medium_msg="$5"
+    local priority
+    priority=$(get_priority "$score" "$max")
+    if [ "$priority" = "High" ]; then
+        RECOMMENDATIONS="${RECOMMENDATIONS}${REC_NUM}. **[HIGH] ${category}:** ${high_msg}\n"
+        REC_NUM=$((REC_NUM + 1))
+    elif [ "$priority" = "Medium" ]; then
+        RECOMMENDATIONS="${RECOMMENDATIONS}${REC_NUM}. **[MEDIUM] ${category}:** ${medium_msg}\n"
+        REC_NUM=$((REC_NUM + 1))
+    fi
+}
+
+add_recommendation "Documentation" "$DOCS_SCORE" "$DOCS_WEIGHT" \
+    "Add comprehensive README with setup instructions and architecture overview. Consider adding ADRs for key decisions." \
+    "Improve README sections and consider adding ADRs."
+add_recommendation "Architecture" "$ARCH_SCORE" "$ARCH_WEIGHT" \
+    "Review package structure and ensure proper separation of concerns. Reference the golden path documentation." \
+    "Minor structural improvements recommended."
+add_recommendation "Testing" "$TEST_SCORE" "$TEST_WEIGHT" \
+    "Significantly increase test coverage. Add integration tests for critical paths." \
+    "Add more tests for edge cases and error scenarios."
+add_recommendation "Security" "$SEC_SCORE" "$SECURITY_WEIGHT" \
+    "Review for hardcoded secrets and ensure input validation on all endpoints." \
+    "Review input validation coverage."
+add_recommendation "Code Quality" "$QUAL_SCORE" "$QUALITY_WEIGHT" \
+    "Configure and enforce linting. Address complexity issues." \
+    "Review long files and consider refactoring."
+add_recommendation "Consistency" "$CONS_SCORE" "$CONSISTENCY_WEIGHT" \
+    "Standardize patterns across the codebase. Reference golden path for guidance." \
+    "Minor pattern inconsistencies to address."
+add_recommendation "Dependencies" "$DEPS_SCORE" "$DEPS_WEIGHT" \
+    "Configure Dependabot and address outdated/vulnerable dependencies." \
+    "Review and update outdated packages."
+add_recommendation "Observability" "$OBS_SCORE" "$OBSERVABILITY_WEIGHT" \
+    "Add structured logging, metrics, and tracing. See observability criteria for setup guide." \
+    "Review logging coverage and add OpenTelemetry integration."
+
+if [ -z "$RECOMMENDATIONS" ]; then
+    RECOMMENDATIONS="No recommendations — all categories are scoring well."
+fi
+
+SUMMARY_LINES=""
+[ -n "$EXCELLENT" ] && SUMMARY_LINES="${SUMMARY_LINES}**Excellent (87-100%):** ${EXCELLENT}\n"
+[ -n "$GOOD" ] && SUMMARY_LINES="${SUMMARY_LINES}**Good (67-86%):** ${GOOD}\n"
+[ -n "$NEEDS_WORK" ] && SUMMARY_LINES="${SUMMARY_LINES}**Needs Work (50-66%):** ${NEEDS_WORK}\n"
+[ -n "$CRITICAL" ] && SUMMARY_LINES="${SUMMARY_LINES}**Critical (<50%):** ${CRITICAL}\n"
+
 cat > "$REPORT_FILE" << EOF
 # Score Report: $REPO_NAME
 
@@ -649,10 +704,7 @@ cat > "$REPORT_FILE" << EOF
 
 ## Score Summary
 
-$([ -n "$EXCELLENT" ] && echo "**Excellent (87-100%):** $EXCELLENT")
-$([ -n "$GOOD" ] && echo "**Good (67-86%):** $GOOD")
-$([ -n "$NEEDS_WORK" ] && echo "**Needs Work (50-66%):** $NEEDS_WORK")
-$([ -n "$CRITICAL" ] && echo "**Critical (<50%):** $CRITICAL")
+$(echo -e "$SUMMARY_LINES")
 
 ## Category Breakdown
 
@@ -676,22 +728,7 @@ $([ -n "$CRITICAL" ] && echo "**Critical (<50%):** $CRITICAL")
 
 ## Top Recommendations
 
-$([ "$(get_priority $DOCS_SCORE $DOCS_WEIGHT)" = "High" ] && echo "1. **[HIGH] Documentation:** Add comprehensive README with setup instructions and architecture overview. Consider adding ADRs for key decisions.")
-$([ "$(get_priority $DOCS_SCORE $DOCS_WEIGHT)" = "Medium" ] && echo "1. **[MEDIUM] Documentation:** Improve README sections and consider adding ADRs.")
-$([ "$(get_priority $ARCH_SCORE $ARCH_WEIGHT)" = "High" ] && echo "2. **[HIGH] Architecture:** Review package structure and ensure proper separation of concerns. Reference the golden path documentation.")
-$([ "$(get_priority $ARCH_SCORE $ARCH_WEIGHT)" = "Medium" ] && echo "2. **[MEDIUM] Architecture:** Minor structural improvements recommended.")
-$([ "$(get_priority $TEST_SCORE $TEST_WEIGHT)" = "High" ] && echo "3. **[HIGH] Testing:** Significantly increase test coverage. Add integration tests for critical paths.")
-$([ "$(get_priority $TEST_SCORE $TEST_WEIGHT)" = "Medium" ] && echo "3. **[MEDIUM] Testing:** Add more tests for edge cases and error scenarios.")
-$([ "$(get_priority $SEC_SCORE $SECURITY_WEIGHT)" = "High" ] && echo "4. **[HIGH] Security:** Review for hardcoded secrets and ensure input validation on all endpoints.")
-$([ "$(get_priority $SEC_SCORE $SECURITY_WEIGHT)" = "Medium" ] && echo "4. **[MEDIUM] Security:** Review input validation coverage.")
-$([ "$(get_priority $QUAL_SCORE $QUALITY_WEIGHT)" = "High" ] && echo "5. **[HIGH] Code Quality:** Configure and enforce linting. Address complexity issues.")
-$([ "$(get_priority $QUAL_SCORE $QUALITY_WEIGHT)" = "Medium" ] && echo "5. **[MEDIUM] Code Quality:** Review long files and consider refactoring.")
-$([ "$(get_priority $CONS_SCORE $CONSISTENCY_WEIGHT)" = "High" ] && echo "6. **[HIGH] Consistency:** Standardize patterns across the codebase. Reference golden path for guidance.")
-$([ "$(get_priority $CONS_SCORE $CONSISTENCY_WEIGHT)" = "Medium" ] && echo "6. **[MEDIUM] Consistency:** Minor pattern inconsistencies to address.")
-$([ "$(get_priority $DEPS_SCORE $DEPS_WEIGHT)" = "High" ] && echo "7. **[HIGH] Dependencies:** Configure Dependabot and address outdated/vulnerable dependencies.")
-$([ "$(get_priority $DEPS_SCORE $DEPS_WEIGHT)" = "Medium" ] && echo "7. **[MEDIUM] Dependencies:** Review and update outdated packages.")
-$([ "$(get_priority $OBS_SCORE $OBSERVABILITY_WEIGHT)" = "High" ] && echo "8. **[HIGH] Observability:** Add structured logging, metrics, and tracing. See observability criteria for setup guide.")
-$([ "$(get_priority $OBS_SCORE $OBSERVABILITY_WEIGHT)" = "Medium" ] && echo "8. **[MEDIUM] Observability:** Review logging coverage and add OpenTelemetry integration.")
+$(echo -e "$RECOMMENDATIONS")
 
 ## Scoring Criteria Reference
 

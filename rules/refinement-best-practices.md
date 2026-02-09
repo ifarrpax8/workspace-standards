@@ -1,6 +1,6 @@
 # Refinement Best Practices
 
-Comprehensive guide for refining Jira tickets using the Three Amigos approach, ensuring work is well-defined before sprint commitment.
+Comprehensive guide for refining Jira tickets using the Three Amigos approach, ensuring work is well-defined before sprint commitment. For a quick ticket breakdown template, see [Refinement Assistant](refinement.md). For interactive refinement with Jira integration, use the [Refine Ticket Skill](../skills/refine-ticket/SKILL.md).
 
 ## Three Amigos Overview
 

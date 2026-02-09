@@ -96,14 +96,15 @@ implementation("org.springframework.boot:spring-boot-starter-validation")
 // package.json
 {
   "dependencies": {
-    "dompurify": "^3.x",
-    "xss": "^1.x"
+    "dompurify": "^3.x"
   },
   "devDependencies": {
     "@auth0/auth0-spa-js": "^2.x"
   }
 }
 ```
+
+> **Note:** Prefer `dompurify` over the `xss` package. DOMPurify is the recommended sanitization library per our [security standards](../rules/auto-apply/security-standards.md).
 
 ## Common Vulnerabilities to Avoid
 

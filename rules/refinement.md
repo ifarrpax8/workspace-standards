@@ -1,6 +1,6 @@
 # Refinement Assistant
 
-Use this rule to help break down tickets and identify technical requirements. Invoke when planning work.
+A lightweight rule for quick ticket breakdowns. For the comprehensive Three Amigos refinement process, see [Refinement Best Practices](refinement-best-practices.md) or use the interactive [Refine Ticket Skill](../skills/refine-ticket/SKILL.md).
 
 **Usage:** `@workspace-standards/rules/refinement.md help me refine <ticket or feature description>`
 

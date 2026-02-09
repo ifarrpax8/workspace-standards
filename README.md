@@ -64,8 +64,8 @@ workspace-standards/
 │   ├── kotlin-spring-boot.md      # Standard layered architecture
 │   ├── kotlin-axon-cqrs.md        # Event sourcing + CQRS
 │   ├── vue-mfe.md                 # Feature-based MFE
-│   ├── terraform-iac.md           # Infrastructure as code
-│   └── integration-testing.md     # Playwright page object model
+│   ├── terraform-iac.md           # Infrastructure as Code (Terraform)
+│   └── integration-testing.md     # Playwright page object model (E2E)
 ├── scoring/                       # Automated scoring system
 │   ├── score.sh                   # Main scoring script
 │   ├── criteria/                  # Scoring rubrics (7 categories)
@@ -92,24 +92,25 @@ workspace-standards/
 │   └── auto-apply/                # Copy to each repo's .cursor/rules/
 ├── patterns/                      # Pattern documentation
 │   ├── pattern-inventory.md       # Current state of all repos
-│   └── migration-paths.md         # Legacy to target state
+│   └── migration-paths.md         # Legacy to target state transitions
 └── security/                      # Security guidelines
     └── security-checklist.md      # Requirements and packages
 ```
 
 ## Scoring Categories
 
-The automated scoring evaluates repositories across 7 categories (100 points total):
+The automated scoring evaluates repositories across 8 categories (100 points total):
 
 | Category | Points | Description |
 |----------|--------|-------------|
-| Architecture | 15 | Package structure, pattern adherence, separation of concerns |
-| Testing | 15 | Coverage %, test existence, naming conventions |
-| Security | 15 | No secrets, security packages, auth patterns |
-| Code Quality | 15 | Linter config, complexity, naming |
+| Architecture | 13 | Package structure, pattern adherence, separation of concerns |
+| Testing | 13 | Coverage %, test existence, naming conventions |
+| Security | 14 | No secrets, security packages, auth patterns |
+| Code Quality | 13 | Linter config, complexity, naming |
 | Documentation | 10 | README, ADRs, inline docs |
-| Consistency | 15 | Pattern uniformity within repo |
-| Dependencies | 15 | Up-to-date deps, no vulnerabilities |
+| Consistency | 13 | Pattern uniformity within repo |
+| Dependencies | 14 | Up-to-date deps, no vulnerabilities |
+| Observability | 10 | Logging, metrics, tracing setup |
 
 ## Skills (Ways of Working)
 
