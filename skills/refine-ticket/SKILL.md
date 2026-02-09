@@ -29,6 +29,16 @@ When technical investigation is needed, this skill may invoke the **Technical De
 - GitHub search across all Pax8 org repos (if `user-github` MCP enabled)
 - Web search for external documentation
 
+### Engineering Codex Integration
+
+If `@engineering-codex` is in the workspace, this skill will automatically:
+- Check relevant facets' `gotchas.md` to identify risks during the Developer Perspective analysis
+- Reference `best-practices.md` for the relevant facets when proposing implementation approaches
+- Check `@engineering-codex/pax8-context/standards-map.md` to pre-fill technology decisions that Pax8 has already made
+- Use `tech-radar.md` to validate tool/library choices mentioned in the ticket
+
+If the codex is not available, the skill falls back to golden paths and web search as before.
+
 ### Graceful Degradation
 
 If MCPs are not available, the skill will:
@@ -87,9 +97,10 @@ Present analysis from each perspective:
 #### Developer Perspective
 - Assess technical feasibility based on ticket description and PRD
 - Check alignment with golden path architectures (reference `@workspace-standards/golden-paths/`)
+- If `@engineering-codex` is available: read relevant facet's `best-practices.md` and `gotchas.md` to inform the assessment, and check `pax8-context/standards-map.md` for pre-decided technology choices
 - Identify affected components and files in target repositories
-- Propose implementation approach options
-- Identify technical risks and dependencies
+- Propose implementation approach options (informed by codex `options.md` if available)
+- Identify technical risks and dependencies (informed by codex `gotchas.md` if available)
 
 #### Test Perspective
 - Extract testable scenarios from acceptance criteria

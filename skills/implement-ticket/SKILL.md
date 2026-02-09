@@ -27,6 +27,16 @@ This skill may invoke:
 - **Technical Deep Dive** - When unknowns require codebase investigation
 - **Refine Ticket** - When Definition of Ready fails and the developer chooses to refine first
 
+### Engineering Codex Integration
+
+If `@engineering-codex` is in the workspace, this skill will:
+- Reference `best-practices.md` for the relevant facets during implementation (e.g., `@engineering-codex/facets/api-design/best-practices.md` when implementing an API endpoint)
+- Check `gotchas.md` to avoid known pitfalls before starting each task
+- Use the codex `architecture-review` guidance during the self-review phase (Phase 5) in addition to the code-review.md checklist
+- Check Pax8 standards for any technology choices made during implementation
+
+If the codex is not available, the skill uses golden paths and code-review.md as before.
+
 ## When to Use
 
 Use this skill when:
@@ -105,7 +115,13 @@ If the developer chooses to proceed, document the missing DoR items as known ris
 | Vue MFE (e.g., finance-mfe, order-management-mfe) | [vue-standards.md](../../rules/auto-apply/vue-standards.md) | [vue-mfe.md](../../golden-paths/vue-mfe.md) |
 | All repositories | [security-standards.md](../../rules/auto-apply/security-standards.md) | - |
 
-3. **Create the feature branch** from main:
+3. **Load codex context** (if `@engineering-codex` is in the workspace):
+   - Identify relevant facets based on the ticket's domain (e.g., api-design for new endpoints, authentication for auth changes)
+   - Read `best-practices.md` for stack-specific guidance
+   - Read `gotchas.md` to be aware of common pitfalls before starting
+   - If this is a Pax8 project, check `pax8-context/standards-map.md` for mandated standards
+
+4. **Create the feature branch** from main:
 
 ```bash
 git checkout main && git pull && git checkout -b [TICKET-KEY]

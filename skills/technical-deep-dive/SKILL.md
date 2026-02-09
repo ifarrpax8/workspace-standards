@@ -140,6 +140,13 @@ Investigate:
      - Backend: `@workspace-standards/golden-paths/kotlin-spring-boot.md` or `kotlin-axon-cqrs.md`
      - Frontend: `@workspace-standards/golden-paths/vue-mfe.md`
 
+1b. **Reference Engineering Codex** (if available)
+   - Read `@engineering-codex/facets/[relevant-facet]/architecture.md` for architectural patterns, diagrams, and trade-offs
+   - Read `@engineering-codex/facets/[relevant-facet]/options.md` for evaluated alternatives
+   - Read `@engineering-codex/facets/[relevant-facet]/best-practices.md` for implementation guidance
+   - Check `@engineering-codex/tech-radar.md` to see where relevant technologies sit (Adopt/Trial/Assess/Hold)
+   - This provides industry context that complements the golden paths' Pax8-specific patterns
+
 2. **Compare to Golden Path**
    - Does the codebase follow the expected patterns?
    - Are there deviations? Why might they exist?
@@ -178,10 +185,12 @@ Explain how to apply this pattern to the new work.
 
 If the investigation reveals an architecture decision is needed:
 
-1. Document the options considered
-2. List pros and cons for each
-3. Make a recommendation with rationale
-4. Offer to create a draft ADR if significant
+1. Check `@engineering-codex/facets/[facet]/options.md` for pre-evaluated options (if codex available)
+2. Document the options considered (augmented with codex insights)
+3. List pros and cons for each
+4. Check Pax8 standards: `@engineering-codex/pax8-context/standards-map.md` — Pax8 may have already decided
+5. Make a recommendation with rationale
+6. Offer to create a draft ADR if significant
 
 Reference ADR format from `finance/docs/adr/` for structure.
 
@@ -332,6 +341,7 @@ How would you like to proceed?
 - Suggest: "Here are the repositories in your workspace: [list]. Which would you like to investigate?"
 
 ### No Similar Patterns Found
+- Check `@engineering-codex/facets/[relevant-facet]/architecture.md` for industry patterns (if codex available)
 - Note this as a potential new pattern
 - Suggest looking at golden paths for guidance
 - Reference: `@workspace-standards/golden-paths/`

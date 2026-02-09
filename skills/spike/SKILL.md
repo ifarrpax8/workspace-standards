@@ -28,6 +28,7 @@ This skill can leverage multiple sources during investigation:
 | **Local Workspace** | Explore repos in current workspace | Patterns in repos you're working with |
 | **GitHub (Pax8 Org)** | Search across all org repos via MCP or Browser | Find patterns in repos not in workspace |
 | **Web Search** | Search external documentation, blogs | Third-party evaluation, best practices |
+| **Engineering Codex** | Read facets, options, gotchas, tech radar | Best practices, decision frameworks, trade-offs (preferred over web search) |
 
 ### GitHub Access Methods
 
@@ -146,6 +147,18 @@ Based on spike type, conduct appropriate research using available sources:
 
 #### Research Sources
 
+**0. Engineering Codex (Preferred — if available)**
+
+If `@engineering-codex` is in the workspace, check it first before web search:
+
+- **For Architecture Decisions**: Read `@engineering-codex/facets/[relevant-facet]/options.md` for evaluated options with trade-offs already documented, and `architecture.md` for patterns and diagrams
+- **For Third-Party Evaluation**: Check `@engineering-codex/tech-radar.md` for the codex's current assessment of the tool, and `@engineering-codex/tech-radar-pax8.md` for Pax8-specific stance
+- **For Best Practices**: Read `@engineering-codex/facets/[relevant-facet]/best-practices.md` instead of searching the web — these are curated and stack-specific
+- **For Risk Identification**: Read `@engineering-codex/facets/[relevant-facet]/gotchas.md` for known pitfalls
+- **For Pax8 Standards**: Read `@engineering-codex/pax8-context/standards-map.md` to check if Pax8 has already decided
+
+Only fall back to web search for information not covered by the codex (e.g., specific third-party API documentation, very recent releases, library-specific configuration).
+
 **1. Local Workspace Repositories**
 - Use explore subagent, Read, Grep, Glob tools
 - Best for: Repos you're actively working with
@@ -190,9 +203,11 @@ Always cite sources in findings when using external research.
 - Assess complexity and risks
 
 #### For Architecture Decisions
+- Check Engineering Codex first: `@engineering-codex/facets/[facet]/options.md` for pre-evaluated options
 - Reference golden paths: `@workspace-standards/golden-paths/`
+- Check Pax8 standards: `@engineering-codex/pax8-context/standards-map.md` (if Pax8 project)
 - Explore existing patterns in codebase
-- Research industry best practices (web search if needed)
+- Fall back to web search only for information not in the codex
 - Document options with trade-offs
 
 #### For Third-Party Evaluation
