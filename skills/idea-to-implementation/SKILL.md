@@ -61,19 +61,19 @@ Or to skip early stages:
                   └──────────────┘    └──────────────┘
                                              │
                                              ▼
-                                      ┌──────────────┐
-                                      │  6. Refine   │
-                                      │  Each Story  │
-                                      └──────────────┘
-                                             │
-                                             ▼
-                                      ┌──────────────┐
-                                      │ 7. Implement │
-                                      │  First Story │
-                                      └──────────────┘
+                  ┌──────────────┐    ┌──────────────┐
+                  │  8. Code     │◀───│  6. Refine   │
+                  │  Review      │    │  Each Story  │
+                  └──────────────┘    └──────────────┘
+                         ▲                   │
+                         │                   ▼
+                  ┌──────────────┐    ┌──────────────┐
+                  │  9. Post-    │    │ 7. Implement │
+                  │  Impl Review │    │  First Story │
+                  └──────────────┘    └──────────────┘
 ```
 
-Each stage is a checkpoint — the user can pause, review, and resume later.
+Each stage is a checkpoint — the user can pause, review, and resume later. Stages 8 and 9 run after the PR is created and merged respectively.
 
 ## Workflow
 
@@ -215,7 +215,38 @@ Hand off to the **Implement Ticket** skill:
 
 **Output**: Implemented story with tests, ready for PR
 
-**Final**: "First story implemented! Continue with the next story using the Implement Ticket skill."
+**Checkpoint**: "Implementation complete. Ready to create the PR and run code review?"
+
+### Stage 8: Code Review
+
+Hand off to the **Code Review** skill:
+
+1. Generate the PR description:
+   - Invoke `@workspace-standards/skills/generate-pr-description/SKILL.md` to create a structured PR description from the implementation context
+   - Create or update the PR via GitHub MCP (if available)
+
+2. Run the code review:
+   - Invoke `@workspace-standards/skills/code-review/SKILL.md` against the PR or branch changes
+   - The skill applies the team's standards checklist, golden paths, and codex best practices
+   - Fix any MUST FIX issues identified
+
+3. Once the review is clean, the PR is ready for human review and merge
+
+**Output**: PR with structured description, self-reviewed against standards
+
+**Checkpoint**: "PR created and self-reviewed. Once merged and deployed, would you like to run a post-implementation review?"
+
+### Stage 9: Post-Implementation Review
+
+After the PR is merged and deployed, close the feedback loop:
+
+1. Invoke `@workspace-standards/skills/post-implementation-review/SKILL.md` with the ticket
+2. The skill compares estimates vs actuals, captures learnings, and identifies process improvements
+3. Post the review to Jira
+
+**Output**: Post-implementation review with estimate accuracy, learnings, and action items
+
+**Final**: "Feature complete — from idea to delivery with learnings captured. Continue with the next story, or start a new feature."
 
 ## Resuming Mid-Pipeline
 
@@ -228,6 +259,8 @@ The user can resume at any stage by providing context:
 | "I already have a PRD, break it down" | Skip to Stage 5 with existing PRD |
 | "Refine ticket HRZN-123" | Jump directly to Stage 6 |
 | "Implement ticket HRZN-123" | Jump directly to Stage 7 |
+| "Review PR for HRZN-123" | Jump directly to Stage 8 |
+| "Post-implementation review for HRZN-123" | Jump directly to Stage 9 |
 
 ## Progress Tracking
 
@@ -235,7 +268,7 @@ At each checkpoint, display progress:
 
 ```
 Feature: [Feature Name]
-Pipeline Progress: ██████░░░░ Stage 3 of 7
+Pipeline Progress: ███░░░░░░░ Stage 3 of 9
 
 ✅ Stage 1: Idea Captured
 ✅ Stage 2: Opp Brief — [saved location]
@@ -244,6 +277,8 @@ Pipeline Progress: ██████░░░░ Stage 3 of 7
 ⬜ Stage 5: Story Breakdown
 ⬜ Stage 6: Refinement
 ⬜ Stage 7: Implementation
+⬜ Stage 8: Code Review
+⬜ Stage 9: Post-Implementation Review
 ```
 
 ## Graceful Degradation
@@ -263,5 +298,9 @@ Pipeline Progress: ██████░░░░ Stage 3 of 7
 - [Spike Skill](../spike/SKILL.md) — Stage 4
 - [Refine Ticket Skill](../refine-ticket/SKILL.md) — Stage 6
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — Stage 7
+- [Generate PR Description](../generate-pr-description/SKILL.md) — Stage 8 (PR creation)
+- [Code Review Skill](../code-review/SKILL.md) — Stage 8 (self-review)
+- [Post-Implementation Review](../post-implementation-review/SKILL.md) — Stage 9
 - [Technical Deep Dive](../technical-deep-dive/SKILL.md) — Called during refinement if needed
+- [Generate ADR](../generate-adr/SKILL.md) — Called during spike if architecture decision needed
 - [Engineering Codex](https://github.com/ifarrpax8/engineering-codex) — Technical knowledge base

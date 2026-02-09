@@ -179,3 +179,14 @@ Cross-repo alignment check (reference pattern-inventory.md):
 - [ ] Dependabot or similar configured
 - [ ] Version alignment across related projects
 - [ ] No unnecessary dependencies
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Configuration Files (application.yml) |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Configuration (application.yml) |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Services (import.meta.env), Checklist (no hardcoded API URLs) |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Root Module (required_version, required_providers), Child Module Layout (versions.tf) |

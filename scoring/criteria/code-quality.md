@@ -137,3 +137,16 @@ grep -r "@ts-ignore\|@ts-nocheck" src/ | wc -l  # TypeScript ignores
 - [ ] No magic numbers (use constants)
 - [ ] Code is self-documenting
 - [ ] Complex logic has explanatory comments
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Layer Responsibilities (Rules for each layer), Common Patterns |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Core Components (Naming conventions), Aggregate Root (Rules) |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Component Patterns (Rules), Composables (Naming, Rules), Services (Rules) |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Naming Conventions, Configuration Patterns (Variables with Validation) |
+| Playwright | [Integration Testing](../../golden-paths/integration-testing.md) | Layer Responsibilities (Rules for pages/, services/) |
+| Groovy (Console) | [Groovy Monolith](../../golden-paths/groovy-monolith.md) | Code Quality (PMD, CodeNarc) |

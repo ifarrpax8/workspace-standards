@@ -80,3 +80,16 @@ ls -d src/services/*/ 2>/dev/null | wc -l  # Service folders
 - [ ] No circular dependencies between packages
 - [ ] Aggregates are properly bounded
 - [ ] Event handlers have no side effects in @EventSourcingHandler
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Package Structure, Layer Responsibilities (endpoint/, service/, repository/, model/entities/) |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Package Structure, Core Components, Aggregate Root, Query Side (Projections), Controllers |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Package Structure, Component Patterns, Composables, Services |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Package Structure, Module Structure |
+| Playwright | [Integration Testing](../../golden-paths/integration-testing.md) | Project Structure, Layer Responsibilities (pages/, services/, fixtures/) |
+| Groovy (Console) | [Groovy Monolith](../../golden-paths/groovy-monolith.md) | Package Structure, Layer Responsibilities (controller/, service/, dao/, domain/) |

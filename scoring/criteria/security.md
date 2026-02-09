@@ -115,3 +115,15 @@ grep -r "ProcessBuilder" src/                  # Command injection risk
 - [ ] Audit logging for security events
 - [ ] No debug endpoints in production
 - [ ] Dependencies scanned for vulnerabilities
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Layer Responsibilities (endpoint/model DTOs with validation annotations), Common Patterns (Controller Advice) |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Core Components (Commands, Events), Controllers |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Services (environment config), Component Patterns (typed props), Checklist (no hardcoded API URLs) |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Security (No Hardcoded Secrets, Backend Encryption, Sensitive Outputs) |
+| Playwright | [Integration Testing](../../golden-paths/integration-testing.md) | credentials/ (Credential Management) |

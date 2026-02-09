@@ -39,9 +39,29 @@ A shared documentation repository for coding standards, architecture patterns, q
 @workspace-standards/skills/idea-to-implementation/SKILL.md I have a feature idea: [brief description]
 ```
 
-### Invoke Code Review
+### Code Review (PR or Branch)
 ```
-@workspace-standards/rules/code-review.md review my changes to <filename>
+@workspace-standards/skills/code-review/SKILL.md review PR 42 in currency-manager
+```
+
+### Score a Repository
+```
+@workspace-standards/skills/score/SKILL.md score the currency-manager repository
+```
+
+### Generate PR Description
+```
+@workspace-standards/skills/generate-pr-description/SKILL.md generate PR description for my current branch
+```
+
+### Generate ADR
+```
+@workspace-standards/skills/generate-adr/SKILL.md generate ADR for the decision to use Kafka in currency-manager
+```
+
+### Post-Implementation Review
+```
+@workspace-standards/skills/post-implementation-review/SKILL.md review how HRZN-123 went
 ```
 
 ### Quick Refinement Helper
@@ -49,7 +69,7 @@ A shared documentation repository for coding standards, architecture patterns, q
 @workspace-standards/rules/refinement.md help me break down <ticket-id>
 ```
 
-### Run Codebase Scoring
+### Run Codebase Scoring (CLI)
 ```bash
 cd ~/Development/workspace-standards
 ./scoring/score.sh ../currency-manager
@@ -60,19 +80,24 @@ cd ~/Development/workspace-standards
 ```
 workspace-standards/
 ├── README.md                      # This file
+├── CONTRIBUTING.md                # How to add rules, skills, golden paths
+├── CHANGELOG.md                   # Change history
+├── docs/
+│   └── onboarding.md              # New developer orientation guide
 ├── golden-paths/                  # Reference architectures
 │   ├── kotlin-spring-boot.md      # Standard layered architecture
 │   ├── kotlin-axon-cqrs.md        # Event sourcing + CQRS
 │   ├── vue-mfe.md                 # Feature-based MFE
 │   ├── terraform-iac.md           # Infrastructure as Code (Terraform)
-│   └── integration-testing.md     # Playwright page object model (E2E)
+│   ├── integration-testing.md     # Playwright page object model (E2E)
+│   └── groovy-monolith.md         # Legacy monolith working standards
 ├── scoring/                       # Automated scoring system
 │   ├── score.sh                   # Main scoring script
-│   ├── criteria/                  # Scoring rubrics (7 categories)
+│   ├── criteria/                  # Scoring rubrics (8 categories)
 │   └── reports/                   # Generated score reports
 ├── skills/                        # Interactive Cursor skills
 │   ├── idea-to-implementation/    # End-to-end pipeline orchestrator
-│   │   └── SKILL.md               # Idea → Brief → PRD → Stories → Implement
+│   │   └── SKILL.md               # Idea → Brief → PRD → ... → Review (9 stages)
 │   ├── generate-opportunity-brief/# Draft Pax8 Opportunity Briefs
 │   │   └── SKILL.md               # Codex-enriched brief generation
 │   ├── generate-prd/              # Draft Pax8 PRDs from Opp Briefs
@@ -81,6 +106,16 @@ workspace-standards/
 │   │   └── SKILL.md               # Jira integration, confidence scoring
 │   ├── implement-ticket/          # Structured implementation workflow
 │   │   └── SKILL.md               # DoR/DoD gates, TDD, unknowns triage
+│   ├── code-review/               # Standalone PR/branch review
+│   │   └── SKILL.md               # Standards-based review with structured feedback
+│   ├── post-implementation-review/# Closing the feedback loop
+│   │   └── SKILL.md               # Estimate accuracy, learnings, action items
+│   ├── score/                     # Interactive repository scoring
+│   │   └── SKILL.md               # Run score.sh with interpretation and fixes
+│   ├── generate-pr-description/   # PR description from implementation context
+│   │   └── SKILL.md               # Structured PR body from git + Jira context
+│   ├── generate-adr/              # Architecture Decision Records
+│   │   └── SKILL.md               # ADR generation from spikes or discussions
 │   ├── technical-deep-dive/       # Codebase investigation
 │   │   └── SKILL.md               # Pattern analysis, code locations
 │   └── spike/                     # Time-boxed research
@@ -90,6 +125,12 @@ workspace-standards/
 │   ├── refinement.md              # Quick: ticket breakdown template
 │   ├── refinement-best-practices.md  # Comprehensive: Three Amigos guide
 │   └── auto-apply/                # Copy to each repo's .cursor/rules/
+│       ├── kotlin-standards.md
+│       ├── vue-standards.md
+│       ├── terraform-standards.md
+│       ├── playwright-standards.md
+│       ├── security-standards.md
+│       └── jira-standards.md
 ├── patterns/                      # Pattern documentation
 │   ├── pattern-inventory.md       # Current state of all repos
 │   └── migration-paths.md         # Legacy to target state transitions
@@ -209,7 +250,7 @@ Time-boxed research and investigation:
 
 ### Skill Connection
 
-The skills can be used standalone or chained via the **Idea to Implementation** orchestrator:
+The skills can be used standalone or chained via the **Idea to Implementation** orchestrator (9 stages):
 
 ```
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
@@ -225,22 +266,36 @@ The skills can be used standalone or chained via the **Idea to Implementation** 
        │                   │
        ▼                   ▼
 ┌──────────────┐    ┌──────────────┐
-│  Deep Dive   │    │  Deep Dive   │
-│ (unknowns)   │    │(low confid.) │
+│  Code Review │    │  Deep Dive   │
+│  + PR Desc   │    │(low confid.) │
 └──────────────┘    └──────────────┘
+       │
+       ▼
+┌──────────────┐
+│  Post-Impl   │
+│  Review      │
+└──────────────┘
 ```
 
-1. **Idea to Implementation**: Full pipeline orchestrator — chains all skills below
+**Pipeline skills (chained by orchestrator):**
+1. **Idea to Implementation**: Full 9-stage pipeline orchestrator
 2. **Generate Opp Brief**: Draft a Pax8 Opportunity Brief enriched with codex content
 3. **Generate PRD**: Expand approved brief into PRD with Pax8 standards and decisions
 4. **Spike**: Time-boxed research (days) for unknowns identified in the PRD
 5. **Refine Ticket**: Three Amigos analysis with confidence scoring
 6. **Implement Ticket**: Structured implementation with DoR/DoD gates
-7. **Deep Dive**: Quick codebase investigation (hours) when technical confidence is low
+7. **Code Review**: Standards-based PR review with structured feedback
+8. **Post-Implementation Review**: Estimate accuracy, learnings, feedback loop
+
+**Utility skills (standalone):**
+9. **Deep Dive**: Quick codebase investigation (hours) when technical confidence is low
+10. **Score**: Interactive repository scoring with actionable recommendations
+11. **Generate PR Description**: Structured PR body from git and Jira context
+12. **Generate ADR**: Architecture Decision Records from spikes or discussions
 
 ### Engineering Codex Integration
 
-The Opp Brief and PRD skills read from the [Engineering Codex](https://github.com/ifarrpax8/engineering-codex) for technical enrichment — user flows, risks, architecture patterns, and Pax8 ADR standards. Add the codex to your workspace for the full experience; the skills degrade gracefully without it.
+All workflow skills optionally leverage the [Engineering Codex](https://github.com/ifarrpax8/engineering-codex) when it's in the workspace — best practices, gotchas, decision frameworks, Pax8 standards, and tech radar data. Add the codex to your workspace for the full experience; all skills degrade gracefully without it.
 
 ## Golden Path Architectures
 
@@ -263,22 +318,22 @@ The Opp Brief and PRD skills read from the [Engineering Codex](https://github.co
 - `services/` for API layer
 - Pinia for state management
 
-## Adding to Your Workspace
+## Getting Started
 
 1. Add `~/Development/workspace-standards` to your Cursor workspace
-2. Reference rules using `@workspace-standards/rules/<rule>.md`
+2. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
 3. For auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
+4. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
 
 ## Related Resources
 
 ### Ways of Working
+- [Onboarding Guide](docs/onboarding.md) - New developer orientation
 - [Refinement Best Practices](rules/refinement-best-practices.md) - Three Amigos guide, Definition of Ready
-- [Refine Ticket Skill](skills/refine-ticket/SKILL.md) - Interactive Jira refinement
-- [Implement Ticket Skill](skills/implement-ticket/SKILL.md) - Structured implementation workflow
-- [Technical Deep Dive Skill](skills/technical-deep-dive/SKILL.md) - Codebase investigation
-- [Spike Skill](skills/spike/SKILL.md) - Time-boxed research and investigation
+- [Migration Paths](patterns/migration-paths.md) - Legacy to target state transitions
+- [Pattern Inventory](patterns/pattern-inventory.md) - Current state of all repos
 
 ### Architecture
 - [Finance ADRs](../finance/docs/adr/)
 - [Role Management ADRs](../role-management/docs/adr/)
-- [Existing Cursor Rules](../currency-manager/.cursor/rules/)
+- [Engineering Codex](https://github.com/ifarrpax8/engineering-codex) - Technical knowledge base

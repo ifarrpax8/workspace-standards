@@ -107,3 +107,16 @@ grep -r "it.skip\|describe.skip" src/ | wc -l  # Vue
 - [ ] Edge cases are covered
 - [ ] Error scenarios are tested
 - [ ] No flaky tests
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Testing Strategy (Integration Tests, Unit Tests) |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Testing (Aggregate Tests, Saga Tests) |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Testing (Component Test, Composable Test) |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Testing Strategy (terraform validate, tflint, Terratest) |
+| Playwright | [Integration Testing](../../golden-paths/integration-testing.md) | Project Structure, Layer Responsibilities, Testing Patterns, Authentication, Checklist |
+| Groovy (Console) | [Groovy Monolith](../../golden-paths/groovy-monolith.md) | Testing Strategy, Build and Verification |

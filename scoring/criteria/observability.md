@@ -170,3 +170,13 @@ grep -rq "no-console" .eslintrc* && echo "1" || echo "0"
 - [ ] Custom metrics defined for business KPIs
 - [ ] Health checks include dependency checks
 - [ ] Error logs include stack traces
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Configuration Files (application.yml management.endpoints), Checklist (Logging uses SLF4J) |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Configuration (application.yml) |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Checklist — use @pax8/observability and disable console.log via ESLint (see criterion note) |

@@ -2,6 +2,33 @@
 
 All notable changes to the Workspace Standards repository.
 
+## 2026-02-09 (v2)
+
+### New Skills
+- Added `skills/code-review/SKILL.md` — Standalone interactive PR/branch review against team standards, golden paths, and codex
+- Added `skills/post-implementation-review/SKILL.md` — Closing-the-loop skill capturing estimate accuracy, learnings, and action items
+- Added `skills/score/SKILL.md` — Interactive repository scoring with interpretation and actionable fix recommendations
+- Added `skills/generate-pr-description/SKILL.md` — Structured PR description generation from git and Jira context
+- Added `skills/generate-adr/SKILL.md` — Architecture Decision Record generation from spikes or discussions
+
+### New Golden Paths
+- Added `golden-paths/groovy-monolith.md` — Working standards for the pax8/console legacy codebase (Groovy/Java, Grails-style)
+
+### New Auto-Apply Rules
+- Added `rules/auto-apply/terraform-standards.md` — Terraform IaC standards with module structure, naming, and state management
+- Added `rules/auto-apply/playwright-standards.md` — Playwright E2E testing standards with Page Object Model and fixture patterns
+
+### New Documentation
+- Added `CONTRIBUTING.md` — Guidelines for adding rules, skills, golden paths, and scoring criteria
+- Added `docs/onboarding.md` — New developer orientation guide with quick-start setup
+
+### Orchestrator Update
+- Updated `idea-to-implementation` pipeline from 7 to 9 stages (added Code Review and Post-Implementation Review)
+- Added `generate-pr-description` and `generate-adr` as utility skills in the pipeline
+
+### Scoring Improvements
+- Added "Golden Path References" section to all 8 scoring criteria files, cross-referencing specific golden path sections
+
 ## 2026-02-09
 
 ### Engineering Codex Integration

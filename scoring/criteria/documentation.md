@@ -163,3 +163,16 @@ How the service is deployed.
 - [ ] API documentation matches implementation
 - [ ] Complex code has explanatory comments
 - [ ] No outdated documentation
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Configuration Files (application.yml), Checklist |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | ADR References, Configuration |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Service Types (types.ts), Checklist |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Package Structure (README.md), Child Module Layout (variables.tf with descriptions) |
+| Playwright | [Integration Testing](../../golden-paths/integration-testing.md) | Project Structure, Configuration Patterns |
+| Groovy (Console) | [Groovy Monolith](../../golden-paths/groovy-monolith.md) | Migration-Safe Patterns (document boundaries) |

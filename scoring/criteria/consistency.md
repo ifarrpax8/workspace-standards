@@ -176,3 +176,16 @@ const count = ref(0)
 - [ ] Error handling is uniform
 - [ ] Logging patterns are consistent
 - [ ] Test structure matches source structure
+
+## Golden Path References
+
+To improve your score in this category, reference these golden paths:
+
+| Project Type | Golden Path | Relevant Sections |
+|-------------|-------------|-------------------|
+| Kotlin (Spring Boot) | [Kotlin Spring Boot](../../golden-paths/kotlin-spring-boot.md) | Layer Responsibilities (constructor injection, Rules), Common Patterns (Controller Advice) |
+| Kotlin (Axon) | [Kotlin Axon CQRS](../../golden-paths/kotlin-axon-cqrs.md) | Core Components (Naming conventions), Package Structure |
+| Vue MFE | [Vue MFE](../../golden-paths/vue-mfe.md) | Package Structure, Component Patterns, Barrel Exports, Composables (Naming) |
+| Terraform | [Terraform IaC](../../golden-paths/terraform-iac.md) | Module Structure, Child Module Layout, Naming Conventions |
+| Playwright | [Integration Testing](../../golden-paths/integration-testing.md) | Layer Responsibilities (Rules), fixtures/fixtures.ts |
+| Groovy (Console) | [Groovy Monolith](../../golden-paths/groovy-monolith.md) | Layer Responsibilities, Controller Patterns (Interface + Implementation) |
