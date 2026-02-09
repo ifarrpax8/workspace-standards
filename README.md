@@ -24,6 +24,21 @@ A shared documentation repository for coding standards, architecture patterns, q
 @workspace-standards/skills/implement-ticket/SKILL.md implement ticket HRZN-123
 ```
 
+### Generate Opportunity Brief
+```
+@workspace-standards/skills/generate-opportunity-brief/SKILL.md Generate an opportunity brief for [feature idea]
+```
+
+### Generate PRD from Opportunity Brief
+```
+@workspace-standards/skills/generate-prd/SKILL.md Generate PRD for [feature name]
+```
+
+### Full Idea-to-Implementation Pipeline
+```
+@workspace-standards/skills/idea-to-implementation/SKILL.md I have a feature idea: [brief description]
+```
+
 ### Invoke Code Review
 ```
 @workspace-standards/rules/code-review.md review my changes to <filename>
@@ -56,6 +71,12 @@ workspace-standards/
 │   ├── criteria/                  # Scoring rubrics (7 categories)
 │   └── reports/                   # Generated score reports
 ├── skills/                        # Interactive Cursor skills
+│   ├── idea-to-implementation/    # End-to-end pipeline orchestrator
+│   │   └── SKILL.md               # Idea → Brief → PRD → Stories → Implement
+│   ├── generate-opportunity-brief/# Draft Pax8 Opportunity Briefs
+│   │   └── SKILL.md               # Codex-enriched brief generation
+│   ├── generate-prd/              # Draft Pax8 PRDs from Opp Briefs
+│   │   └── SKILL.md               # Standards-aware PRD generation
 │   ├── refine-ticket/             # Three Amigos ticket refinement
 │   │   └── SKILL.md               # Jira integration, confidence scoring
 │   ├── implement-ticket/          # Structured implementation workflow
@@ -187,32 +208,38 @@ Time-boxed research and investigation:
 
 ### Skill Connection
 
-The skills can be used standalone or chained:
+The skills can be used standalone or chained via the **Idea to Implementation** orchestrator:
 
 ```
-┌─────────────┐     low confidence     ┌─────────────┐
-│   Refine    │ ──────────────────────▶│  Deep Dive  │
-│   Ticket    │◀────────────────────── │             │
-└─────────────┘     return findings    └─────────────┘
-       │                                      ▲
-       │ DoR passed                           │ unknowns
-       ▼                                      │
-┌─────────────┐                        ┌─────────────┐
-│  Implement  │───────────────────────▶│  Deep Dive  │
-│   Ticket    │                        └─────────────┘
-└─────────────┘
-       ▲
-       │ findings inform
-┌─────────────┐                        ┌─────────────┐
-│    Spike    │◀───────────────────────│  Deep Dive  │
-│             │    codebase research   │             │
-└─────────────┘                        └─────────────┘
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│   Opp Brief  │───▶│     PRD      │───▶│    Spike     │
+│  Generation  │    │  Generation  │    │ (if needed)  │
+└──────────────┘    └──────────────┘    └──────────────┘
+                                               │
+                                               ▼
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│  Implement   │◀───│   Refine     │◀───│    Story     │
+│   Ticket     │    │   Ticket     │    │  Breakdown   │
+└──────────────┘    └──────────────┘    └──────────────┘
+       │                   │
+       ▼                   ▼
+┌──────────────┐    ┌──────────────┐
+│  Deep Dive   │    │  Deep Dive   │
+│ (unknowns)   │    │(low confid.) │
+└──────────────┘    └──────────────┘
 ```
 
-1. **Refine Ticket**: For regular stories, ensures Definition of Ready
-2. **Implement Ticket**: Structured implementation of refined tickets with DoR/DoD gates
-3. **Deep Dive**: Quick codebase investigation (hours) when technical confidence is low
-4. **Spike**: Time-boxed research (days) for broader investigation, may invoke Deep Dive
+1. **Idea to Implementation**: Full pipeline orchestrator — chains all skills below
+2. **Generate Opp Brief**: Draft a Pax8 Opportunity Brief enriched with codex content
+3. **Generate PRD**: Expand approved brief into PRD with Pax8 standards and decisions
+4. **Spike**: Time-boxed research (days) for unknowns identified in the PRD
+5. **Refine Ticket**: Three Amigos analysis with confidence scoring
+6. **Implement Ticket**: Structured implementation with DoR/DoD gates
+7. **Deep Dive**: Quick codebase investigation (hours) when technical confidence is low
+
+### Engineering Codex Integration
+
+The Opp Brief and PRD skills read from the [Engineering Codex](https://github.com/ifarrpax8/engineering-codex) for technical enrichment — user flows, risks, architecture patterns, and Pax8 ADR standards. Add the codex to your workspace for the full experience; the skills degrade gracefully without it.
 
 ## Golden Path Architectures
 
