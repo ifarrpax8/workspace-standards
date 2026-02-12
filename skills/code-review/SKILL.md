@@ -153,10 +153,12 @@ After presenting the review:
 
 ```
 What would you like to do?
-1. Fix the MUST FIX issues now
+1. Fix the MUST FIX issues now (uses the fix-bug skill for test-first fixes)
 2. Post this review as a PR comment (if GitHub MCP available)
 3. Copy the review as markdown
 ```
+
+If the developer chooses option 1, invoke the [Fix Bug Skill](../fix-bug/SKILL.md) for each critical issue. The fix-bug skill ensures each defect is proven with a failing test before being fixed.
 
 ## Error Handling
 
@@ -189,4 +191,5 @@ If a referenced rule file (e.g., `terraform-standards.md`) does not exist:
 
 - [Code Review Rule](../../rules/code-review.md)
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — uses this checklist in Phase 5
+- [Fix Bug Skill](../fix-bug/SKILL.md) — test-first bug fixing for critical issues found during review
 - [Golden Paths](../../golden-paths/)
