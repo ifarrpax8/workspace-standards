@@ -2,6 +2,13 @@
 
 All notable changes to the Workspace Standards repository.
 
+## 2026-02-13 — Development Practices Alignment
+
+### Updated Auto-Apply Rules
+- **rules/auto-apply/vue-standards.md**: Added file organisation (by feature not type), naming conventions (camelCase files, kebab-case routes), service layer patterns (object destructuring for 3+ params), async/promise best practices (async/await over nested .then(), Promise.all()), linting guidance (no console.log, prefer native ES6 over utility libraries)
+
+---
+
 ## 2026-02-09 (v2)
 
 ### New Skills

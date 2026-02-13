@@ -53,6 +53,8 @@ onMounted(() => {
 
 ## File Organization
 
+Organise components by feature, not by type.
+
 ```
 components/
   {Feature}/
@@ -65,6 +67,8 @@ components/
 
 ## Naming Conventions
 
+- Files and folders: camelCase
+- Routes: kebab-case
 - Components: PascalCase (`FXRateSelector.vue`)
 - Composables: `use{Feature}` (`useFXRates.ts`)
 - Services: `{Feature}Service` (`FXRateService.ts`)
@@ -90,6 +94,10 @@ const emit = defineEmits<{
   (e: 'change', value: string): void
 }>()
 ```
+
+## Async and Promises
+
+Prefer `async/await` over nested `.then()` chains. Use `Promise.all()` for independent parallel async operations.
 
 ## Composables
 
@@ -119,6 +127,8 @@ export function useFeature() {
 ```
 
 ## Services
+
+Use object destructuring when service calls need more than 3 parameters.
 
 Class-based services with factory function:
 
@@ -183,6 +193,9 @@ describe('MyComponent', () => {
 ## Avoid
 
 - `any` type (use proper types or `unknown`)
+- Nested `.then()` chains (use `async/await`)
+- `console.log` statements (remove before committing)
+- Importing entire utility libraries (import only needed functions; prefer native ES6 methods)
 - Options API (use Composition API)
 - `v-html` without DOMPurify sanitization
 - Direct DOM manipulation

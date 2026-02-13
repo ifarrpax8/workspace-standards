@@ -10,7 +10,22 @@ Optionally, also add:
 - `~/Development/engineering-codex` — Best practices, architecture patterns, technology options
 - `~/Development/adr` — Pax8 Architecture Decision Records
 
-## Step 2: Copy Auto-Apply Rules
+## Step 2: Register Skills Globally
+
+Run the setup script to make all skills available across every Cursor workspace:
+
+```bash
+cd ~/Development/workspace-standards
+./scripts/setup-skills.sh
+```
+
+This creates symlinks from `~/.cursor/skills/` to the workspace-standards skills directory. After running, restart Cursor (or reload the window). You should see all 13 skills in **Settings → Skills**.
+
+The script also copies Pax8-wide Cursor rules (like Jira custom field standards) to `~/.cursor/rules/` so they apply globally.
+
+> **Re-run after pulling updates.** If new skills are added to workspace-standards, run the setup script again to pick them up.
+
+## Step 3: Copy Auto-Apply Rules
 
 Copy the relevant auto-apply rules to your repository's `.cursor/rules/` directory:
 
@@ -30,7 +45,7 @@ cp ~/Development/workspace-standards/rules/auto-apply/security-standards.md .cur
 cp ~/Development/workspace-standards/rules/auto-apply/jira-standards.md .cursor/rules/
 ```
 
-## Step 3: Learn the Golden Path for Your Project
+## Step 4: Learn the Golden Path for Your Project
 
 Read the golden path that matches your repository:
 
@@ -45,7 +60,7 @@ Read the golden path that matches your repository:
 
 Golden paths define the expected package structure, layer responsibilities, testing strategy, and common patterns.
 
-## Step 4: Understand the Workflow
+## Step 5: Understand the Workflow
 
 The team uses these skills for daily work:
 
@@ -89,7 +104,7 @@ This applies the team's code review checklist against the PR changes and produce
 
 This runs a structured investigation with success criteria, documents findings, and posts results to Jira.
 
-## Step 5: Score Your Repository
+## Step 6: Score Your Repository
 
 Run the scoring script to see where your repository stands:
 
@@ -106,7 +121,7 @@ Or use the interactive skill:
 
 This evaluates 8 categories (Architecture, Testing, Security, Code Quality, Documentation, Consistency, Dependencies, Observability) and generates a report with recommendations.
 
-## Step 6: Browse the Full Skill Pipeline
+## Step 7: Browse the Full Skill Pipeline
 
 For larger features, the full pipeline orchestrates the entire flow:
 

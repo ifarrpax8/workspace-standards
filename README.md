@@ -134,6 +134,8 @@ workspace-standards/
 ├── patterns/                      # Pattern documentation
 │   ├── pattern-inventory.md       # Current state of all repos
 │   └── migration-paths.md         # Legacy to target state transitions
+├── scripts/                       # Setup and utility scripts
+│   └── setup-skills.sh            # Register all skills globally in Cursor
 └── security/                      # Security guidelines
     └── security-checklist.md      # Requirements and packages
 ```
@@ -321,9 +323,15 @@ All workflow skills optionally leverage the [Engineering Codex](https://github.c
 ## Getting Started
 
 1. Add `~/Development/workspace-standards` to your Cursor workspace
-2. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
-3. For auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
-4. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
+2. Run the setup script to register all skills globally:
+   ```bash
+   ./scripts/setup-skills.sh
+   ```
+   This creates symlinks in `~/.cursor/skills/` so all 13 skills are available across every workspace. It also copies Pax8-wide Cursor rules (e.g. Jira custom field standards) to `~/.cursor/rules/`.
+3. Restart Cursor (or reload window) — skills will appear in **Settings → Skills**
+4. For repo-specific auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
+5. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
+6. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
 
 ## Related Resources
 

@@ -1,3 +1,7 @@
+---
+name: generate-prd
+description: Draft a Pax8 Product Requirements Document from an approved Opportunity Brief, enriched with Engineering Codex technical insights, ADR standards, and best practices. Use when the user wants to create a PRD, write product requirements, or document feature specifications.
+---
 # Generate PRD Skill
 
 Draft a Pax8 Product Requirements Document from an approved Opportunity Brief, enriched with Engineering Codex technical insights, Pax8 ADR standards, and best practices.
