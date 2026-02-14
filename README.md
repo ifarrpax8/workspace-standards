@@ -134,8 +134,12 @@ workspace-standards/
 ├── patterns/                      # Pattern documentation
 │   ├── pattern-inventory.md       # Current state of all repos
 │   └── migration-paths.md         # Legacy to target state transitions
+├── .cursor/
+│   └── agents/                    # Custom subagents (symlinked by setup script)
+│       ├── standards-auditor.md   # Repo scoring and compliance auditing
+│       └── ticket-refiner.md      # Jira ticket refinement assistant
 ├── scripts/                       # Setup and utility scripts
-│   └── setup-skills.sh            # Register all skills globally in Cursor
+│   └── setup-skills.sh            # Register skills, rules, and subagents globally
 └── security/                      # Security guidelines
     └── security-checklist.md      # Requirements and packages
 ```
@@ -323,15 +327,31 @@ All workflow skills optionally leverage the [Engineering Codex](https://github.c
 ## Getting Started
 
 1. Add `~/Development/workspace-standards` to your Cursor workspace
-2. Run the setup script to register all skills globally:
+2. (Optional) Add `~/Development/engineering-codex` to the same workspace for best practices, gotchas, and decision frameworks
+3. Run the setup script to register skills, rules, and subagents globally:
    ```bash
    ./scripts/setup-skills.sh
    ```
-   This creates symlinks in `~/.cursor/skills/` so all 13 skills are available across every workspace. It also copies Pax8-wide Cursor rules (e.g. Jira custom field standards) to `~/.cursor/rules/`.
-3. Restart Cursor (or reload window) — skills will appear in **Settings → Skills**
-4. For repo-specific auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
-5. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
-6. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
+   This script:
+   - Symlinks **13 skills** to `~/.cursor/skills/` (available across all workspaces)
+   - Copies **Pax8-wide rules** (`jira-standards.md`, `security-standards.md`) to `~/.cursor/rules/`
+   - Symlinks **subagents** to `~/.cursor/agents/` (from both workspace-standards and engineering-codex if present)
+4. Restart Cursor (or reload window) — skills appear in **Settings → Skills**, subagents are available immediately
+5. For repo-specific auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
+6. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
+7. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
+
+### Subagents
+
+The setup script registers these custom subagents for use across all projects:
+
+| Subagent | Source | Invoke with | Purpose |
+|----------|--------|-------------|---------|
+| `standards-auditor` | workspace-standards | `/standards-auditor` | Score repos, run checklists, review architecture alignment |
+| `ticket-refiner` | workspace-standards | `/ticket-refiner` | Refine Jira tickets, plan implementation, prep Three Amigos |
+| `codex-navigator` | engineering-codex | `/codex-navigator` | Look up best practices, gotchas, Pax8 standards, reading lists |
+
+Subagents are also invoked automatically when the agent detects a matching task. See the [Cursor subagents documentation](https://cursor.com/docs/context/subagents) for more details.
 
 ## Related Resources
 
