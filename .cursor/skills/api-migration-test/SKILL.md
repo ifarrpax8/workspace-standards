@@ -237,6 +237,6 @@ Ensure `AUTH_TOKEN` includes the scheme prefix (e.g., `Bearer ...`) and is not e
 
 ## Related Resources
 
-- [Testing Facet](../../../engineering-codex/facets/testing/README.md) — Testing strategies and best practices
-- [API Design Facet](../../../engineering-codex/facets/api-design/README.md) — API contract design principles
 - [Groovy Monolith Golden Path](../../golden-paths/groovy-monolith.md) — Patterns for the legacy monolith
+- Engineering Codex: Testing Facet — Testing strategies and best practices
+- Engineering Codex: API Design Facet — API contract design principles

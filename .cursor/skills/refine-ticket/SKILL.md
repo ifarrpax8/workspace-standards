@@ -20,7 +20,7 @@ This skill works best with the following MCP servers enabled:
 | | `confluence_get_page` | Fetch PRD from Confluence | Optional |
 | **user-github** | `search_code` | Search patterns across Pax8 org (via Deep Dive) | Optional |
 
-> **Important:** See [Jira Standards](../../../rules/auto-apply/jira-standards.md) for custom field usage. The business uses `customfield_12636` instead of the standard description field.
+> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. The business uses `customfield_12636` instead of the standard description field.
 
 ### Checking MCP Availability
 
@@ -180,7 +180,17 @@ Then return to this refinement with enhanced technical context.
 
 ### Phase 5: Output
 
-Generate the implementation plan and update the Jira ticket description:
+Generate the implementation plan using the format below, then **display it to the user and ask for confirmation before posting**:
+
+```
+Here is the implementation plan I'll post to [ticket key]. Please review:
+
+[formatted implementation plan]
+
+Shall I post this to Jira? (yes / edit first / skip)
+```
+
+Only proceed to post after the user confirms. Then:
 
 ```
 Use the jira_update_issue tool with:
@@ -189,7 +199,7 @@ Use the jira_update_issue tool with:
 - additional_fields: { "customfield_12636": "[formatted implementation plan - see format below]" }
 ```
 
-> **Note:** Use `customfield_12636` (custom Description field), not the standard description. See [Jira Standards](../../../rules/auto-apply/jira-standards.md).
+> **Note:** Use `customfield_12636` (custom Description field), not the standard description. See [Jira Standards](../../rules/jira-standards.md).
 
 Alternatively, add as a comment:
 
@@ -383,7 +393,7 @@ If Confluence page fetch fails or no PRD link exists:
 ## Related Resources
 
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) - Structured implementation of refined tickets (next step after refinement)
-- [Refinement Best Practices](../../../rules/refinement-best-practices.md)
+- [Refinement Best Practices](../../rules/refinement-best-practices.md)
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - Quick codebase investigation (hours)
 - [Spike Skill](../spike/SKILL.md) - Time-boxed research (days) for broader investigation
 - [Golden Paths](../../../golden-paths/)

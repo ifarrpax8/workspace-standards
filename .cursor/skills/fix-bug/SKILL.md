@@ -316,4 +316,4 @@ If the fix requires significant new code:
 - [Code Review Skill](../code-review/SKILL.md) — Often surfaces bugs that need this workflow
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — For feature work that discovers bugs inline
 - [Assess Tests Skill](../assess-tests/SKILL.md) — Systematic test completeness audit to prevent future bugs
-- [Code Review Rule](../../../rules/code-review.md) — Review checklist
+- [Code Review Rule](../../rules/code-review.md) — Review checklist

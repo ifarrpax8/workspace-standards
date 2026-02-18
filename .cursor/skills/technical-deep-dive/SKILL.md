@@ -406,6 +406,6 @@ How would you like to proceed?
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) - Structured implementation of refined tickets
 - [Refinement Skill](../refine-ticket/SKILL.md) - For refining tickets after deep dive
 - [Spike Skill](../spike/SKILL.md) - For longer, time-boxed research (days vs hours)
-- [Refinement Best Practices](../../../rules/refinement-best-practices.md)
+- [Refinement Best Practices](../../rules/refinement-best-practices.md)
 - [Golden Paths](../../../golden-paths/)
 - [Finance ADRs](../../../../finance/docs/adr/) - ADR format reference

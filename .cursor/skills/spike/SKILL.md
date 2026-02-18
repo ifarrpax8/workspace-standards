@@ -21,7 +21,7 @@ Time-boxed research and investigation skill for answering specific technical que
 | **cursor-ide-browser** | `browser_navigate` | Fallback: Browse GitHub with SSO session | Optional |
 | | `browser_snapshot`, `browser_click` | Interact with GitHub UI | Optional |
 
-> **Important:** See [Jira Standards](../../../rules/auto-apply/jira-standards.md) for custom field usage. Spikes use `customfield_14303` (Spike Description field), not the standard description field.
+> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. Spikes use `customfield_14303` (Spike Description field), not the standard description field.
 
 ### Research Capabilities
 
@@ -405,16 +405,27 @@ Include this assessment in the spike findings posted to Jira. If gaps are identi
 
 #### If Spike is Conclusive
 
-1. Update the spike ticket description with findings:
+1. Generate the findings using the format below, then **display them to the user and ask for confirmation before posting**:
+
+   ```
+   Here are the spike findings I'll post to [spike ticket key]. Please review:
+
+   [formatted findings]
+
+   Shall I post this to Jira? (yes / edit first / skip)
+   ```
+
+   Only proceed to post after the user confirms. Then:
+
    ```
    Use jira_update_issue with:
    - issue_key: [spike ticket key]
    - fields: {}
    - additional_fields: { "customfield_14303": "[formatted findings]" }
    ```
-   
-   > **Note:** Spikes use `customfield_14303` (Spike Description field), not the standard description. See [Jira Standards](../../../rules/auto-apply/jira-standards.md).
-   
+
+   > **Note:** Spikes use `customfield_14303` (Spike Description field), not the standard description. See [Jira Standards](../../rules/jira-standards.md).
+
    Alternatively, add findings as a comment:
    ```
    Use jira_add_comment with:
@@ -563,5 +574,5 @@ If investigation is taking longer than expected:
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) - Structured implementation after spike findings inform a refined ticket
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - For codebase investigation
 - [Refine Ticket Skill](../refine-ticket/SKILL.md) - For refining follow-up tickets
-- [Refinement Best Practices](../../../rules/refinement-best-practices.md)
+- [Refinement Best Practices](../../rules/refinement-best-practices.md)
 - [Golden Paths](../../../golden-paths/) - Architecture patterns

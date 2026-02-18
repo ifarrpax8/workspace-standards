@@ -75,11 +75,11 @@ Load the relevant rules based on file types present:
 
 | File Type | Rules to Load |
 |-----------|---------------|
-| `*.kt` | [kotlin-standards.md](../../../rules/auto-apply/kotlin-standards.md) |
-| `*.groovy`, `*.java` | [groovy-standards.md](../../../rules/auto-apply/groovy-standards.md) |
-| `*.vue`, `*.ts` | [vue-standards.md](../../../rules/auto-apply/vue-standards.md) |
-| `*.tf` | [terraform-standards.md](../../../rules/auto-apply/terraform-standards.md) |
-| All | [security-standards.md](../../../rules/auto-apply/security-standards.md) |
+| `*.kt` | [kotlin-standards.md](../../rules/kotlin-standards.md) |
+| `*.groovy`, `*.java` | [groovy-standards.md](../../rules/groovy-standards.md) |
+| `*.vue`, `*.ts` | [vue-standards.md](../../rules/vue-standards.md) |
+| `*.tf` | [terraform-standards.md](../../rules/terraform-standards.md) |
+| All | [security-standards.md](../../rules/security-standards.md) |
 
 **Detect project type** from build files and dependencies (do this once before loading golden paths):
 
@@ -106,7 +106,7 @@ Load the relevant golden path based on detected project type:
 If `@engineering-codex` is in the workspace:
 - Read relevant facet's `best-practices.md` and `gotchas.md` based on changed code
 
-Read [code-review.md](../../../rules/code-review.md) for the base checklist.
+Read [code-review.md](../../rules/code-review.md) for the base checklist.
 
 ### Phase 3: Review Each File
 
@@ -259,7 +259,7 @@ If a referenced rule file (e.g., `terraform-standards.md`) does not exist:
 
 ## Related Resources
 
-- [Code Review Rule](../../../rules/code-review.md)
+- [Code Review Rule](../../rules/code-review.md)
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — uses this checklist in Phase 5
 - [Fix Bug Skill](../fix-bug/SKILL.md) — test-first bug fixing for critical issues found during review
 - [Golden Paths](../../../golden-paths/)

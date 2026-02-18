@@ -19,7 +19,7 @@ Closing-the-loop skill that runs after a feature has been implemented and merged
 | | `get_pull_request_files` | Fetch changed file list | Optional |
 | | `get_pull_request_reviews` | Fetch review comments | Optional |
 
-> **Important:** See [Jira Standards](../../../rules/auto-apply/jira-standards.md) for custom field usage. Refinement notes live in `customfield_12636`.
+> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. Refinement notes live in `customfield_12636`.
 
 ### Graceful Degradation
 

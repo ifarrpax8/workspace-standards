@@ -1,7 +1,7 @@
 ---
 description: Standards for Groovy/Java monolith (pax8/console)
 globs: ["**/*.groovy", "**/*.java"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Groovy/Java Monolith Standards

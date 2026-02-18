@@ -1,3 +1,8 @@
+---
+description: Comprehensive Three Amigos refinement guide with DoR checklist and confidence scoring
+alwaysApply: false
+---
+
 # Refinement Best Practices
 
 Comprehensive guide for refining Jira tickets using the Three Amigos approach, ensuring work is well-defined before sprint commitment. For a quick ticket breakdown template, see [Refinement Assistant](refinement.md). For interactive refinement with Jira integration, use the [Refine Ticket Skill](../skills/refine-ticket/SKILL.md).
@@ -260,5 +265,5 @@ Before committing a ticket to sprint:
 - [Refinement Skill](../skills/refine-ticket/SKILL.md) - Interactive refinement with Jira integration
 - [Technical Deep Dive Skill](../skills/technical-deep-dive/SKILL.md) - Quick codebase investigation (hours)
 - [Spike Skill](../skills/spike/SKILL.md) - Time-boxed research for broader investigation (days)
-- [Golden Paths](../golden-paths/) - Architecture patterns to reference
-- [Scoring Criteria](../scoring/criteria/) - Quality standards for implementation
+- [Golden Paths](../../golden-paths/) - Architecture patterns to reference
+- [Scoring Criteria](../../scoring/criteria/) - Quality standards for implementation

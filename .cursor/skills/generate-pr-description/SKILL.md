@@ -207,4 +207,4 @@ If `git diff main --stat` shows no changes:
 
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — Produces implementation that leads to PRs
 - [Post-Implementation Review Skill](../post-implementation-review/SKILL.md) — Reviews merged PRs
-- [Jira Standards](../../../rules/auto-apply/jira-standards.md) — Custom field usage
+- [Jira Standards](../../rules/jira-standards.md) — Custom field usage

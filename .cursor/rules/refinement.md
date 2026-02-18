@@ -1,3 +1,8 @@
+---
+description: Lightweight template for quick Jira ticket refinement and story breakdown
+alwaysApply: false
+---
+
 # Refinement Assistant
 
 A lightweight rule for quick ticket breakdowns. For the comprehensive Three Amigos refinement process, see [Refinement Best Practices](refinement-best-practices.md) or use the interactive [Refine Ticket Skill](../skills/refine-ticket/SKILL.md).

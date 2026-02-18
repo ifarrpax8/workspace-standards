@@ -16,7 +16,7 @@ Structured implementation workflow for refined Jira tickets with Definition of R
 | | `jira_add_comment` | Post implementation summary to Jira | Recommended |
 | **user-github** | `search_code` | Search patterns across Pax8 org (via Deep Dive) | Optional |
 
-> **Important:** See [Jira Standards](../../../rules/auto-apply/jira-standards.md) for custom field usage. Stories use `customfield_12636`, not the standard description field.
+> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. Stories use `customfield_12636`, not the standard description field.
 
 ### Graceful Degradation
 
@@ -121,10 +121,10 @@ If the developer chooses to proceed, document the missing DoR items as known ris
 
 | Repository Type | Standards to Load | Golden Path |
 |----------------|-------------------|-------------|
-| Kotlin (e.g., currency-manager, report-manager) | [kotlin-standards.md](../../../rules/auto-apply/kotlin-standards.md) | [kotlin-spring-boot.md](../../../golden-paths/kotlin-spring-boot.md) |
-| Kotlin Axon (e.g., einvoice-connector) | [kotlin-standards.md](../../../rules/auto-apply/kotlin-standards.md) | [kotlin-axon-cqrs.md](../../../golden-paths/kotlin-axon-cqrs.md) |
-| Vue MFE (e.g., finance-mfe, order-management-mfe) | [vue-standards.md](../../../rules/auto-apply/vue-standards.md) | [vue-mfe.md](../../../golden-paths/vue-mfe.md) |
-| All repositories | [security-standards.md](../../../rules/auto-apply/security-standards.md) | - |
+| Kotlin (e.g., currency-manager, report-manager) | [kotlin-standards.md](../../rules/kotlin-standards.md) | [kotlin-spring-boot.md](../../../golden-paths/kotlin-spring-boot.md) |
+| Kotlin Axon (e.g., einvoice-connector) | [kotlin-standards.md](../../rules/kotlin-standards.md) | [kotlin-axon-cqrs.md](../../../golden-paths/kotlin-axon-cqrs.md) |
+| Vue MFE (e.g., finance-mfe, order-management-mfe) | [vue-standards.md](../../rules/vue-standards.md) | [vue-mfe.md](../../../golden-paths/vue-mfe.md) |
+| All repositories | [security-standards.md](../../rules/security-standards.md) | - |
 
 3. **Load codex context** (if `@engineering-codex` is in the workspace):
    - Identify relevant facets based on the ticket's domain (e.g., api-design for new endpoints, authentication for auth changes)
@@ -266,7 +266,7 @@ Options:
 
 ### Phase 5: Self-Review
 
-Before the final commit, run a self-review using the [code-review.md](../../../rules/code-review.md) checklist against the diff.
+Before the final commit, run a self-review using the [code-review.md](../../rules/code-review.md) checklist against the diff.
 
 Read the code-review.md rule and apply it to all changed files:
 
@@ -521,7 +521,7 @@ If the branch already exists when attempting to create it:
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - Codebase investigation for unknowns
 - [Spike Skill](../spike/SKILL.md) - Time-boxed research for larger unknowns
 - [Assess Tests Skill](../assess-tests/SKILL.md) - Test completeness audit (use after implementation for verification)
-- [Code Review Rule](../../../rules/code-review.md) - Self-review checklist used in Phase 5
-- [Refinement Best Practices](../../../rules/refinement-best-practices.md) - DoR checklist reference
-- [Jira Standards](../../../rules/auto-apply/jira-standards.md) - Custom field usage
+- [Code Review Rule](../../rules/code-review.md) - Self-review checklist used in Phase 5
+- [Refinement Best Practices](../../rules/refinement-best-practices.md) - DoR checklist reference
+- [Jira Standards](../../rules/jira-standards.md) - Custom field usage
 - [Golden Paths](../../../golden-paths/) - Architecture patterns

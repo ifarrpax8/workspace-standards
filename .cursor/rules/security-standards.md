@@ -1,7 +1,7 @@
 ---
 description: Security standards for all projects
 globs: ["**/*"]
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Security Standards

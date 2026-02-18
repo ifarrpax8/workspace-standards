@@ -1,3 +1,8 @@
+---
+description: Structured code review checklist covering standards, security, and quality across all languages
+alwaysApply: false
+---
+
 # Code Review Assistant
 
 Use this rule to perform a structured code review. Invoke by referencing this file when asking for a review.
