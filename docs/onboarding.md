@@ -10,20 +10,9 @@ Optionally, also add:
 - `~/Development/engineering-codex` — Best practices, architecture patterns, technology options
 - `~/Development/adr` — Pax8 Architecture Decision Records
 
-## Step 2: Register Skills Globally
+## Step 2: Verify Auto-Discovery
 
-Run the setup script to make all skills available across every Cursor workspace:
-
-```bash
-cd ~/Development/workspace-standards
-./scripts/setup-skills.sh
-```
-
-This creates symlinks from `~/.cursor/skills/` to the workspace-standards skills directory. After running, restart Cursor (or reload the window). You should see all 13 skills in **Settings → Skills**.
-
-The script also copies Pax8-wide Cursor rules (like Jira custom field standards) to `~/.cursor/rules/` so they apply globally.
-
-> **Re-run after pulling updates.** If new skills are added to workspace-standards, run the setup script again to pick them up.
+Skills, rules, and subagents are auto-discovered from `.cursor/` directories — no setup script needed. After adding workspace-standards to your workspace, reload the Cursor window. You should see all 14 skills available.
 
 ## Step 3: Copy Auto-Apply Rules
 
@@ -67,7 +56,7 @@ The team uses these skills for daily work:
 ### When Starting a Ticket
 
 ```
-@workspace-standards/skills/refine-ticket/SKILL.md refine ticket HRZN-123
+@workspace-standards/.cursor/skills/refine-ticket/SKILL.md refine ticket HRZN-123
 ```
 
 This runs a Three Amigos analysis (Developer, Test, Product perspectives), calculates a confidence score, and generates an implementation plan.
@@ -75,7 +64,7 @@ This runs a Three Amigos analysis (Developer, Test, Product perspectives), calcu
 ### When Implementing
 
 ```
-@workspace-standards/skills/implement-ticket/SKILL.md implement ticket HRZN-123
+@workspace-standards/.cursor/skills/implement-ticket/SKILL.md implement ticket HRZN-123
 ```
 
 This validates Definition of Ready, loads standards, guides TDD, handles unknowns, runs self-review, and posts a summary to Jira.
@@ -83,7 +72,7 @@ This validates Definition of Ready, loads standards, guides TDD, handles unknown
 ### When You Hit a Technical Unknown
 
 ```
-@workspace-standards/skills/technical-deep-dive/SKILL.md investigate [topic] in [repository]
+@workspace-standards/.cursor/skills/technical-deep-dive/SKILL.md investigate [topic] in [repository]
 ```
 
 This explores the codebase, finds patterns, references golden paths, and produces a technical recommendation.
@@ -91,7 +80,7 @@ This explores the codebase, finds patterns, references golden paths, and produce
 ### When Reviewing Code
 
 ```
-@workspace-standards/skills/code-review/SKILL.md review PR 42 in currency-manager
+@workspace-standards/.cursor/skills/code-review/SKILL.md review PR 42 in currency-manager
 ```
 
 This applies the team's code review checklist against the PR changes and produces structured feedback.
@@ -99,7 +88,7 @@ This applies the team's code review checklist against the PR changes and produce
 ### When You Need to Research
 
 ```
-@workspace-standards/skills/spike/SKILL.md spike HRZN-456
+@workspace-standards/.cursor/skills/spike/SKILL.md spike HRZN-456
 ```
 
 This runs a structured investigation with success criteria, documents findings, and posts results to Jira.
@@ -116,7 +105,7 @@ cd ~/Development/workspace-standards
 Or use the interactive skill:
 
 ```
-@workspace-standards/skills/score/SKILL.md score the currency-manager repository
+@workspace-standards/.cursor/skills/score/SKILL.md score the currency-manager repository
 ```
 
 This evaluates 8 categories (Architecture, Testing, Security, Code Quality, Documentation, Consistency, Dependencies, Observability) and generates a report with recommendations.
@@ -132,22 +121,22 @@ Idea → Opportunity Brief → PRD → Spike → Story Breakdown → Refine → 
 Invoke it with:
 
 ```
-@workspace-standards/skills/idea-to-implementation/SKILL.md I have a feature idea: [description]
+@workspace-standards/.cursor/skills/idea-to-implementation/SKILL.md I have a feature idea: [description]
 ```
 
 ## Quick Reference
 
 | I want to... | Use this |
 |--------------|----------|
-| Refine a ticket | `skills/refine-ticket/SKILL.md` |
-| Implement a ticket | `skills/implement-ticket/SKILL.md` |
-| Investigate code | `skills/technical-deep-dive/SKILL.md` |
-| Run a spike | `skills/spike/SKILL.md` |
-| Review a PR | `skills/code-review/SKILL.md` |
-| Score a repo | `skills/score/SKILL.md` |
-| Generate a PR description | `skills/generate-pr-description/SKILL.md` |
-| Generate an ADR | `skills/generate-adr/SKILL.md` |
-| Full feature pipeline | `skills/idea-to-implementation/SKILL.md` |
+| Refine a ticket | `.cursor/skills/refine-ticket/SKILL.md` |
+| Implement a ticket | `.cursor/skills/implement-ticket/SKILL.md` |
+| Investigate code | `.cursor/skills/technical-deep-dive/SKILL.md` |
+| Run a spike | `.cursor/skills/spike/SKILL.md` |
+| Review a PR | `.cursor/skills/code-review/SKILL.md` |
+| Score a repo | `.cursor/skills/score/SKILL.md` |
+| Generate a PR description | `.cursor/skills/generate-pr-description/SKILL.md` |
+| Generate an ADR | `.cursor/skills/generate-adr/SKILL.md` |
+| Full feature pipeline | `.cursor/skills/idea-to-implementation/SKILL.md` |
 | Quick ticket breakdown | `rules/refinement.md` |
 | Code review checklist | `rules/code-review.md` |
 

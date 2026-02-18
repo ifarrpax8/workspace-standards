@@ -6,62 +6,67 @@ A shared documentation repository for coding standards, architecture patterns, q
 
 ### Refine a Jira Ticket (Three Amigos)
 ```
-@workspace-standards/skills/refine-ticket/SKILL.md refine ticket HRZN-123
+@workspace-standards/.cursor/skills/refine-ticket/SKILL.md refine ticket HRZN-123
 ```
 
 ### Technical Deep Dive
 ```
-@workspace-standards/skills/technical-deep-dive/SKILL.md investigate [topic] in [repository]
+@workspace-standards/.cursor/skills/technical-deep-dive/SKILL.md investigate [topic] in [repository]
 ```
 
 ### Spike Investigation
 ```
-@workspace-standards/skills/spike/SKILL.md spike HRZN-456
+@workspace-standards/.cursor/skills/spike/SKILL.md spike HRZN-456
 ```
 
 ### Implement a Refined Ticket
 ```
-@workspace-standards/skills/implement-ticket/SKILL.md implement ticket HRZN-123
+@workspace-standards/.cursor/skills/implement-ticket/SKILL.md implement ticket HRZN-123
 ```
 
 ### Generate Opportunity Brief
 ```
-@workspace-standards/skills/generate-opportunity-brief/SKILL.md Generate an opportunity brief for [feature idea]
+@workspace-standards/.cursor/skills/generate-opportunity-brief/SKILL.md Generate an opportunity brief for [feature idea]
 ```
 
 ### Generate PRD from Opportunity Brief
 ```
-@workspace-standards/skills/generate-prd/SKILL.md Generate PRD for [feature name]
+@workspace-standards/.cursor/skills/generate-prd/SKILL.md Generate PRD for [feature name]
 ```
 
 ### Full Idea-to-Implementation Pipeline
 ```
-@workspace-standards/skills/idea-to-implementation/SKILL.md I have a feature idea: [brief description]
+@workspace-standards/.cursor/skills/idea-to-implementation/SKILL.md I have a feature idea: [brief description]
 ```
 
 ### Code Review (PR or Branch)
 ```
-@workspace-standards/skills/code-review/SKILL.md review PR 42 in currency-manager
+@workspace-standards/.cursor/skills/code-review/SKILL.md review PR 42 in currency-manager
+```
+
+### Assess Test Completeness
+```
+@workspace-standards/.cursor/skills/assess-tests/SKILL.md assess tests for the invoice aggregate in einvoice-connector
 ```
 
 ### Score a Repository
 ```
-@workspace-standards/skills/score/SKILL.md score the currency-manager repository
+@workspace-standards/.cursor/skills/score/SKILL.md score the currency-manager repository
 ```
 
 ### Generate PR Description
 ```
-@workspace-standards/skills/generate-pr-description/SKILL.md generate PR description for my current branch
+@workspace-standards/.cursor/skills/generate-pr-description/SKILL.md generate PR description for my current branch
 ```
 
 ### Generate ADR
 ```
-@workspace-standards/skills/generate-adr/SKILL.md generate ADR for the decision to use Kafka in currency-manager
+@workspace-standards/.cursor/skills/generate-adr/SKILL.md generate ADR for the decision to use Kafka in currency-manager
 ```
 
 ### Post-Implementation Review
 ```
-@workspace-standards/skills/post-implementation-review/SKILL.md review how HRZN-123 went
+@workspace-standards/.cursor/skills/post-implementation-review/SKILL.md review how HRZN-123 went
 ```
 
 ### Quick Refinement Helper
@@ -135,11 +140,13 @@ workspace-standards/
 │   ├── pattern-inventory.md       # Current state of all repos
 │   └── migration-paths.md         # Legacy to target state transitions
 ├── .cursor/
-│   └── agents/                    # Custom subagents (symlinked by setup script)
-│       ├── standards-auditor.md   # Repo scoring and compliance auditing
-│       └── ticket-refiner.md      # Jira ticket refinement assistant
-├── scripts/                       # Setup and utility scripts
-│   └── setup-skills.sh            # Register skills, rules, and subagents globally
+│   ├── skills/                    # Cursor skills (auto-discovered)
+│   ├── agents/                    # Custom subagents (auto-discovered)
+│   │   ├── standards-auditor.md   # Repo scoring and compliance auditing
+│   │   └── ticket-refiner.md      # Jira ticket refinement assistant
+│   └── rules/                     # Auto-discovered global rules
+│       ├── jira-standards.md
+│       └── security-standards.md
 └── security/                      # Security guidelines
     └── security-checklist.md      # Requirements and packages
 ```
@@ -168,7 +175,7 @@ Interactive skills for team processes and workflows.
 Three Amigos-style ticket refinement with Jira integration:
 
 ```
-@workspace-standards/skills/refine-ticket/SKILL.md refine ticket HRZN-123
+@workspace-standards/.cursor/skills/refine-ticket/SKILL.md refine ticket HRZN-123
 ```
 
 **Features:**
@@ -191,7 +198,7 @@ Three Amigos-style ticket refinement with Jira integration:
 Structured implementation workflow for refined tickets:
 
 ```
-@workspace-standards/skills/implement-ticket/SKILL.md implement ticket HRZN-123
+@workspace-standards/.cursor/skills/implement-ticket/SKILL.md implement ticket HRZN-123
 ```
 
 **Features:**
@@ -217,7 +224,7 @@ Structured implementation workflow for refined tickets:
 Codebase investigation for resolving technical unknowns:
 
 ```
-@workspace-standards/skills/technical-deep-dive/SKILL.md investigate [topic] in [repository]
+@workspace-standards/.cursor/skills/technical-deep-dive/SKILL.md investigate [topic] in [repository]
 ```
 
 **Features:**
@@ -237,7 +244,7 @@ Codebase investigation for resolving technical unknowns:
 Time-boxed research and investigation:
 
 ```
-@workspace-standards/skills/spike/SKILL.md spike HRZN-456
+@workspace-standards/.cursor/skills/spike/SKILL.md spike HRZN-456
 ```
 
 **Features:**
@@ -296,8 +303,9 @@ The skills can be used standalone or chained via the **Idea to Implementation** 
 **Utility skills (standalone):**
 9. **Deep Dive**: Quick codebase investigation (hours) when technical confidence is low
 10. **Score**: Interactive repository scoring with actionable recommendations
-11. **Generate PR Description**: Structured PR body from git and Jira context
-12. **Generate ADR**: Architecture Decision Records from spikes or discussions
+11. **Assess Tests**: Test completeness audit across the test pyramid with gap analysis
+12. **Generate PR Description**: Structured PR body from git and Jira context
+13. **Generate ADR**: Architecture Decision Records from spikes or discussions
 
 ### Engineering Codex Integration
 
@@ -328,30 +336,23 @@ All workflow skills optionally leverage the [Engineering Codex](https://github.c
 
 1. Add `~/Development/workspace-standards` to your Cursor workspace
 2. (Optional) Add `~/Development/engineering-codex` to the same workspace for best practices, gotchas, and decision frameworks
-3. Run the setup script to register skills, rules, and subagents globally:
-   ```bash
-   ./scripts/setup-skills.sh
-   ```
-   This script:
-   - Symlinks **13 skills** to `~/.cursor/skills/` (available across all workspaces)
-   - Copies **Pax8-wide rules** (`jira-standards.md`, `security-standards.md`) to `~/.cursor/rules/`
-   - Symlinks **subagents** to `~/.cursor/agents/` (from both workspace-standards and engineering-codex if present)
-4. Restart Cursor (or reload window) — skills appear in **Settings → Skills**, subagents are available immediately
-5. For repo-specific auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
-6. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
-7. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
+3. Reload the Cursor window — skills, subagents, and rules are auto-discovered from `.cursor/`
+4. For repo-specific auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
+5. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
+6. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
 
-### Subagents
+### Skills and Subagents
 
-The setup script registers these custom subagents for use across all projects:
+Cursor auto-discovers skills and subagents from `.cursor/` when the repo is in the workspace. No manual registration required.
 
-| Subagent | Source | Invoke with | Purpose |
-|----------|--------|-------------|---------|
-| `standards-auditor` | workspace-standards | `/standards-auditor` | Score repos, run checklists, review architecture alignment |
-| `ticket-refiner` | workspace-standards | `/ticket-refiner` | Refine Jira tickets, plan implementation, prep Three Amigos |
-| `codex-navigator` | engineering-codex | `/codex-navigator` | Look up best practices, gotchas, Pax8 standards, reading lists |
+| Type | Source | Auto-discovered |
+|------|--------|-----------------|
+| Skills | workspace-standards | Yes |
+| Skills | engineering-codex | Yes |
+| Subagents | workspace-standards (`standards-auditor`, `ticket-refiner`) | Yes |
+| Subagents | engineering-codex (`codex-navigator`) | Yes |
 
-Subagents are also invoked automatically when the agent detects a matching task. See the [Cursor subagents documentation](https://cursor.com/docs/context/subagents) for more details.
+Invoke subagents explicitly with `/standards-auditor`, `/ticket-refiner`, or `/codex-navigator`, or let the agent delegate automatically based on your task. See the [Cursor subagents documentation](https://cursor.com/docs/context/subagents) for more details.
 
 ## Related Resources
 

@@ -32,6 +32,14 @@ Check if the code follows the golden path for its project type:
 - [ ] Composables used for reusable logic
 - [ ] Services handle API calls
 
+**Groovy/Java Monolith:**
+- [ ] Controller follows Interface + Implementation pattern (`@Endpoint` on interface, impl extends `AbstractBaseController`)
+- [ ] Controllers delegate to services — no business logic in controllers
+- [ ] Services organized under appropriate domain package in `service/`
+- [ ] Domain objects stay anemic — behavior in services, not domain classes
+- [ ] New code positioned for future extraction (minimal cross-domain dependencies)
+- [ ] `./gradlew check` passes (tests + PMD + CodeNarc)
+
 ### 2. Code Quality
 
 - [ ] No linter warnings introduced
@@ -106,6 +114,23 @@ Provide feedback in this structure:
 - Proper exception handling
 ```
 
+### *.groovy (Groovy Monolith)
+```
+- No `def` when type is known (explicit types)
+- No parameter reassignment (CodeNarc enforces)
+- @CompileStatic on performance-critical paths
+- @Inject for dependencies (constructor injection preferred for new code)
+- @Transactional for data-modifying service methods
+- Spock preferred for new tests
+```
+
+### *.java (Monolith Java)
+```
+- No new PMD violations
+- No @SuppressWarnings without documented justification
+- Named parameters for SQL (no concatenation)
+```
+
 ### *.vue (Vue Component)
 ```
 - <script setup> used
@@ -145,6 +170,10 @@ Provide feedback in this structure:
 > This code places [business logic/data access] in the [controller/service/component]. 
 > Per our golden path, this should be in the [correct layer].
 > Reference: [link to golden path doc]
+
+### Monolith Build Verification
+> Please run `./gradlew check` before pushing — this includes tests, PMD, and CodeNarc.
+> `./gradlew test` alone is not sufficient; CI enforces static analysis.
 
 ### Security Concern
 > Potential security issue: [description]

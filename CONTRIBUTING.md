@@ -6,7 +6,8 @@ Guidelines for adding and maintaining rules, skills, golden paths, and scoring c
 
 | Content Type | Location | Format |
 |-------------|----------|--------|
-| Cursor Skills | `skills/{skill-name}/SKILL.md` | Markdown with structured phases |
+| Cursor Skills | `.cursor/skills/{skill-name}/SKILL.md` | Markdown with structured phases |
+| Cursor Subagents | `.cursor/agents/{name}.md` | YAML frontmatter + system prompt |
 | Auto-apply Rules | `rules/auto-apply/{name}-standards.md` | YAML frontmatter + concise directives |
 | Manual Rules | `rules/{name}.md` | Markdown with checklists |
 | Golden Paths | `golden-paths/{stack-name}.md` | Markdown with code examples |
@@ -15,21 +16,27 @@ Guidelines for adding and maintaining rules, skills, golden paths, and scoring c
 
 ## Adding a Skill
 
-Skills are interactive Cursor workflows invoked with `@workspace-standards/skills/{name}/SKILL.md`.
+Skills are interactive Cursor workflows. Each skill is a single file at `.cursor/skills/{name}/SKILL.md`, auto-discovered by Cursor when the repo is in the workspace.
 
-### Required Structure
+Use the [SKILL-TEMPLATE.md](SKILL-TEMPLATE.md) as a starting point for new skills.
 
-Every skill must include these sections in order:
+### Required Sections
 
-1. **Title** — `# {Skill Name} Skill`
-2. **Description** — One-sentence summary
+Every skill must include these sections:
+
+1. **Frontmatter** — `name` and `description` (15-20 words, used by Cursor for routing)
+2. **Title** — `# {Skill Name} Skill`
 3. **Prerequisites** — MCP server table with Required? column, graceful degradation
-4. **When to Use** — Bullet list of use cases
-5. **Invocation** — Code blocks showing example invocations
-6. **Workflow** — Numbered phases with clear inputs, actions, and outputs
-7. **Output Format** — Template for the skill's deliverable
-8. **Error Handling** — How to degrade when tools are unavailable
-9. **Related Resources** — Links to related skills, rules, and golden paths
+4. **When to Use** — Bullet list of scenarios for invocation
+5. **When NOT to Use** — Disambiguation from overlapping skills (with links to alternatives)
+6. **Invocation** — Code blocks showing example invocations
+7. **Workflow** — Numbered phases with clear inputs, actions, and outputs
+8. **Verification** — Checkpoints after operations that can fail silently
+9. **Worked Example** — One condensed input-to-output example
+10. **Error Handling** — How to degrade when tools are unavailable
+11. **Related Resources** — Links to related skills, rules, and golden paths
+
+See [SKILLS.md](SKILLS.md) for the full index of available skills.
 
 ### Conventions
 
@@ -38,6 +45,30 @@ Every skill must include these sections in order:
 - Reference golden paths and auto-apply rules where relevant
 - If the Engineering Codex may be available, include codex integration with fallback
 - Include a checkpoint between major phases where the user can pause or redirect
+
+## Adding a Subagent
+
+Subagents are custom AI agents with focused system prompts. They live directly in `.cursor/agents/{name}.md` (no wrapper needed).
+
+### Required Format
+
+```markdown
+---
+name: {agent-name}
+description: {When to use this agent. Include "use proactively" to encourage automatic delegation.}
+model: fast        # fast, inherit, or a specific model ID
+readonly: true     # true if the agent only reads, doesn't write
+---
+
+{System prompt: what the agent does, how it behaves, what output format to use}
+```
+
+### Conventions
+
+- Keep the system prompt focused on a single responsibility
+- Include specific instructions for different invocation scenarios
+- Use `model: fast` for read-only lookup agents, `model: inherit` for agents that need to write
+- Set `readonly: true` for agents that only read and synthesise (no file changes)
 
 ## Adding an Auto-Apply Rule
 

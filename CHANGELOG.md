@@ -2,6 +2,36 @@
 
 All notable changes to the Workspace Standards repository.
 
+## 2026-02-14 — Skills Suite Consolidation
+
+### Structural Change
+- **Eliminated wrapper hop**: Consolidated all 14 skills from a two-file pattern (`skills/{name}/SKILL.md` + `.cursor/skills/{name}/SKILL.md` wrapper) to a single-file pattern (`.cursor/skills/{name}/SKILL.md` only)
+- **Deleted top-level `skills/` directory**: All skill implementations now live exclusively under `.cursor/skills/`
+- **Deleted `scripts/setup-skills.sh`**: No longer needed — skills, rules, and subagents are auto-discovered from `.cursor/` when workspace-standards is in the workspace
+- **Moved global rules to `.cursor/rules/`**: `jira-standards.md` and `security-standards.md` now auto-discovered instead of requiring setup script
+
+### Quality Improvements (applied to all 14 skills)
+- **Shortened frontmatter descriptions** to under 20 words for faster Cursor routing
+- **Added "When NOT to Use" sections** with cross-references to sibling skills for disambiguation
+- **Added Verification sections** with phase-specific checkpoints after operations that can fail silently
+- **Added Worked Examples** with Input, Key steps, and Output excerpt for each skill
+
+### New Artifacts
+- **`SKILLS.md`**: Root-level index listing all 14 skills with descriptions and paths
+- **`SKILL-TEMPLATE.md`**: Contributor template with all required sections
+
+### Documentation Updates
+- **`CONTRIBUTING.md`**: Updated to document single-file skill pattern, removed "Wrappers Over Symlinks" section, added new required sections (When NOT to Use, Verification, Worked Example)
+- **`README.md`**: Removed `scripts/` and top-level `skills/` references, updated invocation examples to use `.cursor/skills/` paths
+- **`docs/onboarding.md`**: Removed setup-skills.sh references, updated skill count to 14, updated all paths to `.cursor/skills/`
+
+### Link Fixes
+- Fixed stale `@workspace-standards/skills/` invocation paths across 6 skills (idea-to-implementation, refine-ticket, implement-ticket, score, generate-prd, generate-opportunity-brief)
+- Fixed missing `../../../` prefix on golden path link in score skill
+- Fixed cross-repo link to Engineering Codex in assess-tests skill
+
+---
+
 ## 2026-02-13 — Development Practices Alignment
 
 ### Updated Auto-Apply Rules
