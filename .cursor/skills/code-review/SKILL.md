@@ -179,16 +179,24 @@ Output a structured review:
 
 ### Phase 5: Offer Actions
 
-After presenting the review:
+After presenting the review, ask:
 
 ```
 What would you like to do?
 1. Fix the MUST FIX issues now (uses the fix-bug skill for test-first fixes)
-2. Post this review as a PR comment (if GitHub MCP available)
+2. Post this review as a PR comment (requires confirmation)
 3. Copy the review as markdown
 ```
 
 If the developer chooses option 1, invoke the [Fix Bug Skill](../fix-bug/SKILL.md) for each critical issue. The fix-bug skill ensures each defect is proven with a failing test before being fixed.
+
+If the developer chooses option 2, **ask for explicit confirmation before calling the GitHub MCP API**:
+
+```
+I'll post this review as a comment on PR #[number]. Shall I proceed? (yes / edit first / skip)
+```
+
+Only after the user confirms, post using the GitHub MCP.
 
 ## Verification
 

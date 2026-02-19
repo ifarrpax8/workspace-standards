@@ -334,7 +334,17 @@ How would you like to proceed?
 
 ### Phase 7: Jira Update
 
-Post a structured comment to the Jira ticket:
+Generate the implementation summary using the format below, then **display it to the user and ask for confirmation before posting**:
+
+```
+Here is the implementation summary I'll post to [ticket key]. Please review:
+
+[formatted implementation summary]
+
+Shall I post this to Jira? (yes / edit first / skip)
+```
+
+Only proceed to post after the user confirms:
 
 ```
 Use jira_add_comment with:
@@ -342,91 +352,50 @@ Use jira_add_comment with:
 - comment: [formatted implementation summary - see format below]
 ```
 
+## Test Evidence Guide
+
+Before writing the Jira comment, identify what evidence exists for this ticket. Use the table below to select the right evidence type — describe what was observed, not what was expected.
+
+| Change type | Meaningful evidence |
+|---|---|
+| API endpoint (new or changed) | A/B test script output, or curl request + actual response showing correct behaviour |
+| Backend logic / service | Test runner output with new tests passing, log snippet from a manual run |
+| Data migration / query | Before/after record counts or sample query output |
+| UI / frontend | Screenshot of happy path and an error/edge state, or short screen recording |
+| Config / infrastructure | Deployment log snippet, health check or smoke test output |
+
+Attach files (screenshots, script output) to the Jira ticket directly. In the comment, reference what was attached and what it shows — don't paste raw output inline.
+
 ## Implementation Summary Format
 
 Post this format as a Jira comment:
 
-```markdown
-## Implementation Summary
+```
+[HRZN-XXX] [Title] | [branch] | DoD: Passed / Partial
 
-**Ticket:** [HRZN-XXX] - [Title]
-**Branch:** [TICKET-KEY]
-**Definition of Ready:** Passed / Passed with risks
-**Definition of Done:** Passed / Partial (see gaps below)
+Built:
+  [repo]: [what was implemented]
+  Key files: file1.kt, file2.kt
 
----
+Deviations: none
+  / [unknown encountered → resolution: solved inline / follow-up HRZN-XXX / escalated (impact)]
+  / Scope: [X]pts estimated → [Y]pts actual — [reason if changed]
 
-## What Was Built
+Tests: [N] unit · [N] integration · [N] E2E
+Coverage: [key areas and notable edge cases]
 
-### [repository-name]
-- [What was implemented]
-- **Key files changed:** `path/to/file1`, `path/to/file2`
+Tested:
+- [what was verified — include evidence type: "A/B script output attached",
+  "screenshot of happy path attached", "curl response showing 400 — see attached"]
 
----
+Could NOT test:
+- [scenario] — [reason: needs production data / specific partner config / etc.]
 
-## Deviations from Plan
+For tester:
+- Setup: [env, test data, feature flags]
+- Focus: [highest-risk areas and any scenarios the developer could not fully verify]
 
-### Unknowns Encountered
-
-| Unknown | Resolution | Impact |
-|---------|------------|--------|
-| [Description] | Solved inline / Follow-up created / Escalated | [Effect on scope] |
-
-### Scope Changes
-- Original estimate: [X] points
-- Actual trajectory: [Y] points (if different)
-- [Explanation if scope changed]
-
----
-
-## Test Evidence
-
-### Tests Written
-
-| Test Type | Count | Location |
-|-----------|-------|----------|
-| Unit | [N] | `src/test/...` |
-| Integration | [N] | `src/test/...` |
-| E2E | [N] | `tests/...` |
-
-### Coverage Highlights
-- [Key areas covered]
-- [Notable edge cases tested]
-
----
-
-## Developer Testing Notes
-
-### What I Tested
-- [Scenarios the developer verified during implementation]
-
-### What I Could NOT Test
-- [Scenario] - Reason: [e.g., needs production data, requires specific partner config]
-
-### Risk Areas (Lower Confidence)
-- [Area where the developer is least confident]
-
----
-
-## Tester Guidance
-
-### Environment Requirements
-- [Specific environment needed, if any]
-
-### Setup Instructions
-- [Test data needed]
-- [Configuration required]
-- [Feature flags to enable]
-
-### Focus Areas
-- [Areas of highest risk to test]
-- [Specific scenarios to verify]
-
----
-
-## Remaining Work
-- [Follow-up ticket created, if any]
-- [Items documented as incomplete, if any]
+Remaining: none / [HRZN-XXX follow-up ticket]
 ```
 
 ## Verification
@@ -453,25 +422,29 @@ After each critical operation, verify success:
 7. Posted implementation summary to HRZN-705
 
 **Output excerpt:**
-```markdown
-## Implementation Summary
+```
+HRZN-705 Add historical exchange rate lookup endpoint | HRZN-705 | DoD: Passed
 
-**Ticket:** HRZN-705 — Add historical exchange rate lookup endpoint
-**Branch:** HRZN-705
-**Definition of Ready:** Passed (10/12)
-**Definition of Done:** Passed
+Built:
+  currency-manager: new GET /api/v1/rates/{currency}/{date} endpoint with cache-aware date lookup
+  Key files: HistoricalRateEndpoint.kt, HistoricalRateService.kt, RateRepository.kt
 
-## What Was Built
-### currency-manager (Backend)
-- New endpoint: `GET /api/v1/rates/{currency}/{date}`
-- Service: `HistoricalRateService` with cache-aware date lookup
-- Key files: `HistoricalRateEndpoint.kt`, `HistoricalRateService.kt`, `RateRepository.kt`
+Deviations: RateCache didn't support date-keyed lookups → solved inline (added date param to cache key)
 
-## Test Evidence
-| Test Type | Count | Location |
-|-----------|-------|----------|
-| Unit | 8 | `src/test/kotlin/.../service/` |
-| Integration | 4 | `src/test/kotlin/.../endpoint/` |
+Tests: 8 unit · 4 integration
+Coverage: rate lookup for valid date, missing rate returns 404, boundary dates
+
+Tested:
+- GET /api/v1/rates/USD/2025-01-15 against local — correct rate returned (curl output attached)
+
+Could NOT test:
+- Rates before service launch date — no historical data in dev environment
+
+For tester:
+- Setup: preproduction, any partner with USD invoices
+- Focus: boundary dates (pre-launch, future), missing currency codes
+
+Remaining: none
 ```
 
 ## Error Handling

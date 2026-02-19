@@ -244,94 +244,34 @@ Always cite sources in findings when using external research.
 
 Structure findings based on investigation:
 
-```markdown
-## Spike Findings: [Spike Title]
+```
+[HRZN-XXX] Spike: [question answered] | conclusive
 
-**Ticket:** [HRZN-XXX]
-**Time-box:** [X days]
-**Status:** Complete / Partial (requires follow-up)
+Recommendation: [one sentence — the answer to the spike question]
 
----
+Findings:
+- [key discovery 1 — evidence or source in brief]
+- [key discovery 2]
+- [key discovery 3]
 
-### Discovery Context (if spike was initially vague)
+Options evaluated:
+  [Option A] → chosen
+  - [why it works / evidence]
+  - [trade-off accepted]
 
-> **Trigger:** [What prompted this spike]
-> **Prior Knowledge:** [What was already known before investigation]
-> **Constraints:** [Limitations that shaped the investigation]
+  [Option B] → rejected
+  - [specific reason it won't work or isn't suitable]
 
----
+  [Option C] → deferred
+  - [why not now]
 
-### Questions Investigated
+Constraints discovered:
+- [constraint or gotcha that affects follow-up work]
 
-1. **[Question 1]**
-   - **Answer:** [Clear answer]
-   - **Evidence:** [How we determined this]
-
-2. **[Question 2]**
-   - **Answer:** [Clear answer]
-   - **Evidence:** [How we determined this]
-
----
-
-### Recommendation
-
-[Clear recommendation with rationale]
-
-**Confidence:** High / Medium / Low
-**Rationale:** [Why this recommendation]
-
----
-
-### Options Considered
-
-| Option | Description | Pros | Cons |
-|--------|-------------|------|------|
-| A | [Description] | [Pros] | [Cons] |
-| B | [Description] | [Pros] | [Cons] |
-
----
-
-### Risks and Mitigations
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| [Risk] | Low/Med/High | Low/Med/High | [How to address] |
-
----
-
-### Implementation Readiness Assessment
-
-**Overall Confidence:** [High/Medium/Low]
-
-#### Ready to Implement
-| Task | Evidence |
-|------|----------|
-| [Task] | [Why we're confident] |
-
-#### Gaps to Resolve
-| Gap | Impact | Owner | Resolution |
-|-----|--------|-------|------------|
-| [Gap] | [Blocks X] | [Team] | [How to resolve] |
-
-#### Prerequisites
-| Prerequisite | Status | Blocks |
-|--------------|--------|--------|
-| [Item] | [Unknown/In Progress] | [Which tasks] |
-
----
-
-### Follow-up Actions
-
-- [ ] [Action 1 - may be a new ticket]
-- [ ] [Action 2]
-
----
-
-### Resources and References
-
-- [Link to documentation]
-- [Link to code examples]
-- [Link to external resources]
+Follow-up:
+- Implement: [HRZN-XXX if known] [ticket title or scope]
+- ADR: [yes — topic] / [no]
+- Risk: [any open uncertainty to carry forward]
 ```
 
 ### Phase 5: Implementation Readiness Assessment
@@ -449,26 +389,20 @@ Include this assessment in the spike findings posted to Jira. If gaps are identi
 #### If Spike is Inconclusive (Partial Findings)
 
 1. Document what was learned (still include Implementation Readiness Assessment for any actionable findings):
-   ```markdown
-   ## Partial Spike Findings: [Title]
-   
-   **Status:** Inconclusive - requires follow-up spike
-   
-   ### What We Learned
-   - [Finding 1]
-   - [Finding 2]
-   
-   ### What Remains Unknown
-   - [Question still unanswered]
-   - [Blocker encountered]
-   
-   ### Recommended Next Steps
-   - [ ] Follow-up spike: [Specific focus]
-   - [ ] Escalate to: [Person/team who can help]
-   - [ ] Wait for: [Dependency to be resolved]
-   
-   ### Time Spent
-   - [X hours/days] of [Y hours/days] time-box used
+   ```
+   [HRZN-XXX] Spike: [question] | inconclusive
+
+   What we learned:
+   - [finding 1]
+   - [finding 2]
+
+   What remains unknown:
+   - [question still unanswered]
+   - [blocker encountered]
+
+   Follow-up:
+   - [follow-up spike with narrowed scope]
+   - [dependency to resolve / person to escalate to]
    ```
 
 2. Post partial findings to Jira
@@ -484,14 +418,12 @@ Include this assessment in the spike findings posted to Jira. If gaps are identi
 
 The spike always produces a Jira comment with:
 
-1. **Header**: Ticket, time-box, status
-2. **Questions & Answers**: What was investigated and findings
-3. **Recommendation**: Clear recommendation with confidence level
-4. **Options**: If decision-based, comparison of alternatives
-5. **Risks**: Identified risks and mitigations
-6. **Implementation Readiness**: Confidence assessment with gaps and prerequisites
-7. **Follow-ups**: Next actions or tickets to create
-8. **References**: Links to resources discovered
+1. **Header**: Ticket key, spike question, conclusive/inconclusive
+2. **Recommendation**: One sentence answer (conclusive only)
+3. **Findings**: Key discoveries with evidence — the reasoning that supports the recommendation
+4. **Options evaluated**: Each option with explicit `→ chosen/rejected/deferred` and the reason
+5. **Constraints discovered**: Gotchas that affect follow-up implementation
+6. **Follow-up**: Next ticket, ADR need, open risks
 
 ## Verification
 
@@ -514,20 +446,33 @@ The spike always produces a Jira comment with:
 7. Posted findings to HRZN-456
 
 **Output excerpt:**
-```markdown
-## Spike Findings: Caching options for currency rates
+```
+[HRZN-456] Spike: Which caching layer for currency rate API calls? | conclusive
 
-### Recommendation
-Use Caffeine (in-process cache) with 5-minute TTL.
+Recommendation: Use Caffeine (in-process cache) with 5-minute TTL.
 
-**Confidence:** High
-**Rationale:** Currency-manager is the only consumer. In-process avoids Redis infra overhead. 5-min TTL balances freshness vs API rate limits.
+Findings:
+- currency-manager is the only consumer — no cross-service sharing needed
+- payment-service already uses Redis (pax8 org search) — confirms Redis is available but adds infra dependency
+- Engineering Codex caching facet lists Caffeine as preferred for single-service use cases
+- Exchange rate API rate limit is 1000 req/day — 5-min TTL keeps well within limit
 
-### Options Considered
-| Option | Pros | Cons |
-|--------|------|------|
-| Caffeine | Simple, no infra, fast | Single-process only |
-| Redis | Shared across services | Overkill for single consumer |
+Options evaluated:
+  Caffeine → chosen
+  - Single-process, no infra overhead, already in Spring Boot dependency tree
+  - Trade-off: cache is lost on restart — acceptable, rates are re-fetched within 5 min
+
+  Redis → rejected
+  - Adds infra dependency (requires Redis instance) with no benefit for single consumer
+  - Would complicate local dev setup unnecessarily
+
+Constraints discovered:
+- Exchange rate API returns stale data up to 1 hour — 5-min TTL is safe margin
+
+Follow-up:
+- Implement: [HRZN-457] Add Caffeine cache to CurrencyRateService
+- ADR: no — decision is scoped to one service, not architecture-wide
+- Risk: none identified
 ```
 
 ## Error Handling
@@ -575,4 +520,4 @@ If investigation is taking longer than expected:
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - For codebase investigation
 - [Refine Ticket Skill](../refine-ticket/SKILL.md) - For refining follow-up tickets
 - [Refinement Best Practices](../../rules/refinement-best-practices.md)
-- [Golden Paths](../../../golden-paths/) - Architecture patterns
+- [Golden Paths](../../golden-paths/) - Architecture patterns

@@ -231,7 +231,17 @@ npx vitest run
 
 ### Phase 7: Summary
 
-**If from a Jira ticket**, post a comment:
+**If from a Jira ticket**, generate the comment below, **display it to the user and ask for confirmation before posting**:
+
+```
+Here is the bug fix summary I'll post to [ticket key]. Please review:
+
+[formatted summary]
+
+Shall I post this to Jira? (yes / edit first / skip)
+```
+
+Only after the user confirms, post using `jira_add_comment`.
 
 ```markdown
 ## Bug Fix Summary

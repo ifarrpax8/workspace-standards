@@ -193,8 +193,17 @@ Turn the PRD into implementable stories:
    ```
    I've drafted [N] stories. Would you like to:
    1. Review them all before creating in Jira
-   2. Create them in Jira now
+   2. Create them in Jira (requires confirmation)
    3. Save as markdown for manual creation
+   ```
+
+   If the user chooses option 2, display the full story list and ask for explicit confirmation before calling the Jira MCP:
+   ```
+   Here are the [N] stories I'll create in Jira. Please review:
+
+   [story list]
+
+   Shall I create these in Jira? (yes / edit first / skip)
    ```
 
 5. If creating in Jira:

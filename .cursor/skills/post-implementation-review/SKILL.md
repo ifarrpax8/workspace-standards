@@ -117,8 +117,17 @@ Output the review using the format below.
 
 ### Phase 6: Post to Jira
 
-If Jira MCP available, post the review as a comment on the ticket using `jira_add_comment`.
-Offer to create action item tickets if needed.
+Generate the review using the format below, then **display it to the user and ask for confirmation before posting**:
+
+```
+Here is the post-implementation review I'll post to [ticket key]. Please review:
+
+[formatted review]
+
+Shall I post this to Jira? (yes / edit first / skip)
+```
+
+Only after the user confirms, post using `jira_add_comment`. Offer to create action item tickets if needed.
 
 ## Output Format
 
@@ -133,7 +142,12 @@ Offer to create action item tickets if needed.
 ---
 
 ### Estimate Accuracy
-[table from Phase 2]
+| Metric | Estimated | Actual | Assessment |
+|--------|-----------|--------|------------|
+| Fibonacci points | [from refinement] | [perceived actual] | Under / Accurate / Over |
+| Confidence score | [from refinement] | [with hindsight] | Was it right? |
+| Files changed | [from refinement plan] | [from PR] | Aligned / Scope grew |
+| Unknowns | [predicted 0/N] | [encountered M] | Predicted / Surprise |
 
 ### What Went Well
 - [Item]

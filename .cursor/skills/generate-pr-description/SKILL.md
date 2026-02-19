@@ -114,13 +114,23 @@ Derive content from:
 - Ticket for context, acceptance criteria, and rationale
 - User input for any gaps
 
-### Phase 4: Offer Actions
+### Phase 4: Review and Act
 
-Present the generated description and offer:
+Display the generated description to the user and **ask for confirmation before taking any action**:
 
-1. **Copy to clipboard** — User pastes into PR manually
-2. **Create/update PR via GitHub MCP** — If GitHub MCP available, offer to create or update the PR
-3. **Save as markdown** — Write to a file (e.g., `pr-description.md`) for manual use
+```
+Here is the PR description I've generated. Please review:
+
+[formatted PR description]
+
+How would you like to proceed?
+1. Create/update PR via GitHub MCP (requires confirmation)
+2. Save as pr-description.md for manual use
+3. Edit first
+4. Skip
+```
+
+Only proceed after the user selects an option. If creating/updating the PR via GitHub MCP, confirm once more before calling the API.
 
 ## Output Format
 

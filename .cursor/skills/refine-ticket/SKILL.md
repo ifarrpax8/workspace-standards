@@ -213,76 +213,34 @@ Use the jira_add_comment tool with:
 
 Post this format as a Jira comment:
 
-```markdown
-## Refinement Summary
+```
+[HRZN-XXX] [Ticket title] | [N]pts | [X]/12 [High/Medium/Low]
 
-**Confidence Score:** [X]/12 ([High/Medium/Low])
-**Recommended Estimate:** [N] (Fibonacci)
-**Refined by:** Three Amigos (Dev, Test, Product perspectives)
+Approach: [One sentence describing the agreed technical approach]
 
----
+Decisions:
+- [Key decision, e.g. framework choice, scope boundary, approach chosen]
+- [Another decision — include brief rationale if non-obvious]
 
-## Affected Codebases
+Files:
+  New:     [filename.ext, filename.ext]
+  Modify:  [filename.ext — what changes]
+  Extract: [filename.ext (from current location)]
 
-### [repository-name] (Backend/Frontend)
-- **Purpose:** [What changes are needed]
-- **Key files:** `path/to/file1`, `path/to/file2`
+Tasks:
+  1. [Task] — [key constraint or AC in brief]
+  2. [Task] — [key constraint or AC in brief]
+  3. Tests: [types and focus areas]
 
-### [repository-name] (Backend/Frontend)
-- **Purpose:** [What changes are needed]
-- **Key files:** `path/to/file1`, `path/to/file2`
+Test focus:
+- [Key scenario or constraint to verify]
+- [Another area, especially edge cases or access control]
 
----
+Dependencies:
+- [HRZN-XXX] ([runtime/compile-time]): [one line description]
 
-## Test Scenarios
-
-### Happy Path (Optimist)
-- [ ] [Primary success scenario]
-- [ ] [Secondary success scenario]
-
-### Error Paths (Saboteur)
-- [ ] [Dependency failure scenario and expected behavior]
-- [ ] [Invalid input rejection]
-
-### Boundaries (Boundary Walker)
-- [ ] [Zero/null/empty handling]
-- [ ] [Max value / off-by-one condition]
-
-### Edge Cases (Explorer)
-- [ ] [Unusual but valid scenario]
-
-### Security (Auditor)
-- [ ] [Permission / auth scenario]
-
----
-
-## Implementation Plan
-
-### 1. [Task Title] (Backend)
-- [Specific implementation step]
-- [Another step]
-- **AC:** [Technical acceptance criterion]
-
-### 2. [Task Title] (Frontend)
-- [Specific implementation step]
-- [Another step]
-- **AC:** [Technical acceptance criterion]
-
-### 3. Testing
-- Add [specific test types]
-- **AC:** All new code has test coverage
-
----
-
-## Dependencies
-- [ ] [Dependency or blocker, if any]
-- None identified (if applicable)
-
-## Risks
-- [Risk and mitigation strategy, if any]
-
-## Questions Resolved
-- Q: [Question that came up] A: [Decision made]
+Risks:
+- [Risk] → [mitigation]
 ```
 
 ## Definition of Ready Verification
@@ -326,20 +284,32 @@ After each critical operation, verify success:
 5. Posted implementation plan to HRZN-712 via `customfield_12636`
 
 **Output excerpt:**
-```markdown
-## Refinement Summary
+```
+[HRZN-712] Allow partners to filter invoices by currency | 3pts | 10/12 High
 
-**Confidence Score:** 10/12 (High)
-**Recommended Estimate:** 3 (Fibonacci)
+Approach: Add optional currency query param to InvoiceListEndpoint — existing
+InvoiceRepository currency field requires no schema change.
 
-## Test Scenarios
-### Happy Path (Optimist)
-- [ ] Filter by USD returns only USD invoices
-### Error Paths (Saboteur)
-- [ ] Invalid currency code "XYZ" returns 400 with validation message
-### Boundaries (Boundary Walker)
-- [ ] No invoices match filter — returns 200 with empty list
-- [ ] Filter param absent — returns all invoices (no filter applied)
+Decisions:
+- Filter is optional: absent = all currencies returned
+- Single currency only for v1 (multi-currency deferred)
+
+Files:
+  Modify: InvoiceListEndpoint.groovy — add currency param, InvoiceRepository.groovy — add filter
+
+Tasks:
+  1. Add currency query param to InvoiceListEndpoint — passes to repository filter
+  2. Add currency filter to InvoiceRepository — uses existing currency field
+  3. Tests: filter returns matching invoices, invalid code returns 400, absent param returns all
+
+Test focus:
+- Valid currency code returns matching invoices only
+- Invalid currency code "XYZ" → 400
+- Absent param → all invoices (no filter applied)
+- Empty result set → 200 with empty list
+
+Dependencies: none
+Risks: none identified
 ```
 
 ## Error Handling

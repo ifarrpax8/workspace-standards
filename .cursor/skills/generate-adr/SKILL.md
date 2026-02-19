@@ -118,16 +118,32 @@ If `@engineering-codex` is in the workspace:
 
 ### Phase 6: Offer to Update Jira
 
-If triggered from a spike ticket:
-- Offer to post the ADR reference as a Jira comment using `jira_add_comment`
-- Include: ADR title, file path, and link to the file in the repo
+If triggered from a spike ticket, generate the Jira comment below, **display it to the user and ask for confirmation before posting**:
+
+```
+Here is the Jira comment I'll post to [ticket key]. Please review:
+
+[formatted ADR reference]
+
+Shall I post this to Jira? (yes / edit first / skip)
+```
+
+Only after the user confirms, post using `jira_add_comment`.
 
 ## Output Format
 
-The skill produces:
-1. A markdown file in `docs/adr/` with the template above filled
-2. Confirmation of file creation
-3. Optional: Jira comment with ADR reference
+The skill produces a markdown file in `docs/adr/` and, if spike-triggered, an optional Jira comment.
+
+**ADR file**: `docs/adr/[NNNN]-[slug].md` filled from the template above.
+
+**Jira comment** (if spike-triggered):
+
+```
+ADR created: [NNNN]-[slug].md
+Decision: [one-sentence summary of the decision]
+Linked spike: [HRZN-XXX]
+Location: docs/adr/[NNNN]-[slug].md
+```
 
 ## Verification
 
