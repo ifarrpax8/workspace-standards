@@ -90,16 +90,34 @@ Use the jira_get_issue tool with:
 - expand: "renderedFields"
 ```
 
-3. Extract the Epic link from the ticket
-4. If Epic has a PRD link (Confluence), fetch it:
+3. Extract the Epic link from the ticket (check `parent` field or `customfield_10014` for the Epic key)
+4. Fetch the Epic to find the PRD link:
+
+```
+Use the jira_get_issue tool with:
+- issue_key: [Epic key from step 3]
+- fields: "customfield_12637,description,summary"
+```
+
+5. Locate the PRD link in the Epic's description:
+   - Check `customfield_12637` first (the "Epic Description" custom field used by the business — see [Jira Standards](../../rules/jira-standards.md))
+   - Fall back to the standard `description` field if the custom field is empty
+   - The Epic description template includes a "PRD Link" section — scan for a Confluence URL (e.g. `https://*.atlassian.net/wiki/spaces/...` or `https://*.atlassian.net/wiki/x/...`)
+   - The link is typically preceded by a label such as "PRD Link", "PRD:", or "Product Requirements Document"
+
+6. If a Confluence URL is found, extract the page ID and fetch the PRD:
 
 ```
 Use the confluence_get_page tool with:
-- page_id: [extracted from Epic's PRD link]
+- page_id: [extracted from the Confluence URL path — the numeric segment after /pages/]
 - convert_to_markdown: true
 ```
 
-5. Ask user to confirm or specify target repositories if not clear from ticket labels/components
+> **Tip:** Confluence URLs come in two common formats:
+> - Long form: `https://pax8.atlassian.net/wiki/spaces/SPACE/pages/123456789/Page+Title` — page ID is `123456789`
+> - Short link: `https://pax8.atlassian.net/wiki/x/AbCdEf` — pass the full URL path to `confluence_get_page` or use `confluence_search` with the page title as a fallback
+
+7. Ask user to confirm or specify target repositories if not clear from ticket labels/components
 
 ### Phase 2: Three Amigos Analysis
 
@@ -264,7 +282,7 @@ If any items are not satisfied, flag them and ask if refinement should continue 
 
 After each critical operation, verify success:
 
-- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data with a non-empty summary. If `customfield_12636` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets.
+- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data with a non-empty summary. If `customfield_12636` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets. Confirm the Epic was fetched and check whether a Confluence PRD link was found in `customfield_12637` or `description`. If no link was found, flag this in the analysis.
 - **Phase 2 (Analysis)**: Confirm at least one test scenario was generated per persona perspective used. If zero scenarios, the acceptance criteria may be too vague — flag in Q&A.
 - **Phase 4 (Score)**: Confirm the confidence score is a number between 1-12 and each factor has a valid rating. Present the breakdown for user confirmation.
 - **Phase 5 (Jira Update)**: If posting via `jira_update_issue` or `jira_add_comment`, verify the response indicates success. If it fails, present the plan as markdown for manual copy.
@@ -350,10 +368,12 @@ If `jira_add_comment` returns an error:
 
 ### PRD Not Found
 
-If Confluence page fetch fails or no PRD link exists:
+If no PRD link is found in the Epic description, or the Confluence page fetch fails:
+- Check both `customfield_12637` and `description` on the Epic before giving up
+- If the Epic itself has no description content, note this explicitly
 - Note that PRD context is missing
 - Reduce confidence score for Requirements by 1 point
-- Ask user if they can provide PRD content or a link
+- Ask user if they can provide a PRD link or paste the PRD content directly
 
 ### Low Confidence Score (< 7)
 - Clearly state the ticket is not ready for sprint

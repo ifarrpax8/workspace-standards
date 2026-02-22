@@ -147,6 +147,11 @@ workspace-standards/
 │   └── rules/                     # Auto-discovered global rules
 │       ├── jira-standards.md
 │       └── security-standards.md
+├── .agents/
+│   └── skills -> .cursor/skills   # Augment skill discovery (symlink)
+├── .augment/
+│   └── rules -> .cursor/rules     # Augment rule discovery (symlink)
+├── AGENTS.md                      # Cross-tool project context
 └── security/                      # Security guidelines
     └── security-checklist.md      # Requirements and packages
 ```
@@ -334,6 +339,8 @@ All workflow skills optionally leverage the [Engineering Codex](https://github.c
 
 ## Getting Started
 
+### Cursor
+
 1. Add `~/Development/workspace-standards` to your Cursor workspace
 2. (Optional) Add `~/Development/engineering-codex` to the same workspace for best practices, gotchas, and decision frameworks
 3. Reload the Cursor window — skills, subagents, and rules are auto-discovered from `.cursor/`
@@ -341,18 +348,27 @@ All workflow skills optionally leverage the [Engineering Codex](https://github.c
 5. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
 6. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
 
+### Augment
+
+1. Add `~/Development/workspace-standards` to your Augment workspace
+2. (Optional) Add `~/Development/engineering-codex` to the same workspace
+3. Skills are auto-discovered from `.agents/skills/` — use `/skills` to see the full list
+4. Rules are auto-loaded from `.augment/rules/` and `AGENTS.md`
+5. Configure MCP servers (Jira, GitHub) in Augment for full skill functionality — skills degrade gracefully without them
+
 ### Skills and Subagents
 
-Cursor auto-discovers skills and subagents from `.cursor/` when the repo is in the workspace. No manual registration required.
+Skills follow the [agentskills.io](https://agentskills.io/) specification and are auto-discovered by both Cursor and Augment. No manual registration required.
 
-| Type | Source | Auto-discovered |
-|------|--------|-----------------|
-| Skills | workspace-standards | Yes |
-| Skills | engineering-codex | Yes |
-| Subagents | workspace-standards (`standards-auditor`, `ticket-refiner`) | Yes |
-| Subagents | engineering-codex (`codex-navigator`) | Yes |
+| Type | Cursor | Augment |
+|------|--------|---------|
+| Skills | `.cursor/skills/` | `.agents/skills/` |
+| Rules | `.cursor/rules/` | `.augment/rules/` + `AGENTS.md` |
+| Subagents | `.cursor/agents/` (`standards-auditor`, `ticket-refiner`) | — |
 
-Invoke subagents explicitly with `/standards-auditor`, `/ticket-refiner`, or `/codex-navigator`, or let the agent delegate automatically based on your task. See the [Cursor subagents documentation](https://cursor.com/docs/context/subagents) for more details.
+**Cursor**: Invoke subagents explicitly with `/standards-auditor`, `/ticket-refiner`, or `/codex-navigator`, or let the agent delegate automatically based on your task.
+
+**Augment**: Use `/skills` to browse available skills, then invoke them by describing the task (e.g. "refine ticket HRZN-123").
 
 ## Related Resources
 
