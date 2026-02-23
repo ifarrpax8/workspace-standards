@@ -79,7 +79,7 @@ Load the relevant rules based on file types present:
 | `*.groovy`, `*.java` | [groovy-standards.md](../../rules/groovy-standards.md) |
 | `*.vue`, `*.ts` | [vue-standards.md](../../rules/vue-standards.md) |
 | `*.tf` | [terraform-standards.md](../../rules/terraform-standards.md) |
-| All | [security-standards.md](../../rules/security-standards.md) |
+| All | [security-standards.md](../../rules/security-standards.md), [pre-review-checklist.md](../../rules/pre-review-checklist.md) |
 
 **Detect project type** from build files and dependencies (do this once before loading golden paths):
 
@@ -268,6 +268,7 @@ If a referenced rule file (e.g., `terraform-standards.md`) does not exist:
 ## Related Resources
 
 - [Code Review Rule](../../rules/code-review.md)
+- [Pre-Review Checklist](../../rules/pre-review-checklist.md) - Cross-cutting quality checks
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — uses this checklist in Phase 5
 - [Fix Bug Skill](../fix-bug/SKILL.md) — test-first bug fixing for critical issues found during review
 - [Golden Paths](../../../golden-paths/)

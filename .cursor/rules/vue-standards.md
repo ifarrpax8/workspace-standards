@@ -167,6 +167,26 @@ const { t } = useI18n()
 </template>
 ```
 
+### i18n Discipline
+
+- Check `common.json` (or the equivalent shared file) before creating new translation keys — duplicates have a real cost
+- Use sentence case for labels unless design explicitly specifies otherwise
+- Wrap i18n-dependent values in `computed()` so locale changes take effect without a page refresh:
+
+```typescript
+// BAD — static array won't react to locale change
+const breadcrumbs: BreadcrumbItem[] = [
+  { label: t('nav.home'), to: '/' },
+]
+
+// GOOD — recomputes when locale changes
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+  { label: t('nav.home'), to: '/' },
+])
+```
+
+- Error messages displayed to users must also go through i18n
+
 ## Testing
 
 Use Vitest with Testing Library:
@@ -190,9 +210,48 @@ describe('MyComponent', () => {
 })
 ```
 
+## Template Consistency
+
+- Use PascalCase for components in templates — match the codebase convention:
+
+```vue
+<!-- GOOD -->
+<PButton icon="filter" @click="toggle" />
+<PartnerSelect v-model="filters.partner" />
+
+<!-- BAD — inconsistent with PascalCase convention -->
+<p-button icon="filter" @click="toggle" />
+<partner-select v-model="filters.partner" />
+```
+
 ## Avoid
 
 - `any` type (use proper types or `unknown`)
+- `as` type assertions — use generics or dedicated types instead:
+
+```typescript
+// BAD
+const items = ref([] as Item[])
+const params = route.query as SearchParams
+
+// GOOD
+const items = ref<Item[]>([])
+const params = computed<SearchParams>(() => ({ ... }))
+```
+
+- Reusing a type across unrelated APIs — define separate param types per endpoint
+- `onMounted` + `watch` when `watchImmediate` achieves the same result:
+
+```typescript
+// BAD — duplicated trigger
+onMounted(() => fetchData())
+watch(source, () => fetchData())
+
+// GOOD
+watchImmediate(source, () => fetchData())
+```
+
+- `window.dispatchEvent` for intra-MFE communication — use Vue reactivity; window events are for cross-MFE only
 - Nested `.then()` chains (use `async/await`)
 - `console.log` statements (remove before committing)
 - Importing entire utility libraries (import only needed functions; prefer native ES6 methods)

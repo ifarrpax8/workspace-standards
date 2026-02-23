@@ -57,6 +57,9 @@ Check if the code follows the golden path for its project type:
 ### 3. Testing
 
 - [ ] New code has corresponding tests
+- [ ] Bug fixes include a regression test that fails before the fix and passes after
+- [ ] New interactive components (search bars, tables, drawers) have at least a basic render + interaction test
+- [ ] Test files are co-located with the feature they test
 - [ ] Tests follow naming convention (`should...when...`)
 - [ ] Edge cases covered
 - [ ] No skipped tests without justification

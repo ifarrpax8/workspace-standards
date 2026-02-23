@@ -48,6 +48,12 @@ This is a legacy codebase. Follow existing patterns and position new code for fu
 - Mock external dependencies (DAOs, other services, Kafka)
 - Add tests when modifying existing code
 
+## Typing
+
+- Type request parameters with a dedicated DTO — don't accept `MultiValueMap<String, String>` or `Map<String, Object>` when the accepted params are known
+- Use specific generic types for response maps — `Map<String, FacetDTO>` not `Map<String, Object>`
+- Don't mix Groovy and Java syntax in the same file — pick the file's language and stay consistent
+
 ## Groovy-Specific
 
 - Avoid `def` when the type is known — explicit types improve refactoring
