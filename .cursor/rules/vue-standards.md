@@ -189,26 +189,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
 ## Testing
 
-Use Vitest with Testing Library:
-
-```typescript
-import { render, screen, fireEvent } from '@testing-library/vue'
-import { describe, it, expect, vi } from 'vitest'
-import MyComponent from './MyComponent.vue'
-
-describe('MyComponent', () => {
-  it('should render title', () => {
-    render(MyComponent, { props: { title: 'Test' } })
-    expect(screen.getByText('Test')).toBeInTheDocument()
-  })
-
-  it('should emit on click', async () => {
-    const { emitted } = render(MyComponent)
-    await fireEvent.click(screen.getByRole('button'))
-    expect(emitted('submit')).toBeTruthy()
-  })
-})
-```
+Use Vitest with Testing Library. See `vue-test-standards.md` for detailed test authoring rules covering component tests, composable tests, utility tests, mocking guidance, and test data patterns.
 
 ## Template Consistency
 
