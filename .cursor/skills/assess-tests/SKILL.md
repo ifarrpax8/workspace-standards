@@ -1,6 +1,8 @@
 ---
 name: assess-tests
 description: Assess test completeness across the test pyramid with persona-driven gap analysis and priority recommendations.
+complexity: high
+prompt-version: "1.0"
 ---
 # Assess Tests Skill
 

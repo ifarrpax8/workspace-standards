@@ -1,6 +1,8 @@
 ---
 name: idea-to-implementation
 description: End-to-end orchestrator from idea through PRD, spike, story breakdown, refinement, and implementation.
+complexity: high
+prompt-version: "1.0"
 ---
 # Idea to Implementation Skill
 

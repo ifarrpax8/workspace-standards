@@ -1,6 +1,8 @@
 ---
 name: fix-bug
 description: Test-first bug fixing — prove defects with a failing test, then fix. For bugs, review findings, and defects.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Fix Bug Skill

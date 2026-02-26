@@ -1,6 +1,8 @@
 ---
 name: spike
 description: Time-boxed research with Jira deliverables for technical questions, option evaluation, and uncertainty reduction.
+complexity: high
+prompt-version: "1.0"
 ---
 # Spike Skill
 

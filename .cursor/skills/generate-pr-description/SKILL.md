@@ -1,6 +1,8 @@
 ---
 name: generate-pr-description
 description: Generate a structured PR description from branch diff, ticket context, and implementation summary.
+complexity: low
+prompt-version: "1.0"
 ---
 # Generate PR Description Skill
 

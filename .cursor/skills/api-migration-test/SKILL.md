@@ -1,6 +1,8 @@
 ---
 name: api-migration-test
 description: Generate a three-phase test script for comparing a legacy API endpoint against its replacement during migration.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # API Migration Test

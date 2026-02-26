@@ -1,6 +1,8 @@
 ---
 name: score
 description: Score a repository against team standards with interpretation and actionable fix recommendations.
+complexity: low
+prompt-version: "1.0"
 ---
 # Score Skill
 

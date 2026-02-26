@@ -65,6 +65,15 @@ This repository provides 15 interactive skills for team workflows. They are avai
 - **terraform-iac.md** -- Infrastructure as Code
 - **integration-testing.md** -- Playwright page object model
 
+## Skill Conventions
+
+All skills use YAML frontmatter with these fields:
+
+- `name` -- skill identifier (kebab-case)
+- `description` -- one-line purpose (used by Cursor for routing)
+- `complexity` -- `low` (structured, suitable for smaller models) or `high` (requires significant reasoning)
+- `prompt-version` -- version string for tracking prompt iterations (e.g. `"1.0"`)
+
 ## Engineering Codex Integration
 
 All workflow skills optionally leverage the Engineering Codex when it is in the workspace -- best practices, gotchas, decision frameworks, Pax8 standards, and tech radar data. Skills degrade gracefully without it.

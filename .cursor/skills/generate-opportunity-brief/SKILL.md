@@ -1,6 +1,8 @@
 ---
 name: generate-opportunity-brief
 description: Draft an Opportunity Brief for a feature idea, enriched with Engineering Codex user flows and risks.
+complexity: high
+prompt-version: "1.0"
 ---
 # Generate Opportunity Brief Skill
 

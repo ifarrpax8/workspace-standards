@@ -1,6 +1,8 @@
 ---
 name: generate-adr
 description: Generate an Architecture Decision Record from spike findings, deep dives, or ad-hoc decisions.
+complexity: high
+prompt-version: "1.0"
 ---
 # Generate ADR Skill
 

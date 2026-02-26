@@ -1,6 +1,8 @@
 ---
 name: code-review
 description: Review PRs or local changes against team standards, golden paths, and Engineering Codex best practices.
+complexity: low
+prompt-version: "1.0"
 ---
 # Code Review Skill
 

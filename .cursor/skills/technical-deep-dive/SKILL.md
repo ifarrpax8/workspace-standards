@@ -1,6 +1,8 @@
 ---
 name: technical-deep-dive
 description: Codebase investigation for understanding patterns, identifying code locations, and resolving technical unknowns.
+complexity: high
+prompt-version: "1.0"
 ---
 # Technical Deep Dive Skill
 

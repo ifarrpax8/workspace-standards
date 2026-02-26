@@ -1,6 +1,8 @@
 ---
 name: implement-ticket
 description: Structured implementation of refined Jira tickets with TDD, unknown-unknowns triage, and QA handoff.
+complexity: low
+prompt-version: "1.0"
 ---
 # Implement Ticket Skill
 

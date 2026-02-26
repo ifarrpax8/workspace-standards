@@ -1,6 +1,8 @@
 ---
 name: generate-prd
 description: Draft a PRD from an approved Opportunity Brief, enriched with Engineering Codex and Pax8 standards.
+complexity: high
+prompt-version: "1.0"
 ---
 # Generate PRD Skill
 

@@ -1,6 +1,8 @@
 ---
 name: refine-ticket
 description: Three Amigos refinement for Jira tickets with confidence scoring and implementation planning.
+complexity: low
+prompt-version: "1.0"
 ---
 # Refine Ticket Skill
 

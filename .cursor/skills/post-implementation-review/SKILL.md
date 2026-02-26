@@ -1,6 +1,8 @@
 ---
 name: post-implementation-review
 description: Post-merge retrospective — validate estimates, capture learnings, and feed insights into future work.
+complexity: low
+prompt-version: "1.0"
 ---
 
 # Post-Implementation Review Skill
