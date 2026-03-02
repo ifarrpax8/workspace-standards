@@ -2,7 +2,7 @@
 name: implement-ticket
 description: Structured implementation of refined Jira tickets with TDD, unknown-unknowns triage, and QA handoff.
 complexity: low
-prompt-version: "1.0"
+prompt-version: "1.1"
 ---
 # Implement Ticket Skill
 
@@ -189,14 +189,21 @@ Follow single-cycle TDD discipline — one test at a time, not all tests up fron
 1. **Red**: Write a single failing test based on an acceptance criterion or test scenario
 2. **Green**: Write the minimum implementation to make the test pass
 3. **Refactor**: Clean up while keeping tests green
-4. **Commit** (recommended): `test(HRZN-XXX): add test for [behavior]` then `feat(HRZN-XXX): implement [behavior]`
+4. **Check in**: Before committing, show the developer what will be committed and ask for confirmation:
+   ```
+   Ready to commit for [task name]:
+   - [file 1] — [what changed]
+   - [file 2] — [what changed]
+   Suggested message: `test(HRZN-XXX): add test for [behavior]`
+   Shall I commit? (yes / adjust message / skip)
+   ```
 5. Repeat for the next test scenario
 
 #### Non-TDD Tasks
 
 1. Implement the change
 2. Write tests alongside or immediately after
-3. Commit (recommended)
+3. **Check in**: Before committing, show the developer what will be committed and ask for confirmation (same format as above)
 
 #### Commit Guidance
 
@@ -244,6 +251,10 @@ Proceed with recommendation?
 ```
 
 Present the recommendation using AskQuestion and let the developer confirm or override.
+
+**Important constraints:**
+- **Never create a follow-up Jira ticket autonomously.** If the developer selects FOLLOW-UP TICKET, note it for the implementation summary and explicitly ask "Shall I create a follow-up ticket for this now?". Do not create tickets without explicit instruction.
+- **Pre-existing failures are unknowns.** If a config fix, dependency update, or test scaffolding change surfaces pre-existing test failures that weren't failing before, treat each failure as an UNKNOWN DETECTED — triage inline vs follow-up with the developer. Never silently create tickets for them.
 
 Track all unknowns and their resolutions for the final Jira update.
 
