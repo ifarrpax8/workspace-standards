@@ -2,7 +2,7 @@
 name: post-implementation-review
 description: Post-merge retrospective — validate estimates, capture learnings, and feed insights into future work.
 complexity: low
-prompt-version: "1.0"
+prompt-version: "1.1"
 ---
 
 # Post-Implementation Review Skill
@@ -113,6 +113,28 @@ Ask structured questions using AskQuestion (or conversationally if unavailable):
 3. "Were there any patterns or decisions that should be documented?" (triggers ADR suggestion or pattern inventory update)
 4. "Would you change the refinement approach next time?"
 
+### Phase 4.5: Skills & Process Health
+
+Review the skills that were invoked during this implementation cycle and flag any that didn't match reality.
+
+Ask: "Which skills did you use during this ticket? Did the guidance match what you actually needed?"
+
+For each skill used, evaluate:
+- Did the skill workflow reflect how the work actually unfolded?
+- Were there phases that were missing, unclear, or skipped?
+- Were there deviations from the skill that should be codified?
+- Did cross-skill handoffs (e.g., refine-ticket → implement-ticket) work smoothly?
+
+Produce a brief table:
+
+| Skill | Used? | Friction / Gap |
+|-------|-------|----------------|
+| refine-ticket | Yes/No | [note or "none"] |
+| implement-ticket | Yes/No | [note or "none"] |
+| [others] | ... | ... |
+
+If any friction is identified, add a concrete improvement proposal to the Recommendations section and suggest running the `session-retrospective` skill for a deeper follow-up.
+
 ### Phase 5: Produce Review and Recommendations
 
 Output the review using the format below.
@@ -174,6 +196,12 @@ Only after the user confirms, post using `jira_add_comment`. Offer to create act
 
 **Pattern**: [If a persona is consistently missed across reviews, note it here]
 
+### Skills & Process Health
+| Skill | Used? | Friction / Gap |
+|-------|-------|----------------|
+| refine-ticket | ... | ... |
+| implement-ticket | ... | ... |
+
 ### Recommendations for Future Work
 - [Specific recommendation]
 
@@ -182,6 +210,7 @@ Only after the user confirms, post using `jira_add_comment`. Offer to create act
 - [ ] [Update refinement approach?]
 - [ ] [Improve test persona coverage for: [persona]?]
 - [ ] [Share learning with team?]
+- [ ] [Run session-retrospective to apply skill improvements?]
 ```
 
 ## Verification

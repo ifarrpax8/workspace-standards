@@ -35,7 +35,7 @@ This repository contains detailed coding standards for specific technologies. Th
 
 ## Skills
 
-This repository provides 15 interactive skills for team workflows. They are available in `.cursor/skills/` (Cursor) and `.agents/skills/` (Augment).
+This repository provides 16 interactive skills for team workflows. They are available in `.cursor/skills/` (Cursor) and `.agents/skills/` (Augment).
 
 **Pipeline skills** (chained by the idea-to-implementation orchestrator):
 - **refine-ticket** -- Three Amigos refinement with confidence scoring
@@ -44,7 +44,7 @@ This repository provides 15 interactive skills for team workflows. They are avai
 - **spike** -- Time-boxed research with Jira deliverables
 - **generate-opportunity-brief** -- Draft Pax8 Opportunity Briefs
 - **generate-prd** -- Expand approved briefs into PRDs
-- **post-implementation-review** -- Estimate accuracy and learnings
+- **post-implementation-review** -- Estimate accuracy, learnings, and skills health
 - **idea-to-implementation** -- Full 9-stage pipeline orchestrator
 
 **Utility skills** (standalone):
@@ -55,6 +55,7 @@ This repository provides 15 interactive skills for team workflows. They are avai
 - **generate-adr** -- Architecture Decision Records
 - **fix-bug** -- Test-first bug fixing
 - **api-migration-test** -- Three-phase migration test scripts
+- **session-retrospective** -- End-of-session skill improvement proposals
 
 ## Golden Path Architectures
 
