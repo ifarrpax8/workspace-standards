@@ -74,6 +74,24 @@ components/
 - Services: `{Feature}Service` (`FXRateService.ts`)
 - Types: PascalCase (`FXRate`, `CreateRateRequest`)
 - Test files: `{Component}.test.ts`
+- Events in templates: kebab-case (`@update:model-value`, `@on-sort`)
+- Events in JavaScript/TypeScript: camelCase (`emit('update:modelValue')`, `$emit('update:modelValue')`)
+
+```vue
+<!-- GOOD — kebab-case in templates -->
+<PDrawer @update:model-value="onVisibilityChange" />
+<PCheckbox @update:model-value="toggleColumn(key)" />
+```
+
+```typescript
+// GOOD — camelCase in script and tests
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void
+}>()
+
+// In tests
+await drawer.vm.$emit('update:modelValue', false)
+```
 
 ## Props and Emits
 

@@ -2,7 +2,7 @@
 name: refine-ticket
 description: Three Amigos refinement for Jira tickets with confidence scoring and implementation planning.
 complexity: low
-prompt-version: "1.0"
+prompt-version: "1.1"
 ---
 # Refine Ticket Skill
 
@@ -147,12 +147,13 @@ Present analysis from each perspective:
   - Boundary conditions (min/max values)
   - Permission scenarios
   - Error conditions
+- **Structure scenarios with expected outcomes**: Each scenario must include the action/condition and the expected result (e.g., "Filter by invalid currency code → 400 Bad Request"). These structured scenarios will be carried into the implementation plan's Test Scenarios section, grouped by: happy path, error path, boundary, and security/access.
 - Assess regression risk to existing functionality
 - Recommend test types (unit, integration, E2E) and map to the test pyramid
 
 #### Product Perspective
 - Evaluate clarity of user value
-- Check acceptance criteria completeness
+- **Enrich acceptance criteria**: Review the original AC from the ticket. Rewrite vague criteria to be specific, measurable, and testable. Add missing criteria surfaced by the Developer and Test perspectives (edge cases, error handling, boundary behaviour). The enriched AC will be carried into the implementation plan — they replace the originals, not supplement them.
 - Identify missing business context
 - Flag scope concerns
 
@@ -200,7 +201,12 @@ Then return to this refinement with enhanced technical context.
 
 ### Phase 5: Output
 
-Generate the implementation plan using the format below, then **display it to the user and ask for confirmation before posting**:
+Generate the implementation plan using the format below. Populate it from the Three Amigos analysis:
+- **Repositories**: From Phase 1 step 7 (confirmed target repositories)
+- **Acceptance Criteria**: The enriched AC from the Product Perspective (not the original ticket AC)
+- **Test Scenarios**: The structured scenarios from the Test Perspective, grouped by category with expected outcomes
+
+Then **display it to the user and ask for confirmation before posting**:
 
 ```
 Here is the implementation plan I'll post to [ticket key]. Please review:
@@ -236,6 +242,13 @@ Post this format as a Jira comment:
 ```
 [HRZN-XXX] [Ticket title] | [N]pts | [X]/12 [High/Medium/Low]
 
+Repositories: [repo-1, repo-2]
+
+Acceptance Criteria:
+- [ ] [Specific, testable criterion — enriched from original AC and Three Amigos analysis]
+- [ ] [Another criterion — include expected behaviour, not just intent]
+- [ ] [Edge case or error scenario surfaced during refinement]
+
 Approach: [One sentence describing the agreed technical approach]
 
 Decisions:
@@ -252,9 +265,15 @@ Tasks:
   2. [Task] — [key constraint or AC in brief]
   3. Tests: [types and focus areas]
 
-Test focus:
-- [Key scenario or constraint to verify]
-- [Another area, especially edge cases or access control]
+Test Scenarios:
+  Happy path:
+  - [Scenario] → [expected outcome]
+  Error path:
+  - [Scenario] → [expected outcome]
+  Boundary:
+  - [Scenario] → [expected outcome]
+  Security/access:
+  - [Scenario] → [expected outcome] (include only when relevant)
 
 Dependencies:
 - [HRZN-XXX] ([runtime/compile-time]): [one line description]
@@ -268,11 +287,11 @@ Risks:
 Before completing refinement, verify these are satisfied:
 
 - [ ] User story follows format: "As a [role], I want [goal], so that [benefit]"
-- [ ] Acceptance criteria are specific, measurable, and testable
+- [ ] Acceptance criteria are enriched, specific, measurable, and testable (included in implementation plan)
 - [ ] Technical approach agreed
-- [ ] Test scenarios documented
+- [ ] Test scenarios documented with expected outcomes, grouped by category (included in implementation plan)
+- [ ] Target repositories explicitly listed in implementation plan
 - [ ] Dependencies identified
-- [ ] Affected codebases identified
 - [ ] Fibonacci estimate agreed
 - [ ] No open questions blocking implementation
 - [ ] PRD linked (via Epic)
@@ -307,6 +326,15 @@ After each critical operation, verify success:
 ```
 [HRZN-712] Allow partners to filter invoices by currency | 3pts | 10/12 High
 
+Repositories: pax8 (monolith)
+
+Acceptance Criteria:
+- [ ] GET /invoices?currency=USD returns only invoices with currency USD
+- [ ] Omitting the currency param returns all invoices (filter is optional)
+- [ ] Invalid currency code (e.g. "XYZ") returns 400 Bad Request with error message
+- [ ] Valid currency with no matching invoices returns 200 with empty list
+- [ ] Filter works alongside existing pagination and date range params
+
 Approach: Add optional currency query param to InvoiceListEndpoint — existing
 InvoiceRepository currency field requires no schema change.
 
@@ -322,11 +350,16 @@ Tasks:
   2. Add currency filter to InvoiceRepository — uses existing currency field
   3. Tests: filter returns matching invoices, invalid code returns 400, absent param returns all
 
-Test focus:
-- Valid currency code returns matching invoices only
-- Invalid currency code "XYZ" → 400
-- Absent param → all invoices (no filter applied)
-- Empty result set → 200 with empty list
+Test Scenarios:
+  Happy path:
+  - Filter by valid currency code (USD) → returns only USD invoices
+  - Omit currency param → returns all invoices unchanged
+  Error path:
+  - Filter by invalid currency code "XYZ" → 400 Bad Request
+  - Filter by empty string → 400 Bad Request
+  Boundary:
+  - Valid currency with zero matching invoices → 200 with empty list
+  - Currency param combined with existing pagination → both filters applied correctly
 
 Dependencies: none
 Risks: none identified

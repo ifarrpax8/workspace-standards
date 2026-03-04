@@ -2,7 +2,7 @@
 name: implement-ticket
 description: Structured implementation of refined Jira tickets with TDD, unknown-unknowns triage, and QA handoff.
 complexity: low
-prompt-version: "1.1"
+prompt-version: "1.2"
 ---
 # Implement Ticket Skill
 
@@ -84,13 +84,13 @@ Use jira_get_issue with:
 ```
 
 3. Extract the refinement notes from `customfield_12636`
-4. Validate the Definition of Ready checklist:
+4. Validate the Definition of Ready checklist against the refinement notes:
 
-- [ ] Acceptance criteria are present, specific, and testable
-- [ ] Technical approach is documented (from refinement notes)
-- [ ] Test scenarios are documented (happy path + edge cases)
+- [ ] **Acceptance Criteria** section is present with enriched, specific, testable criteria
+- [ ] **Approach** and technical decisions are documented
+- [ ] **Test Scenarios** section is present with structured scenarios grouped by category (happy path, error path, boundary) and expected outcomes
+- [ ] **Repositories** field is present identifying target codebases
 - [ ] Confidence score >= 7/12 (Medium or High)
-- [ ] Affected codebases are identified
 
 5. **If DoR passes**: Present a summary of the ticket and proceed to Phase 2
 
@@ -117,7 +117,7 @@ If the developer chooses to proceed, document the missing DoR items as known ris
 
 ### Phase 2: Setup
 
-1. **Identify target repositories** from the refinement notes or ask the developer to confirm
+1. **Identify target repositories** from the refinement notes' **Repositories** field. If the field is missing (e.g., ticket refined before this format was adopted), ask the developer to confirm
 
 2. **Load codebase standards** based on the repository type. Read the relevant rules to inform implementation:
 
@@ -146,9 +146,9 @@ Branch naming: ticket key only (e.g., `HRZN-705`). No suffix or description appe
 
 1. **Extract the implementation plan** from the refinement notes and break it into a task list using the TodoWrite tool
 
-2. **Extract test scenarios** from the refinement notes (these were documented during refinement)
+2. **Extract test scenarios** from the refinement notes' **Test Scenarios** section. These are pre-structured with expected outcomes from refinement, grouped by: happy path, error path, boundary, and security/access.
 
-   If test scenarios are sparse or only cover happy paths, enrich them using test personas from `@engineering-codex/facets/testing/test-personas.md` (if available):
+   Map each scenario to the task it covers. If a task has no corresponding scenario, add one — ensure at least a happy path and error path scenario exists per task. If the Test Scenarios section is missing or sparse (e.g., from a ticket refined before this format was adopted), enrich using test personas from `@engineering-codex/facets/testing/test-personas.md` (if available):
    - Ensure at least Optimist (happy) and Saboteur (error) scenarios exist for each task
    - Add Boundary Walker scenarios for any task involving numeric, string, or collection input
    - Add Auditor scenarios for any task touching authentication or authorization
@@ -319,7 +319,7 @@ Fix any issues found before committing. Re-run the review after fixes.
 
 Before posting to Jira, validate the DoD checklist:
 
-- [ ] All acceptance criteria from the ticket have been addressed
+- [ ] All acceptance criteria from the refinement notes have been addressed (use the enriched AC, not the original ticket AC)
 - [ ] Tests passing (run the test suite)
 - [ ] No linter errors introduced
 - [ ] Self-review completed (Phase 5)
@@ -427,8 +427,8 @@ After each critical operation, verify success:
 
 **Key steps:**
 1. Fetched HRZN-705 — "Add historical exchange rate lookup endpoint"
-2. DoR passed (10/12 confidence). Loaded `kotlin-standards.md` + `kotlin-spring-boot.md` golden path
-3. Planned 4 tasks: endpoint, service, repository query, tests. TDD suitable for all.
+2. DoR passed: enriched AC present (5 criteria), structured test scenarios (8 across happy/error/boundary), repository = currency-manager, confidence 10/12. Loaded `kotlin-standards.md` + `kotlin-spring-boot.md` golden path
+3. Planned 4 tasks: endpoint, service, repository query, tests. Mapped refinement test scenarios to tasks. TDD suitable for all.
 4. Red-green cycle for each: wrote `should return rate for date when rate exists`, implemented `GET /rates/{currency}/{date}`, passed
 5. Unknown detected: existing `RateCache` doesn't support date-keyed lookups → triaged as SOLVE INLINE (small, added date parameter to cache key)
 6. Self-review: clean. 12 new tests, all passing. No linter warnings.
