@@ -2,7 +2,7 @@
 name: implement-ticket
 description: Structured implementation of refined Jira tickets with TDD, unknown-unknowns triage, and QA handoff.
 complexity: low
-prompt-version: "1.2"
+prompt-version: "1.3"
 ---
 # Implement Ticket Skill
 
@@ -83,10 +83,14 @@ Use jira_get_issue with:
 - expand: "renderedFields"
 ```
 
-3. Extract the refinement notes from `customfield_12636`
+3. Extract the refinement notes from `customfield_12636`. The description has three panels:
+   - **Overview** — original ticket context
+   - **Refinement Notes** — the implementation plan (approach, tasks, test scenarios, etc.)
+   - **Success Criteria** — Gherkin-format (Given/When/Then) acceptance criteria written during refinement
 4. Validate the Definition of Ready checklist against the refinement notes:
 
-- [ ] **Acceptance Criteria** section is present with enriched, specific, testable criteria
+- [ ] **Success Criteria** panel is present with Gherkin-format acceptance criteria
+- [ ] **Acceptance Criteria** section is present in the Refinement Notes with enriched, specific, testable criteria
 - [ ] **Approach** and technical decisions are documented
 - [ ] **Test Scenarios** section is present with structured scenarios grouped by category (happy path, error path, boundary) and expected outcomes
 - [ ] **Repositories** field is present identifying target codebases
@@ -319,7 +323,7 @@ Fix any issues found before committing. Re-run the review after fixes.
 
 Before posting to Jira, validate the DoD checklist:
 
-- [ ] All acceptance criteria from the refinement notes have been addressed (use the enriched AC, not the original ticket AC)
+- [ ] All acceptance criteria addressed — cross-check against both the **Success Criteria** panel (Gherkin scenarios) and the **Acceptance Criteria** checklist in the Refinement Notes
 - [ ] Tests passing (run the test suite)
 - [ ] No linter errors introduced
 - [ ] Self-review completed (Phase 5)

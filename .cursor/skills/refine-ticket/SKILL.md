@@ -2,7 +2,7 @@
 name: refine-ticket
 description: Three Amigos refinement for Jira tickets with confidence scoring and implementation planning.
 complexity: low
-prompt-version: "1.1"
+prompt-version: "1.2"
 ---
 # Refine Ticket Skill
 
@@ -153,7 +153,10 @@ Present analysis from each perspective:
 
 #### Product Perspective
 - Evaluate clarity of user value
-- **Enrich acceptance criteria**: Review the original AC from the ticket. Rewrite vague criteria to be specific, measurable, and testable. Add missing criteria surfaced by the Developer and Test perspectives (edge cases, error handling, boundary behaviour). The enriched AC will be carried into the implementation plan — they replace the originals, not supplement them.
+- **Enrich acceptance criteria** in two formats (both derived from the same analysis):
+  1. **Success Criteria** (for the ticket description's Success Criteria panel) — Written in Gherkin syntax (Given/When/Then) from the user's perspective. These are the behavioural acceptance criteria the team and testers will reference. See [Success Criteria Format](#success-criteria-format) below.
+  2. **Acceptance Criteria** (for the implementation plan comment) — Checklist-style (`- [ ]`) with specific, testable criteria including expected behaviour. These are the developer-facing criteria used during implementation.
+- Review the original AC from the ticket. Rewrite vague criteria to be specific, measurable, and testable. Add missing criteria surfaced by the Developer and Test perspectives (edge cases, error handling, boundary behaviour). The enriched criteria replace the originals, not supplement them.
 - Identify missing business context
 - Flag scope concerns
 
@@ -201,39 +204,98 @@ Then return to this refinement with enhanced technical context.
 
 ### Phase 5: Output
 
-Generate the implementation plan using the format below. Populate it from the Three Amigos analysis:
-- **Repositories**: From Phase 1 step 7 (confirmed target repositories)
-- **Acceptance Criteria**: The enriched AC from the Product Perspective (not the original ticket AC)
-- **Test Scenarios**: The structured scenarios from the Test Perspective, grouped by category with expected outcomes
+Generate two artefacts from the Three Amigos analysis:
 
-Then **display it to the user and ask for confirmation before posting**:
+1. **Success Criteria** (Gherkin format) — for the ticket description's Success Criteria panel. See [Success Criteria Format](#success-criteria-format).
+2. **Implementation Plan** (comment format) — the full plan including checklist-style AC, test scenarios, tasks, etc. See [Implementation Plan Format](#implementation-plan-format). Populate from:
+   - **Repositories**: From Phase 1 step 7 (confirmed target repositories)
+   - **Acceptance Criteria**: The enriched AC from the Product Perspective (not the original ticket AC)
+   - **Test Scenarios**: The structured scenarios from the Test Perspective, grouped by category with expected outcomes
+
+**Display both to the user and ask for confirmation before posting**:
 
 ```
-Here is the implementation plan I'll post to [ticket key]. Please review:
+Here is what I'll update on [ticket key]. Please review:
+
+── Ticket Description (Success Criteria panel) ──
+
+[formatted Gherkin success criteria]
+
+── Implementation Plan (comment) ──
 
 [formatted implementation plan]
 
-Shall I post this to Jira? (yes / edit first / skip)
+Shall I post both to Jira? (yes / edit first / skip)
 ```
 
-Only proceed to post after the user confirms. Then:
+Only proceed after the user confirms. Then perform two Jira updates:
+
+#### Step 1: Update the ticket description
+
+Read the existing description from `customfield_12636` (fetched in Phase 1). Preserve the existing Overview panel and replace the Success Criteria panel with the enriched Gherkin criteria. Write the implementation plan into the Refinement Notes panel. See [Jira Standards](../../rules/jira-standards.md) for the panel template.
 
 ```
 Use the jira_update_issue tool with:
 - issue_key: [ticket key]
-- fields: {}
-- additional_fields: { "customfield_12636": "[formatted implementation plan - see format below]" }
+- fields: { "description": "[full description with all three panels]" }
+- additional_fields: { "customfield_12636": "[full description with all three panels]" }
 ```
 
-> **Note:** Use `customfield_12636` (custom Description field), not the standard description. See [Jira Standards](../../rules/jira-standards.md).
+The description should follow this structure:
+```
+{panel:bgColor=#deebff}
+*Overview*
 
-Alternatively, add as a comment:
+[preserved from original ticket — do not modify]
+{panel}
+
+{panel:bgColor=#eae6ff}
+*Refinement Notes*
+
+[formatted implementation plan — same content as the comment]
+{panel}
+
+{panel:bgColor=#e3fcef}
+*Success Criteria*
+
+[Gherkin-format success criteria — see Success Criteria Format below]
+{panel}
+```
+
+> **Important:** Write to both `fields.description` and `additional_fields.customfield_12636` to keep them in sync. See [Jira Standards](../../rules/jira-standards.md).
+
+#### Step 2: Post the implementation plan as a comment
 
 ```
 Use the jira_add_comment tool with:
 - issue_key: [ticket key]
 - comment: [formatted implementation plan - see format below]
 ```
+
+The comment provides a timestamped record of the refinement output. The description is the living document that the team references during implementation.
+
+## Success Criteria Format
+
+Write success criteria in Gherkin syntax (Given/When/Then) from the user's perspective. These go into the ticket description's Success Criteria panel.
+
+```
+Given [precondition or context]
+When [action the user takes]
+Then [expected observable outcome]
+
+Given [precondition or context]
+When [action the user takes]
+And [additional action or condition]
+Then [expected observable outcome]
+And [additional expected outcome]
+```
+
+**Guidelines:**
+- Write from the user's perspective, not the system's (e.g., "Given I am on the invoices page" not "Given the InvoiceListEndpoint receives a request")
+- Each scenario should be independently understandable
+- Use `And` to chain multiple preconditions, actions, or outcomes within a single scenario
+- Cover the happy path first, then key error and edge cases
+- Keep language natural and non-technical — these are read by product, QA, and developers alike
 
 ## Implementation Plan Format
 
@@ -306,7 +368,9 @@ After each critical operation, verify success:
 - **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data with a non-empty summary. If `customfield_12636` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets. Confirm the Epic was fetched and check whether a Confluence PRD link was found in `customfield_12637` or `description`. If no link was found, flag this in the analysis.
 - **Phase 2 (Analysis)**: Confirm at least one test scenario was generated per persona perspective used. If zero scenarios, the acceptance criteria may be too vague — flag in Q&A.
 - **Phase 4 (Score)**: Confirm the confidence score is a number between 1-12 and each factor has a valid rating. Present the breakdown for user confirmation.
-- **Phase 5 (Jira Update)**: If posting via `jira_update_issue` or `jira_add_comment`, verify the response indicates success. If it fails, present the plan as markdown for manual copy.
+- **Phase 5 (Jira Update)**: Two verifications required:
+  1. **Description update** (`jira_update_issue`): Verify the response indicates success. If it fails, present the description content as markdown for manual copy — flag that the Success Criteria panel needs updating.
+  2. **Comment** (`jira_add_comment`): Verify the response indicates success. If it fails, present the implementation plan as markdown for manual copy.
 
 ## Worked Example
 
@@ -317,12 +381,36 @@ After each critical operation, verify success:
 2. Three Amigos analysis:
    - Developer: Filter added to `InvoiceListEndpoint`, new query param, existing `InvoiceRepository` already supports currency field
    - Test (using personas): Optimist — filter returns matching invoices; Saboteur — invalid currency code returns 400; Boundary Walker — empty result set returns 200 with empty list
-   - Product: Confirmed filter should be optional (no filter = all currencies)
+   - Product: Confirmed filter should be optional (no filter = all currencies). Enriched AC in both Gherkin (for description) and checklist (for plan).
 3. Q&A resolved: "Should multi-currency filter be supported?" → No, single currency only for v1
 4. Scored 10/12 (High). Recommended 3 points (multiple files, clear approach).
-5. Posted implementation plan to HRZN-712 via `customfield_12636`
+5. Updated HRZN-712 description (Success Criteria panel) and posted implementation plan as comment
 
-**Output excerpt:**
+**Success Criteria (written to ticket description):**
+```
+Given I am on the invoices page
+When I select currency "USD" from the filter
+Then only invoices with currency USD are displayed
+
+Given I am on the invoices page
+When I do not select a currency filter
+Then all invoices are displayed regardless of currency
+
+Given I am on the invoices page
+When I enter an invalid currency code "XYZ"
+Then I see an error message indicating the currency is not valid
+
+Given I am on the invoices page
+When I filter by a valid currency that has no invoices
+Then I see an empty list with no error
+
+Given I am on the invoices page
+When I select a currency filter
+And I have pagination or date range filters active
+Then both filters are applied together
+```
+
+**Implementation plan (posted as comment):**
 ```
 [HRZN-712] Allow partners to filter invoices by currency | 3pts | 10/12 High
 
@@ -393,6 +481,14 @@ If `jira_get_issue` returns an error:
 - Display the error message
 - Ask user to paste ticket details manually
 - Continue with refinement process
+
+### Jira Description Update Fails
+
+If `jira_update_issue` returns an error when updating the description:
+- Display the error message
+- Present the full description content (all three panels) as formatted markdown
+- Instruct: "Copy the Success Criteria section and paste it into the ticket description's Success Criteria panel on [ticket-key]"
+- Continue to post the comment (Step 2) regardless — the comment is independent
 
 ### Jira Comment Post Fails
 
