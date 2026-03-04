@@ -79,8 +79,8 @@ components/
 
 ```vue
 <!-- GOOD — kebab-case in templates -->
-<PDrawer @update:model-value="onVisibilityChange" />
-<PCheckbox @update:model-value="toggleColumn(key)" />
+<p-drawer @update:model-value="onVisibilityChange" />
+<p-checkbox @update:model-value="toggleColumn(key)" />
 ```
 
 ```typescript
@@ -211,16 +211,16 @@ Use Vitest with Testing Library. See `vue-test-standards.md` for detailed test a
 
 ## Template Consistency
 
-- Use PascalCase for components in templates — match the codebase convention:
+- Use kebab-case for components in templates — match the codebase convention:
 
 ```vue
 <!-- GOOD -->
-<PButton icon="filter" @click="toggle" />
-<PartnerSelect v-model="filters.partner" />
-
-<!-- BAD — inconsistent with PascalCase convention -->
 <p-button icon="filter" @click="toggle" />
 <partner-select v-model="filters.partner" />
+
+<!-- BAD — inconsistent with kebab-case convention -->
+<PButton icon="filter" @click="toggle" />
+<PartnerSelect v-model="filters.partner" />
 ```
 
 ## Avoid
