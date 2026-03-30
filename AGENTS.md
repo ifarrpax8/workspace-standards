@@ -26,7 +26,7 @@ This repository contains detailed coding standards for specific technologies. Th
 
 - **kotlin-standards.md** -- Spring Boot, Axon Framework, Kotlin idioms
 - **groovy-standards.md** -- Monolith conventions
-- **vue-standards.md** -- Vue 3, Pinia, composables, MFE patterns
+- **vue-standards.md** -- Vue 3, Pinia, composables, MFE patterns; platform-mfe sidebar `visible` / LaunchDarkly conventions
 - **api-standards.md** -- REST API design, versioning, error handling
 - **security-standards.md** -- OWASP, secrets, auth patterns
 - **terraform-standards.md** -- Infrastructure as Code conventions
@@ -35,7 +35,7 @@ This repository contains detailed coding standards for specific technologies. Th
 
 ## Skills
 
-This repository provides 16 interactive skills for team workflows. They are available in `.cursor/skills/` (Cursor) and `.agents/skills/` (Augment).
+This repository provides 17 interactive skills for team workflows. They are available in `.cursor/skills/` (Cursor) and `.agents/skills/` (Augment).
 
 **Pipeline skills** (chained by the idea-to-implementation orchestrator):
 - **refine-ticket** -- Three Amigos refinement with confidence scoring
@@ -48,6 +48,7 @@ This repository provides 16 interactive skills for team workflows. They are avai
 - **idea-to-implementation** -- Full 9-stage pipeline orchestrator
 
 **Utility skills** (standalone):
+- **pax8-workflow** -- Which skill to run next; Jira/local plans, Superpowers, Qodo, GitHub, retrospectives (orchestrator map)
 - **technical-deep-dive** -- Codebase investigation for unknowns
 - **score** -- Interactive repository scoring
 - **assess-tests** -- Test completeness audit across the test pyramid

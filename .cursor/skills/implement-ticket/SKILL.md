@@ -1,8 +1,8 @@
 ---
 name: implement-ticket
-description: Structured implementation of refined Jira tickets with TDD, unknown-unknowns triage, and QA handoff.
+description: Structured implementation of refined Jira tickets with TDD, unknown-unknowns triage, and QA handoff. Never commit or push without explicit user approval.
 complexity: low
-prompt-version: "1.3"
+prompt-version: "1.5"
 ---
 # Implement Ticket Skill
 
@@ -70,6 +70,12 @@ Implement ticket HRZN-123 in the currency-manager repository
 ```
 
 ## Workflow
+
+### Mandatory: no commits without explicit approval
+
+- **Never run `git commit` without explicit user confirmation** after showing what will be committed and the proposed message. General approval to implement or proceed with the plan does **not** authorize commits; each commit (or a batch the user explicitly approves as one commit) requires a clear affirmative (e.g., yes, commit, approved).
+- If the user declines, skips, defers, or does not answer the commit prompt, **leave changes uncommitted** unless they instruct otherwise (staged vs unstaged per their preference).
+- `git push` and other publish actions follow the same rule: **no push without explicit approval** unless the user has already asked to push in the same turn.
 
 ### Phase 1: Fetch and Validate Definition of Ready
 
@@ -193,7 +199,7 @@ Follow single-cycle TDD discipline — one test at a time, not all tests up fron
 1. **Red**: Write a single failing test based on an acceptance criterion or test scenario
 2. **Green**: Write the minimum implementation to make the test pass
 3. **Refactor**: Clean up while keeping tests green
-4. **Check in**: Before committing, show the developer what will be committed and ask for confirmation:
+4. **Check in**: Before any `git commit`, show the developer what will be committed and obtain **explicit** confirmation. Do not commit until they respond with approval (or an edited message they approve). Same prompt pattern as non-TDD tasks below.
    ```
    Ready to commit for [task name]:
    - [file 1] — [what changed]
@@ -207,11 +213,11 @@ Follow single-cycle TDD discipline — one test at a time, not all tests up fron
 
 1. Implement the change
 2. Write tests alongside or immediately after
-3. **Check in**: Before committing, show the developer what will be committed and ask for confirmation (same format as above)
+3. **Check in**: Before any `git commit`, show the developer what will be committed and obtain **explicit** confirmation (same format as TDD tasks). **Do not run `git commit` without a clear yes** (or equivalent) after presenting the diff summary and message.
 
 #### Commit Guidance
 
-**Incremental commits** are recommended but optional per task. The skill suggests committing after each logical task, but the developer can batch if preferred.
+**Incremental commits** are recommended but optional per task. The skill suggests committing after each logical task, but the developer can batch if preferred. **Every** commit still requires explicit approval per the **Mandatory: no commits without explicit approval** section at the start of this workflow; never commit autonomously because tests passed or the task is done.
 
 Commit message format — semantic type with ticket key as scope:
 ```
@@ -257,6 +263,7 @@ Proceed with recommendation?
 Present the recommendation using AskQuestion and let the developer confirm or override.
 
 **Important constraints:**
+- **Never commit or push without explicit user approval** — see **Mandatory: no commits without explicit approval** at the top of the Workflow section.
 - **Never create a follow-up Jira ticket autonomously.** If the developer selects FOLLOW-UP TICKET, note it for the implementation summary and explicitly ask "Shall I create a follow-up ticket for this now?". Do not create tickets without explicit instruction.
 - **Pre-existing failures are unknowns.** If a config fix, dependency update, or test scaffolding change surfaces pre-existing test failures that weren't failing before, treat each failure as an UNKNOWN DETECTED — triage inline vs follow-up with the developer. Never silently create tickets for them.
 
@@ -317,7 +324,7 @@ Read the code-review.md rule and apply it to all changed files:
 | `*.ts` | No `any` types, no `@ts-ignore`, interfaces for complex objects, async/await pattern |
 | `*Test.kt` / `*.test.ts` | Descriptive test names, Arrange-Act-Assert pattern, minimal mocks |
 
-Fix any issues found before committing. Re-run the review after fixes.
+Fix any issues found, re-run the review after fixes, then obtain the same explicit commit approval as in Phase 4 before running `git commit`.
 
 ### Phase 6: Definition of Done
 
@@ -368,6 +375,17 @@ Use jira_add_comment with:
 - issue_key: [ticket key]
 - comment: [formatted implementation summary - see format below]
 ```
+
+### Optional: Self-improvement prompts (skippable)
+
+After Phases 1–7 are complete, or if the user signals they are wrapping up (e.g. done for today, session over), you may offer **one short optional reminder** — **non-blocking**. The user may ignore or decline with no impact on implementation outcome.
+
+If useful, they can run:
+
+- [Post-Implementation Review](../post-implementation-review/SKILL.md) after merge or when work is shipped (estimate accuracy, learnings).
+- [Session Retrospective](../session-retrospective/SKILL.md) when ending a focused session or week (process and skill tweaks).
+
+See [Pax8 Workflow](../pax8-workflow/SKILL.md) for the full orchestrator map and retrospective triggers. Do not block, repeat, or pressure if the user skips.
 
 ## Test Evidence Guide
 
@@ -422,6 +440,7 @@ After each critical operation, verify success:
 - **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data. If it errors, switch to manual input before proceeding.
 - **Phase 2 (Branch)**: Run `git rev-parse --abbrev-ref HEAD` and confirm the branch name matches the ticket key.
 - **Phase 4 (Tests)**: After each red-green cycle, confirm the test runner exit code. Parse output for pass/fail count — do not assume success.
+- **Phase 4 (Commits)**: Do not run `git commit` until the user has explicitly approved that commit; passing tests or completed tasks are not implicit approval.
 - **Phase 5 (Self-Review)**: Run linter (`./gradlew check` or `npx eslint .`) and confirm zero new warnings before proceeding to DoD.
 - **Phase 7 (Jira)**: If posting via `jira_add_comment`, verify the response indicates success. If it fails, present the summary as markdown.
 
@@ -507,6 +526,7 @@ If the branch already exists when attempting to create it:
 
 ## Related Resources
 
+- [Pax8 Workflow Skill](../pax8-workflow/SKILL.md) - Which skill to use when; optional retrospective prompts after implementation
 - [Refine Ticket Skill](../refine-ticket/SKILL.md) - Three Amigos refinement (run before this skill)
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - Codebase investigation for unknowns
 - [Spike Skill](../spike/SKILL.md) - Time-boxed research for larger unknowns
