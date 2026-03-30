@@ -2,7 +2,7 @@
 name: pax8-workflow
 description: Pax8 agentic workflow orchestrator — when to use which skill, Jira + local plans, Superpowers, Qodo shift-left, GitHub access, retrospectives, and prerequisites. Use when unsure which skill to run next or onboarding to the full pipeline.
 complexity: high
-prompt-version: "1.0"
+prompt-version: "1.1"
 ---
 
 # Pax8 Workflow Skill
@@ -28,7 +28,8 @@ Before relying on the full workflow, confirm:
 - [ ] **Superpowers** (optional) — Cursor plugin for `writing-plans`, TDD, debugging, verification skills; layer on top of Pax8 skills where useful
 - [ ] **[pr-agent-settings](https://github.com/pax8/pr-agent-settings)** — clone or reference when working with **Qodo Merge** rules (`metadata.yaml` maps repos to `codebase_standards/**`)
 - [ ] **devlab** (optional) — containerized dev from [devlab](https://github.com/pax8/devlab); `~/Development` mount keeps the same repos; `make sync-all` can sync agents to `~/.cursor/` (additive to repo skills)
-- [ ] **GitHub access** — see [GitHub access](#github-access-mcp-gh-cli-clones); MCP may be limited for private `pax8` org repos
+- [ ] **GitHub CLI** (`gh`) — run `gh auth status`; [recommended standard](#github-access-mcp-gh-cli-clones) for repo/PR operations when MCP is unreliable
+- [ ] **GitHub MCP** (`user-github`) — optional; see [GitHub access](#github-access-mcp-gh-cli-clones); often limited for private `pax8` org repos until PAT + SSO are correct
 
 ## Mental model: Pax8 vs Superpowers
 
@@ -42,6 +43,7 @@ Invoke Pax8 skills with `@workspace-standards/.cursor/skills/.../SKILL.md` (or y
 | Scenario | Primary Pax8 skill | Superpowers / other |
 | -------- | ------------------- | ------------------- |
 | New feature from scratch | [idea-to-implementation](../idea-to-implementation/SKILL.md) | brainstorming → writing-plans |
+| **Unrefined ticket / unclear DoR** | [refine-ticket](../refine-ticket/SKILL.md) **first** | Then plan file → [implement-ticket](../implement-ticket/SKILL.md) (see [default flow](#default-flow-unrefined-ticket--delivery)) |
 | Ticket needs Three Amigos | [refine-ticket](../refine-ticket/SKILL.md) | — |
 | Time-boxed research + Jira deliverables | [spike](../spike/SKILL.md) | — |
 | Codebase / pattern questions | [technical-deep-dive](../technical-deep-dive/SKILL.md) | explore subagent (per that skill) |
@@ -52,6 +54,18 @@ Invoke Pax8 skills with `@workspace-standards/.cursor/skills/.../SKILL.md` (or y
 | PR body | [generate-pr-description](../generate-pr-description/SKILL.md) | — |
 | Document a decision | [generate-adr](../generate-adr/SKILL.md) | ADR repo + codex `sync-pax8-adrs` skill if used |
 | Pre-PR automated review | Qodo (see [Qodo and pr-agent-settings](#qodo-and-pr-agent-settings)) | Then [code-review](../code-review/SKILL.md) |
+
+## Default flow: unrefined ticket → delivery
+
+Common case: work starts with a **ticket that is not yet refined**. Use this sequence (aligns with compounding + harness-style backpressure: refine → spec in repo → implement with tests → automated + skill review → learnings):
+
+1. **[refine-ticket](../refine-ticket/SKILL.md)** — Three Amigos, Jira updated (`customfield_12636`), acceptance criteria and test scenarios in place.
+2. **Plan file (optional but useful)** — Superpowers **writing-plans** skill, or a short `docs/superpowers/plans/YYYY-MM-DD-<feature>.md` in the app repo with **Jira key** and file-touch hints (bridges sessions).
+3. **[implement-ticket](../implement-ticket/SKILL.md)** — DoR/DoD, TDD where suitable, QA handoff.
+4. **Pre-PR bundle** — Qodo → [code-review](../code-review/SKILL.md) → [generate-pr-description](../generate-pr-description/SKILL.md) (see above).
+5. **Optional:** [post-implementation-review](../post-implementation-review/SKILL.md) / [session-retrospective](../session-retrospective/SKILL.md) — skippable prompt at end of implement-ticket.
+
+Skip steps only when the ticket is already refined and a plan is unnecessary.
 
 ## Spec-driven stack: Jira + local plans
 
@@ -83,16 +97,29 @@ Order is suggestive — adapt to team practice.
 
 ## GitHub access: MCP, gh CLI, clones
 
-Private **pax8** org repos often fail **GitHub MCP** (`user-github`) until tokens and SSO align. Treat **local clones** in `~/Development` as the reliable default for navigation and search.
+### Why GitHub CLI (`gh`) often fixes “permission” pain
+
+MCP servers use their **own** credentials (e.g. PAT in MCP config). Those can fail for private org repos until **scopes**, **fine-grained token org access**, and **SSO authorization** match GitHub’s expectations. The **GitHub CLI** uses **`gh auth login`** — typically the same login and browser SSO you already use for github.com. So **`gh` frequently works when `user-github` does not**, without changing your MCP setup. It is also **token-efficient**: the agent runs a **narrow shell command** and only the **output** enters context, whereas MCP injects tool schemas every turn (see e.g. [Levels of Agentic Engineering — MCP, skills, and CLI](https://www.bassimeledath.com/blog/levels-of-agentic-engineering?utm_source=tldrdev)).
+
+**Recommended standard for agents and humans:** prefer **`gh`** for PRs, diffs, searches, and API calls to GitHub when MCP is flaky or unnecessary; keep **local clones** for deep navigation; use **MCP** when it is already working and you want integrated tool calls.
+
+**Examples (run in repo or with `-R owner/repo`):**
+
+- `gh auth status` — verify login and token
+- `gh pr view`, `gh pr diff`, `gh pr create`
+- `gh api repos/pax8/REPO/contents/path` — file metadata / content (JSON)
+- `gh search code "query" --owner=pax8` — org-scoped code search (CLI v2.40+)
+
+Private **pax8** org repos: treat **local clones** in `~/Development` as the reliable default for exploration; add **`gh`** for remote operations without expanding MCP context.
 
 **Spike checklist (record your org’s results in team notes or next skill revision):**
 
-1. **Fine-grained PAT:** org access + **Configure SSO** for the Pax8 org if required.
+1. **Fine-grained PAT (for MCP):** org access + **Configure SSO** for the Pax8 org if required.
 2. **MCP:** exercise `search_code` and `get_file_contents` on a known private repo; note error strings if any.
-3. **`gh` CLI** in the terminal (`gh auth status`, `gh api`, `gh pr diff`) — narrow output, works when MCP does not.
+3. **`gh`:** `gh auth status` green; exercise `gh pr list` or `gh search code` against org repos you care about.
 4. **Browser MCP** — authenticated GitHub web search (see [technical-deep-dive](../technical-deep-dive/SKILL.md)).
 
-Even with working MCP, heavy exploration stays in **local clones**; MCP is for targeted remote reads.
+Even with working MCP, heavy exploration stays in **local clones**; MCP and `gh` are for **targeted** remote reads and PR flows.
 
 ## Subagents
 
@@ -109,18 +136,24 @@ Cursor can delegate to **Task** / explore-style workers so exploration returns a
 
 **Capture:** one concrete improvement per cycle into workspace-standards when it helps the team. Revisit this orchestrator table **quarterly** or when tools (Superpowers, MCP, Qodo) change.
 
+## Practices alignment (external framing)
+
+Industry writeups on **agentic engineering** stress **context + compounding + harness** (rules/skills, plan/delegate/assess/codify, tests and CI as backpressure, prefer **CLI** for targeted GitHub work when MCP is heavy or broken). This skill is intentionally aligned; optional background: [The 8 Levels of Agentic Engineering](https://www.bassimeledath.com/blog/levels-of-agentic-engineering?utm_source=tldrdev).
+
 ## Start here (onboarding)
 
 1. Add **workspace-standards**, **engineering-codex**, and your **app repo** to the Cursor workspace.
-2. Enable **Atlassian MCP** (and GitHub MCP if available).
+2. Enable **Atlassian MCP**; install **GitHub CLI** (`brew install gh` / [install docs](https://cli.github.com/)) and run `gh auth login` if you use GitHub from the terminal; enable **GitHub MCP** only if you want it (optional when `gh` is available).
 3. Open this skill: `@workspace-standards/.cursor/skills/pax8-workflow/SKILL.md`.
 4. Dry run: `@refine-ticket` with a ticket key, or paste ticket text if MCP is off.
 
 ## Lunch-and-learn outline (30–45 min)
 
+- Start from an **unrefined** ticket: [refine-ticket](../refine-ticket/SKILL.md) → plan file → [implement-ticket](../implement-ticket/SKILL.md) (see [default flow](#default-flow-unrefined-ticket--delivery)).
 - Show [idea-to-implementation](../idea-to-implementation/SKILL.md) for greenfield vs jumping to [implement-ticket](../implement-ticket/SKILL.md) when the ticket is already refined.
 - Show Superpowers **writing-plans** for a repo-local implementation plan.
 - Show where **Jira** (`customfield_12636`) vs **local plan file** fit.
+- Optional: **`gh auth status`** and one **`gh`** command vs GitHub MCP for private org repos.
 
 ## MCP health (~30 seconds)
 

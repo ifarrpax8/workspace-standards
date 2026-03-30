@@ -43,7 +43,14 @@ search_code with q: "org:pax8 EventHandler"
 search_code with q: "org:pax8 path:src/endpoint pagination"
 ```
 
-**Method 2: Browser MCP** (fallback using your authenticated session)
+**Method 2: GitHub CLI** (often works when MCP fails — uses `gh auth login` / SSO, not the MCP PAT)
+```
+gh auth status
+gh search code "EventHandler" --owner=pax8
+gh api repos/pax8/REPO_NAME/contents/path/to/file
+```
+
+**Method 3: Browser MCP** (fallback using your authenticated session)
 ```
 Navigate to: https://github.com/search?q=org%3Apax8+[search+term]&type=code
 ```
@@ -51,8 +58,9 @@ Navigate to: https://github.com/search?q=org%3Apax8+[search+term]&type=code
 If GitHub MCP returns permission errors, the skill will offer:
 ```
 GitHub MCP doesn't have access to Pax8 private repos. Would you like me to:
-1. Search via Browser (uses your SSO-authenticated session)
-2. Continue with local workspace only
+1. Use GitHub CLI (gh) with your logged-in session — narrow output, good default
+2. Search via Browser (uses your SSO-authenticated session)
+3. Continue with local workspace only
 ```
 
 ### Graceful Degradation
