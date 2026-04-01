@@ -25,6 +25,12 @@ Follow these standards when writing Playwright integration tests.
 - Use storage state for authentication (don't log in per test)
 - Create page fixtures for browser interactions
 - Implement service fixtures for API operations
+- **Access page objects via the `pages` fixture, never instantiate directly in tests.** The `Pages` class aggregates all page objects; destructure what you need:
+  ```typescript
+  test('example', async ({ pages }) => {
+    const { page, invoiceReportPage, reportCenterPage } = pages;
+  ```
+  Do not `import` page object classes into spec files or call `new SomePage(page)` in tests. When adding a new page object, register it in `Pages` and access it through the fixture.
 
 ## Waiting
 

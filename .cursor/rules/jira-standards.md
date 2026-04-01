@@ -38,6 +38,26 @@ When using the `jira_update_issue` MCP tool, pass the content via **both** `fiel
 
 > **Note:** The MCP tool may automatically sync both fields. Verify after updates that both `description` and the custom field contain matching content.
 
+### Jira Cloud API: Atlassian Document Format (ADF)
+
+Jira Cloud’s REST API does **not** accept Jira wiki markup (e.g. `{panel:bgColor=...}`) or plain markdown for every description field. In particular, **`customfield_12636` (Story “Description”) must be sent as an [Atlassian Document Format](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/) JSON object** — a string or wiki body will return an error such as: `Operation value must be an Atlassian Document`.
+
+**Implications for agents and MCP:**
+
+- Use **`editJiraIssue`** with **`contentFormat`: `adf`** and pass **`fields.description`** and **`fields.customfield_12636`** as the same ADF `doc` object so both stay in sync.
+- If a first attempt fails on `customfield_12636`, retry with ADF even when `description` accepted markdown.
+- **Fetch before edit:** use **`getJiraIssue`** with **`responseContentFormat`: `adf`** (and the needed `fields`) to read the current `description`, preserve panels, media attachment `id`s, and structure, then merge changes.
+- **Coloured panels** in HRZN Story descriptions are ADF **`panel`** nodes (`panelType`: `info` | `note` | `success` for Overview / Refinement Notes / Success Criteria), not wiki `{panel}` macros in the API payload.
+
+**Success Criteria (Gherkin) spacing in ADF**
+
+Sequential **`paragraph`** nodes alone often render as one dense block in the Success Criteria panel. To separate scenarios:
+
+- Insert an ADF **`heading`** with **`level`: 4** before each scenario (e.g. “Scenario 1”, “Scenario 2”), then Given / When / Then as separate paragraphs; or
+- Insert **`horizontalRule`** blocks between scenarios if your renderer allows them inside panels.
+
+The Cursor **Atlassian** integration typically exposes **`getJiraIssue`**, **`editJiraIssue`**, **`addCommentToJiraIssue`**, and **`getConfluencePage`** (with `cloudId` from **`getAccessibleAtlassianResources`**). Tool names in skills may differ from older `jira_*` aliases — use the descriptors in the MCP tools folder.
+
 ### Template Format
 
 The business uses a structured template with colored panels:

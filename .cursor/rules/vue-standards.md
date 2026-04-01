@@ -144,6 +144,24 @@ export function useFeature() {
 }
 ```
 
+## Platform shell sidebar menus (platform-mfe)
+
+Partner and persona menus in **platform-mfe** are built with `createMenuItem` from `@/composables/sidebar/useMenuHelpers` and filtered by `processMenuItems`, which evaluates each item’s `visible` rules via `useVisibility`.
+
+### LaunchDarkly and `visible` rules
+
+- Express feature flags on **`MenuItem.visible`** (`VisibilityRules`). Do **not** rely only on a top-level `useFlag(...).value` to conditionally splice items (e.g. avoid `...(flagOn ? [createMenuItem(...)] : [])`). That hides the flag from the menu config, is inconsistent with other rows, and is harder to assert in tests.
+- **Default for “flag must be on”:** `visible: { flags: ['namespace.flag.key'] }`. Multiple entries in `flags` are all required. Evaluation uses `VisibilityContext.useFlag` inside `useVisibility` (same underlying feature-flag service as elsewhere).
+- **Combine** `flags` with `features`, `userTypes`, `custom`, `or`, `and`, etc. on the **same** rule object when those conditions must all hold together, declared **inline on that `createMenuItem`** (duplicate the same `features`/`custom` block on another row if both need it—avoid extracting shared `VisibilityRules` into a `const` in the composable unless the team explicitly agrees).
+- **When logic is inverted or non-trivial:** `visible.custom: (ctx) => !ctx.useFlag('namespace.other.flag', false)` (see the Subscriptions → Trials item in `usePartnerMenuNew`).
+
+### Where to look
+
+- `platform-mfe/src/composables/sidebar/types.ts` — `VisibilityRules`, `VisibilityContext`
+- `platform-mfe/src/composables/sidebar/useVisibility.ts` — rule evaluation
+- `platform-mfe/src/composables/sidebar/useMenuHelpers.ts` — `createMenuItem`, `processMenuItems`
+- `platform-mfe/src/composables/sidebar/menus/usePartnerMenuNew.ts` — examples: Voyager and Integrations “Guides” (`visible.flags`), Data exports (shared billing visibility + `flags`), Trials (`visible.custom` + `ctx.useFlag`)
+
 ## Services
 
 Use object destructuring when service calls need more than 3 parameters.

@@ -2,7 +2,7 @@
 name: refine-ticket
 description: Three Amigos refinement for Jira tickets with confidence scoring and implementation planning.
 complexity: low
-prompt-version: "1.2"
+prompt-version: "1.3"
 ---
 # Refine Ticket Skill
 
@@ -16,13 +16,13 @@ This skill works best with the following MCP servers enabled:
 
 | MCP Server | Tools Used | Purpose | Required? |
 |------------|------------|---------|-----------|
-| **user-mcp-atlassian** | `jira_get_issue` | Fetch Jira ticket details | Recommended |
-| | `jira_update_issue` | Update ticket description with implementation plan | Recommended |
-| | `jira_add_comment` | Post implementation plan to Jira | Recommended |
-| | `confluence_get_page` | Fetch PRD from Confluence | Optional |
+| **Atlassian MCP** (e.g. Cursor `plugin-atlassian-atlassian`) | `getJiraIssue` | Fetch Jira ticket details (`cloudId`, `issueIdOrKey`; use `responseContentFormat: adf` when editing descriptions) | Recommended |
+| | `editJiraIssue` | Update ticket description and `customfield_12636` | Recommended |
+| | `addCommentToJiraIssue` | Post implementation plan to Jira | Recommended |
+| | `getConfluencePage` | Fetch PRD from Confluence | Optional |
 | **user-github** | `search_code` | Search patterns across Pax8 org (via Deep Dive) | Optional |
 
-> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. The business uses `customfield_12636` instead of the standard description field.
+> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage, **ADF requirements**, and Success Criteria spacing. The business uses `customfield_12636` for Story descriptions; Jira Cloud requires **Atlassian Document Format** for that field, not wiki or markdown strings.
 
 ### Checking MCP Availability
 
@@ -48,7 +48,7 @@ If the codex is not available, the skill falls back to golden paths and web sear
 ### Graceful Degradation
 
 If MCPs are not available, the skill will:
-1. **Prompt to enable**: "The Atlassian MCP (`user-mcp-atlassian`) is not enabled. Would you like to enable it, or provide ticket details manually?"
+1. **Prompt to enable**: "The Atlassian MCP (e.g. `plugin-atlassian-atlassian`) is not enabled. Would you like to enable it, or provide ticket details manually?"
 2. **Offer manual input**: Accept pasted Jira ticket content
 3. **Skip unavailable features**: Generate implementation plan as markdown for manual copy/paste to Jira
 
@@ -86,19 +86,21 @@ Refine ticket HRZN-123 for the finance-mfe and invoice-service repositories
 2. Fetch ticket details using Atlassian MCP:
 
 ```
-Use the jira_get_issue tool with:
-- issue_key: [extracted ticket key]
-- fields: "*all"
-- expand: "renderedFields"
+Use the getJiraIssue tool with:
+- cloudId: [from getAccessibleAtlassianResources]
+- issueIdOrKey: [extracted ticket key]
+- expand: "renderedFields" (if supported)
+- responseContentFormat: adf when Phase 5 will rewrite the description; otherwise markdown is fine
 ```
 
 3. Extract the Epic link from the ticket (check `parent` field or `customfield_10014` for the Epic key)
 4. Fetch the Epic to find the PRD link:
 
 ```
-Use the jira_get_issue tool with:
-- issue_key: [Epic key from step 3]
-- fields: "customfield_12637,description,summary"
+Use the getJiraIssue tool with:
+- cloudId: [from getAccessibleAtlassianResources]
+- issueIdOrKey: [Epic key from step 3]
+- fields: ["customfield_12637", "description", "summary"]
 ```
 
 5. Locate the PRD link in the Epic's description:
@@ -110,14 +112,15 @@ Use the jira_get_issue tool with:
 6. If a Confluence URL is found, extract the page ID and fetch the PRD:
 
 ```
-Use the confluence_get_page tool with:
-- page_id: [extracted from the Confluence URL path — the numeric segment after /pages/]
-- convert_to_markdown: true
+Use the getConfluencePage tool with:
+- cloudId: [from getAccessibleAtlassianResources]
+- pageId: [extracted from the Confluence URL path — the numeric segment after /pages/]
+- contentFormat: markdown (if supported)
 ```
 
 > **Tip:** Confluence URLs come in two common formats:
 > - Long form: `https://pax8.atlassian.net/wiki/spaces/SPACE/pages/123456789/Page+Title` — page ID is `123456789`
-> - Short link: `https://pax8.atlassian.net/wiki/x/AbCdEf` — pass the full URL path to `confluence_get_page` or use `confluence_search` with the page title as a fallback
+> - Short link: `https://pax8.atlassian.net/wiki/x/AbCdEf` — pass the encoded segment to `getConfluencePage` or use `searchConfluenceUsingCql` with the page title as a fallback
 
 7. Ask user to confirm or specify target repositories if not clear from ticket labels/components
 
@@ -232,16 +235,21 @@ Only proceed after the user confirms. Then perform two Jira updates:
 
 #### Step 1: Update the ticket description
 
-Read the existing description from `customfield_12636` (fetched in Phase 1). Preserve the existing Overview panel and replace the Success Criteria panel with the enriched Gherkin criteria. Write the implementation plan into the Refinement Notes panel. See [Jira Standards](../../rules/jira-standards.md) for the panel template.
+Read the existing description from `customfield_12636` (fetched in Phase 1). Preserve the existing Overview panel and replace the Success Criteria panel with the enriched Gherkin criteria. Write the implementation plan into the Refinement Notes panel. See [Jira Standards](../../rules/jira-standards.md) for the panel template and **ADF** requirements.
+
+**Jira Cloud / MCP:** Use `getJiraIssue` with `responseContentFormat: adf` to obtain the current document, then `editJiraIssue` with `contentFormat: adf` and the same ADF `doc` in **both** `fields.description` and `fields.customfield_12636`. Wiki-style `{panel:...}` strings are a human-readable reference only; the API expects ADF JSON for `customfield_12636`. Resolve `cloudId` via `getAccessibleAtlassianResources` when the tool requires it.
 
 ```
-Use the jira_update_issue tool with:
-- issue_key: [ticket key]
-- fields: { "description": "[full description with all three panels]" }
-- additional_fields: { "customfield_12636": "[full description with all three panels]" }
+Use the editJiraIssue tool with:
+- cloudId: [from getAccessibleAtlassianResources]
+- issueIdOrKey: [ticket key]
+- contentFormat: adf
+- fields: { "description": { ADF doc }, "customfield_12636": { same ADF doc } }
 ```
 
-The description should follow this structure:
+If the issue type does not use `customfield_12636`, update `description` only per [Jira Standards](../../rules/jira-standards.md).
+
+The description should follow this structure (express in ADF panels as documented in Jira Standards):
 ```
 {panel:bgColor=#deebff}
 *Overview*
@@ -262,14 +270,16 @@ The description should follow this structure:
 {panel}
 ```
 
-> **Important:** Write to both `fields.description` and `additional_fields.customfield_12636` to keep them in sync. See [Jira Standards](../../rules/jira-standards.md).
+> **Important:** Write the same ADF document to both `fields.description` and `fields.customfield_12636` when the issue uses that custom field. See [Jira Standards](../../rules/jira-standards.md).
 
 #### Step 2: Post the implementation plan as a comment
 
 ```
-Use the jira_add_comment tool with:
-- issue_key: [ticket key]
-- comment: [formatted implementation plan - see format below]
+Use the addCommentToJiraIssue tool with:
+- cloudId: [from getAccessibleAtlassianResources]
+- issueIdOrKey: [ticket key]
+- contentFormat: markdown (or adf if needed)
+- commentBody: [formatted implementation plan - see format below]
 ```
 
 The comment provides a timestamped record of the refinement output. The description is the living document that the team references during implementation.
@@ -296,6 +306,8 @@ And [additional expected outcome]
 - Use `And` to chain multiple preconditions, actions, or outcomes within a single scenario
 - Cover the happy path first, then key error and edge cases
 - Keep language natural and non-technical — these are read by product, QA, and developers alike
+
+**Jira / ADF presentation:** When posting Success Criteria to the ticket description, separate scenarios visually. In Atlassian Document Format, use a **heading** (level 4) per scenario (e.g. “Scenario 1”, “Scenario 2”) before that scenario’s Given/When/Then paragraphs, or insert **`horizontalRule`** nodes between scenarios (see [Jira Standards](../../rules/jira-standards.md)). Plain consecutive paragraphs often render as a single block in the Success Criteria panel.
 
 ## Implementation Plan Format
 
@@ -365,12 +377,12 @@ If any items are not satisfied, flag them and ask if refinement should continue 
 
 After each critical operation, verify success:
 
-- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data with a non-empty summary. If `customfield_12636` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets. Confirm the Epic was fetched and check whether a Confluence PRD link was found in `customfield_12637` or `description`. If no link was found, flag this in the analysis.
+- **Phase 1 (Fetch)**: Confirm `getJiraIssue` returned ticket data with a non-empty summary. If `customfield_12636` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets. Confirm the Epic was fetched and check whether a Confluence PRD link was found in `customfield_12637` or `description`. If no link was found, flag this in the analysis.
 - **Phase 2 (Analysis)**: Confirm at least one test scenario was generated per persona perspective used. If zero scenarios, the acceptance criteria may be too vague — flag in Q&A.
 - **Phase 4 (Score)**: Confirm the confidence score is a number between 1-12 and each factor has a valid rating. Present the breakdown for user confirmation.
 - **Phase 5 (Jira Update)**: Two verifications required:
-  1. **Description update** (`jira_update_issue`): Verify the response indicates success. If it fails, present the description content as markdown for manual copy — flag that the Success Criteria panel needs updating.
-  2. **Comment** (`jira_add_comment`): Verify the response indicates success. If it fails, present the implementation plan as markdown for manual copy.
+  1. **Description update** (`editJiraIssue` with ADF for `customfield_12636` when applicable): Verify the response indicates success. If it fails with an ADF validation error, switch from wiki/markdown strings to Atlassian Document Format per [Jira Standards](../../rules/jira-standards.md). If it still fails, present the description content for manual copy — flag that the Success Criteria panel needs updating.
+  2. **Comment** (`addCommentToJiraIssue`): Verify the response indicates success. If it fails, present the implementation plan as markdown for manual copy.
 
 ## Worked Example
 
@@ -461,11 +473,11 @@ Risks: none identified
 
 Present options using AskQuestion:
 ```
-The Atlassian MCP (user-mcp-atlassian) doesn't appear to be enabled. 
+The Atlassian MCP (e.g. plugin-atlassian-atlassian) doesn't appear to be enabled. 
 This skill uses it to fetch Jira tickets and post comments automatically.
 
 How would you like to proceed?
-1. Enable the MCP - I'll wait while you enable user-mcp-atlassian in Cursor settings
+1. Enable the MCP - I'll wait while you enable the Atlassian integration in Cursor settings
 2. Provide ticket manually - Paste the Jira ticket content and I'll continue
 3. Skip Jira integration - I'll generate the implementation plan as markdown for you to copy
 ```
@@ -477,22 +489,23 @@ How would you like to proceed?
 
 ### Jira Fetch Fails
 
-If `jira_get_issue` returns an error:
+If `getJiraIssue` returns an error:
 - Display the error message
 - Ask user to paste ticket details manually
 - Continue with refinement process
 
 ### Jira Description Update Fails
 
-If `jira_update_issue` returns an error when updating the description:
+If `editJiraIssue` returns an error when updating the description:
 - Display the error message
-- Present the full description content (all three panels) as formatted markdown
+- If the error states the field must be an **Atlassian Document**, rebuild the payload as ADF (see [Jira Standards](../../rules/jira-standards.md)) and retry; `customfield_12636` on Stories typically requires this
+- Otherwise present the full description content (all three panels) as formatted markdown for manual paste
 - Instruct: "Copy the Success Criteria section and paste it into the ticket description's Success Criteria panel on [ticket-key]"
 - Continue to post the comment (Step 2) regardless — the comment is independent
 
 ### Jira Comment Post Fails
 
-If `jira_add_comment` returns an error:
+If `addCommentToJiraIssue` returns an error:
 - Display the error message
 - Present the implementation plan as formatted markdown
 - Instruct: "Copy the above and paste it as a comment on [ticket-key]"
