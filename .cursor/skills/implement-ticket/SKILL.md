@@ -531,6 +531,7 @@ If the branch already exists when attempting to create it:
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - Codebase investigation for unknowns
 - [Spike Skill](../spike/SKILL.md) - Time-boxed research for larger unknowns
 - [Assess Tests Skill](../assess-tests/SKILL.md) - Test completeness audit (use after implementation for verification)
+- [Pre-Qodo Review Skill](../pre-qodo-review/SKILL.md) — Qodo paths + Pax8 (+ optional ticket AC); local/uncommitted diff OK; push not required
 - [Code Review Rule](../../rules/code-review.md) - Self-review checklist used in Phase 5
 - [Pre-Review Checklist](../../rules/pre-review-checklist.md) - Cross-cutting quality checks used in Phase 5
 - [Refinement Best Practices](../../rules/refinement-best-practices.md) - DoR checklist reference

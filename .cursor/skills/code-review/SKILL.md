@@ -107,8 +107,11 @@ Load the relevant golden path based on detected project type:
 
 If `@engineering-codex` is in the workspace:
 - Read relevant facet's `best-practices.md` and `gotchas.md` based on changed code
+- For Vue or UX-heavy changes, consider relevant **experiences** under Engineering Codex (e.g. tables, forms, notifications)
 
-Read [code-review.md](../../rules/code-review.md) for the base checklist.
+Read [code-review.md](../../rules/code-review.md) for the base checklist (including **Standard automation**, **Frontend / Vue MFE cross-cutting**, and the **severity decision tree**).
+
+**When the diff includes `*.vue` or MFE `*.ts`:** Apply [pre-review-checklist.md](../../rules/pre-review-checklist.md) for cross-cutting UX and robustness (loading states, debounce, error handling) in addition to [vue-standards.md](../../rules/vue-standards.md) for Propulsion, i18n, composables, and conventions.
 
 ### Phase 3: Review Each File
 
@@ -135,6 +138,10 @@ For each changed file, apply the review checklist from `rules/code-review.md`:
 - Input validation present
 - Proper error handling
 
+**Frontend / Vue MFE (when `*.vue` or MFE TypeScript is in the diff):**
+- Accessibility, performance, permissions/feature flags, and breaking UI or API contracts — see §6 in [code-review.md](../../rules/code-review.md)
+- Do not rely only on per-file quick checks; confirm these dimensions explicitly for user-facing changes
+
 **Quick checks by file type:**
 
 | File Type | Checks |
@@ -143,7 +150,7 @@ For each changed file, apply the review checklist from `rules/code-review.md`:
 | `*.groovy` | No `def` when type is known, no parameter reassignment, `@CompileStatic` on perf-critical paths |
 | `*.java` (monolith) | No new PMD violations, no `@SuppressWarnings` without justification |
 | `*.vue` | `<script setup>`, typed props/emits, no `v-html` without sanitization, i18n |
-| `*.ts` | No `any` types, no `@ts-ignore`, interfaces for complex objects |
+| `*.ts` | No `any` types, no `@ts-ignore`, prefer `type` for object shapes per project conventions |
 | `*Test.groovy` / `*Spec.groovy` | Spock `given/when/then`, descriptive string names, mocked DAOs and services |
 | `*Test.kt` / `*.test.ts` | Descriptive names, AAA pattern, minimal mocks |
 
@@ -205,7 +212,8 @@ Only after the user confirms, post using the GitHub MCP.
 After each phase, verify the operation succeeded:
 
 - **Phase 1**: Confirm at least one changed file was identified. If zero files found, check branch name or ask the user before proceeding.
-- **Phase 2**: Confirm the standards files and golden path loaded without errors. Note any missing files in the output under "Standards applied."
+- **Phase 2**: Confirm the standards files and golden path loaded without errors. Note any missing files in the output under "Standards applied." When Vue or MFE TypeScript is in scope, confirm [pre-review-checklist.md](../../rules/pre-review-checklist.md) and [vue-standards.md](../../rules/vue-standards.md) were considered.
+- **Phase 3**: For **Vue MFE** changes, confirm the review accounted for standard gates documented in [code-review.md](../../rules/code-review.md) — **`npm run vitest:ci`** and **`npm run check-for-errors`** (shared script names across Pax8 MFEs). For **Groovy monolith or Kotlin** changes, confirm **`./gradlew check`** is the expected backend gate where applicable.
 - **Phase 4**: If posting as a PR comment via GitHub MCP, verify the comment was created by checking the response. If it fails, fall back to markdown output.
 
 ## Worked Example
@@ -269,6 +277,7 @@ If a referenced rule file (e.g., `terraform-standards.md`) does not exist:
 
 ## Related Resources
 
+- [Pre-Qodo Review Skill](../pre-qodo-review/SKILL.md) — same Pax8 checklist plus pr-agent-settings (Qodo) paths; optional Jira AC; **local/uncommitted diffs OK — push not required**
 - [Code Review Rule](../../rules/code-review.md)
 - [Pre-Review Checklist](../../rules/pre-review-checklist.md) - Cross-cutting quality checks
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — uses this checklist in Phase 5

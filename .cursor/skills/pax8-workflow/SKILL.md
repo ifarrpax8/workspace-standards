@@ -53,7 +53,7 @@ Invoke Pax8 skills with `@workspace-standards/.cursor/skills/.../SKILL.md` (or y
 | Many independent failures | — | dispatching-parallel-agents |
 | PR body | [generate-pr-description](../generate-pr-description/SKILL.md) | — |
 | Document a decision | [generate-adr](../generate-adr/SKILL.md) | ADR repo + codex `sync-pax8-adrs` skill if used |
-| Pre-PR automated review | Qodo (see [Qodo and pr-agent-settings](#qodo-and-pr-agent-settings)) | Then [code-review](../code-review/SKILL.md) |
+| Pre-PR / local review | [pre-qodo-review](../pre-qodo-review/SKILL.md) (Pax8 + pr-agent-settings Qodo paths; **optional** Jira; **no push required**) → Qodo on PR when applicable (see [Qodo and pr-agent-settings](#qodo-and-pr-agent-settings)) | [code-review](../code-review/SKILL.md) when you skip pr-agent-settings paths |
 
 ## Default flow: unrefined ticket → delivery
 
@@ -62,7 +62,7 @@ Common case: work starts with a **ticket that is not yet refined**. Use this seq
 1. **[refine-ticket](../refine-ticket/SKILL.md)** — Three Amigos, Jira updated (`customfield_12636`), acceptance criteria and test scenarios in place.
 2. **Plan file (optional but useful)** — Superpowers **writing-plans** skill, or a short `docs/superpowers/plans/YYYY-MM-DD-<feature>.md` in the app repo with **Jira key** and file-touch hints (bridges sessions).
 3. **[implement-ticket](../implement-ticket/SKILL.md)** — DoR/DoD, TDD where suitable, QA handoff.
-4. **Pre-PR bundle** — Qodo → [code-review](../code-review/SKILL.md) → [generate-pr-description](../generate-pr-description/SKILL.md) (see above).
+4. **Review bundle** — [pre-qodo-review](../pre-qodo-review/SKILL.md) on **local diff** (optional; no push required) → open PR / Qodo when ready → [code-review](../code-review/SKILL.md) if needed → [generate-pr-description](../generate-pr-description/SKILL.md) (see above).
 5. **Optional:** [post-implementation-review](../post-implementation-review/SKILL.md) / [session-retrospective](../session-retrospective/SKILL.md) — skippable prompt at end of implement-ticket.
 
 Skip steps only when the ticket is already refined and a plan is unnecessary.
@@ -83,15 +83,16 @@ Skip steps only when the ticket is already refined and a plan is unnecessary.
 
 - [pr-agent-settings](https://github.com/pax8/pr-agent-settings) configures **Qodo Merge**: `metadata.yaml` lists `best_practices_paths` per repository; standards live under `codebase_standards/`.
 - **Placement:** after implementation and tests, **before** push/open PR — run your org’s Qodo entrypoint on the **branch or diff** (CLI, IDE, or GitHub App — **confirm the one sentence** your org uses and put it in team docs if not here).
-- Qodo enforces those rules; the [code-review](../code-review/SKILL.md) skill is the **human/agent** checklist — complementary.
+- Qodo enforces those rules on the PR; [pre-qodo-review](../pre-qodo-review/SKILL.md) loads the **same rule paths** plus Pax8 rules on **any local diff** (uncommitted, branch, or PR) — **push not required**. The [code-review](../code-review/SKILL.md) skill uses the same Pax8 checklist **without** loading pr-agent-settings paths — complementary.
 - **Context:** do not load the entire pr-agent-settings tree for every review — only when **editing** metadata or standards. Daily review uses the tool + local clone as needed.
 - **Maintaining** standards content: see pr-agent-settings `AI_AGENTS.md` and devlab’s Qodo-related agents.
 
-### Pre-PR bundle (suggested order)
+### Review bundle (suggested order)
 
-1. **Qodo** against the diff (rules from pr-agent-settings via `metadata.yaml`).
-2. [code-review](../code-review/SKILL.md) skill on the change.
-3. [generate-pr-description](../generate-pr-description/SKILL.md) for the PR body.
+1. [pre-qodo-review](../pre-qodo-review/SKILL.md) on your **local changes** (optional **Jira key** for AC alignment — Qodo paths + Pax8 either way).
+2. **Qodo** against the diff on the PR when the PR exists (rules from pr-agent-settings via `metadata.yaml`).
+3. [code-review](../code-review/SKILL.md) if you want Pax8-only review without pr-agent-settings paths.
+4. [generate-pr-description](../generate-pr-description/SKILL.md) for the PR body.
 
 Order is suggestive — adapt to team practice.
 

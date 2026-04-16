@@ -35,7 +35,7 @@ This repository contains detailed coding standards for specific technologies. Th
 
 ## Skills
 
-This repository provides 17 interactive skills for team workflows. They are available in `.cursor/skills/` (Cursor) and `.agents/skills/` (Augment).
+This repository provides 18 interactive skills for team workflows. They are available in `.cursor/skills/` (Cursor) and `.agents/skills/` (Augment).
 
 **Pipeline skills** (chained by the idea-to-implementation orchestrator):
 - **refine-ticket** -- Three Amigos refinement with confidence scoring
@@ -53,6 +53,7 @@ This repository provides 17 interactive skills for team workflows. They are avai
 - **score** -- Interactive repository scoring
 - **assess-tests** -- Test completeness audit across the test pyramid
 - **generate-pr-description** -- PR body from git and Jira context
+- **pre-qodo-review** -- Pax8 + pr-agent-settings (Qodo) paths on local diff; optional Jira AC; push not required
 - **generate-adr** -- Architecture Decision Records
 - **fix-bug** -- Test-first bug fixing
 - **api-migration-test** -- Three-phase migration test scripts

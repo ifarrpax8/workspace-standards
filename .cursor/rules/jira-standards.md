@@ -58,6 +58,42 @@ Sequential **`paragraph`** nodes alone often render as one dense block in the Su
 
 The Cursor **Atlassian** integration typically exposes **`getJiraIssue`**, **`editJiraIssue`**, **`addCommentToJiraIssue`**, and **`getConfluencePage`** (with `cloudId` from **`getAccessibleAtlassianResources`**). Tool names in skills may differ from older `jira_*` aliases — use the descriptors in the MCP tools folder.
 
+### Canonical payload file (preferred for large Story descriptions)
+
+For **large ADF** bodies, treat a **repo JSON file** as the source of truth, then apply it to Jira:
+
+1. Store `{ "fields": { "description": <ADF doc>, "customfield_12636": <same doc> } }` in a file next to the ticket or ADR (e.g. `HRZN-908-jira-fields.payload.json`).
+2. Edit the file in git; review diffs like normal code.
+3. Apply with **`curl`** `PUT` and `--data-binary @file.json` (see below), or with **`editJiraIssue`** using the `fields` object from that file. If the combined payload hits **MCP message size limits**, split into two updates: `fields.description` only, then `fields.customfield_12636` only (same `doc` in both).
+
+**Why this pattern:** avoids pasting multi–kilobyte ADF into chat, survives **MCP argument size** constraints, matches the exact **REST** body you would use without an agent, and keeps ticket text **reviewable in PRs**.
+
+**Token / cost:** Jira still receives the same payload bytes on each update. Savings are mainly in the **assistant context**: the large ADF is not re-included in every turn unless you open or paste it. The API itself is not “cheaper” per call.
+
+### REST API direct update (when MCP is unavailable)
+
+Some agent sessions do not expose Atlassian MCP tools. You can still update Story descriptions using **Jira Cloud REST API v3** with the same ADF payload you would send through **`editJiraIssue`**.
+
+| Item | Detail |
+|------|--------|
+| Endpoint | `PUT https://{site}.atlassian.net/rest/api/3/issue/{issueKey}` |
+| Body | `{ "fields": { "description": <ADF doc>, "customfield_12636": <same ADF doc> } }` |
+| Auth | **HTTP Basic**: username = Atlassian account **email**, password = **API token** (create at [id.atlassian.com](https://id.atlassian.com/manage-profile/security/api-tokens)) |
+| Success | **HTTP 204** with an empty body is normal for this endpoint |
+| Errors | **400** with JSON details — e.g. `Operation value must be an Atlassian Document` if `customfield_12636` is a string instead of an ADF object |
+
+**Example (curl):** store the `fields` object in a file (e.g. `issue-fields.payload.json` containing only `{ "fields": { ... } }`), then:
+
+```bash
+curl -sS -u "${JIRA_EMAIL}:${JIRA_API_TOKEN}" \
+  -X PUT \
+  -H "Content-Type: application/json" \
+  "https://${JIRA_HOST}/rest/api/3/issue/HRZN-123" \
+  --data-binary @issue-fields.payload.json
+```
+
+**Security:** Do not commit API tokens. Prefer environment variables or your secret manager. If credentials live in local MCP config (e.g. `~/.cursor/mcp.json`), treat that file as sensitive and rotate tokens if it may have been exposed.
+
 ### Template Format
 
 The business uses a structured template with colored panels:

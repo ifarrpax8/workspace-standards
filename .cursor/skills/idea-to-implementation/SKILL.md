@@ -274,18 +274,22 @@ If the user chooses to add tests, return to the implementation context and add t
 
 ### Stage 9: Code Review
 
-Hand off to the **Code Review** skill:
+Hand off to review and PR skills:
 
-1. Generate the PR description:
+1. Run **pre-qodo review** on your **local changes** (optional ticket key for AC alignment; **no push or PR required** — loads pr-agent-settings paths + Pax8 rules):
+   - Invoke `@workspace-standards/.cursor/skills/pre-qodo-review/SKILL.md` with or without the ticket key
+   - Fix any MUST FIX issues identified
+
+2. Generate the PR description and open the PR:
    - Invoke `@workspace-standards/.cursor/skills/generate-pr-description/SKILL.md` to create a structured PR description from the implementation context
    - Create or update the PR via GitHub MCP (if available)
 
-2. Run the code review:
-   - Invoke `@workspace-standards/.cursor/skills/code-review/SKILL.md` against the PR or branch changes
+3. Run the **code review** skill if you want a **Pax8-only** pass without loading pr-agent-settings paths (optional; often redundant if step 1 covered the diff):
+   - Invoke `@workspace-standards/.cursor/skills/code-review/SKILL.md` against local diff, branch, or PR
    - The skill applies the team's standards checklist, golden paths, and codex best practices
    - Fix any MUST FIX issues identified
 
-3. Once the review is clean, the PR is ready for human review and merge
+4. Once the review is clean, the PR is ready for human review and merge
 
 **Output**: PR with structured description, self-reviewed against standards
 
@@ -316,6 +320,7 @@ The user can resume at any stage by providing context:
 | "Implement ticket HRZN-123" | Jump directly to Stage 7 |
 | "Assess tests for HRZN-123" | Jump directly to Stage 8 |
 | "Review PR for HRZN-123" | Jump directly to Stage 9 |
+| "Pre-qodo review HRZN-123" | Jump directly to Stage 9 (run pre-qodo-review first) |
 | "Post-implementation review for HRZN-123" | Jump directly to Stage 10 |
 
 ## Progress Tracking
@@ -390,6 +395,7 @@ Pipeline Progress: ██████████ Stage 10 of 10 — Complete
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — Stage 7
 - [Assess Tests Skill](../assess-tests/SKILL.md) — Stage 8 (test completeness gate)
 - [Generate PR Description](../generate-pr-description/SKILL.md) — Stage 9 (PR creation)
+- [Pre-Qodo Review Skill](../pre-qodo-review/SKILL.md) — Stage 9 (local diff; optional ticket; Qodo paths + Pax8)
 - [Code Review Skill](../code-review/SKILL.md) — Stage 9 (self-review)
 - [Post-Implementation Review](../post-implementation-review/SKILL.md) — Stage 10
 - [Technical Deep Dive](../technical-deep-dive/SKILL.md) — Called during refinement if needed

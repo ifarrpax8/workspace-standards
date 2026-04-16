@@ -223,6 +223,32 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
 - Error messages displayed to users must also go through i18n
 
+## Propulsion and PTable
+
+Pax8 MFEs use `@pax8/propulsion`. For **`PTable`** (and similar design-system data tables), **cells and headers often use flex layout**, not only normal flow with `text-align`.
+
+- **`text-align: right` or `end` alone is often ineffective** for numeric or currency columns, because flex alignment along the main axis overrides the usual text-align behaviour.
+- **Prefer** `justify-content: flex-end` on the cell content wrapper (or equivalent utility classes), **`align: 'end'`** (or the column API’s alignment option) when defining columns, and scoped `:deep` rules for header chrome (for example `.header__button`) where the component does not expose a header slot.
+- **Refinement and implementation**: tickets that say “right-align columns” or “CSS alignment” should assume **possible flex behaviour**—confirm against the table component’s DOM structure instead of relying only on `text-align`.
+
+### PTable: pagination size and header select-all
+
+- **`PTable` exposes `itemsPerPage`**, bound in templates as **`:items-per-page`**. It does **not** use `:page-size` or `:page-size-options`; those attributes are **not** component props and are ignored at runtime.
+- If **`itemsPerPage` is omitted**, the table keeps its **default (10)**. The **header checkbox** (select-all / clear visible) toggles selection **only for that many rows** in the table’s internal model, even when more rows are rendered (for example after server-side pagination loads 12 rows while the table still assumes 10).
+- **Always bind** `:items-per-page` to the same page size your API and **`p-pagination`** use. Put **per-page dropdown options** on **`p-pagination`** (`per-page-options`), not on `p-table`.
+- **Audit**: search the repo for `:page-size` on **`p-table`** — that pattern is a common source of “select all only selects the first 10” bugs.
+
+### PTable: select-all and row `disabled`
+
+- **Per-row** selection checkboxes **honour `item.disabled`** (users cannot tick ineligible rows).
+- **Header “select all”** (and the visible-range select-all behaviour tied to that control) **sets `isSelected` on every row in scope**, including rows marked **`disabled: true`**. That is easy to miss because the row UI still looks like a disabled checkbox while internal selection state includes those items.
+- **Mitigation for bulk actions**: treat `update:selectedRows` as untrusted for business rules. **Filter** the emitted array (for example `rows.filter((r) => !r.disabled)` or a domain-specific predicate) before calling an API or enabling a primary action.
+- **Mitigation for UI sync**: if you correct selection in the parent, the table’s internal row objects can still carry stale `isSelected` until **`items` is replaced**. Derive each row’s **`isSelected`** from your canonical selected set when building **`items`**, or otherwise ensure the `items` reference updates so the table’s watcher reapplies row state.
+- **Header checkbox desync**: the header control keeps its own checked / indeterminate state separately from the `items` you pass in. After you filter `update:selectedRows`, change page size, refetch data, or otherwise replace `items`, the **header “select all”** can stay checked or indeterminate even when no rows (or not all rows) are selected. **Remount `PTable` with a changing `:key`** after each successful data load and whenever you correct selection in a way the table did not emit (for example dropping `disabled` rows). That resets internal header state without asking users to click the header twice.
+- **Long-term**: the proper fix belongs in **`@pax8/propulsion`** (header select-all should skip `disabled` rows, and header state should track derived selection); until then, assume this behaviour in every MFE that uses row-level `disabled` with bulk selection.
+
+For **Playwright** selectors and assertions on `PTable`, see `playwright-standards.md` (Propulsion Component Patterns → PTable).
+
 ## Testing
 
 Use Vitest with Testing Library. See `vue-test-standards.md` for detailed test authoring rules covering component tests, composable tests, utility tests, mocking guidance, and test data patterns.
@@ -240,6 +266,8 @@ Use Vitest with Testing Library. See `vue-test-standards.md` for detailed test a
 <PButton icon="filter" @click="toggle" />
 <PartnerSelect v-model="filters.partner" />
 ```
+
+Some repos or Propulsion examples use **PascalCase** in templates; others standardise on **kebab-case**. Follow **ESLint** and the dominant pattern in the same feature folder. Do not block review on PascalCase vs kebab-case when the project is internally consistent and lint-clean.
 
 ## Avoid
 
