@@ -70,27 +70,46 @@ readonly: true     # true if the agent only reads, doesn't write
 - Use `model: fast` for read-only lookup agents, `model: inherit` for agents that need to write
 - Set `readonly: true` for agents that only read and synthesise (no file changes)
 
-## Adding an Auto-Apply Rule
+## Adding a Rule
 
-Auto-apply rules are copied to individual repositories' `.cursor/rules/` directories.
+Rules live in `.cursor/rules/` as the single source of truth. They are symlinked into `.augment/rules/` for Augment and referenced via `@` imports in `CLAUDE.md` for Claude Code.
 
-### Required Format
+### Cross-tooling frontmatter
+
+Every rule file should include combined frontmatter that all three tools understand from a single source:
 
 ```yaml
 ---
 description: Brief description of what this rule covers
-globs: ["*.ext", "pattern/**/*.ext"]
-alwaysApply: false
+globs: ["*.ext", "pattern/**/*.ext"]   # Cursor: auto-include when these files are open
+alwaysApply: false                      # Cursor: force-include regardless of context
+type: "auto"                            # Augment: always | auto | manual
 ---
 ```
+
+Each tool reads only the fields it understands and ignores the rest:
+
+| Field | Cursor | Augment | Claude Code |
+|---|---|---|---|
+| `description` | Routing hint | — | — |
+| `globs` | Auto-include on match | — | — |
+| `alwaysApply` | Force-include | — | — |
+| `type` | — | Context control | — |
+| Claude Code | — | — | No frontmatter support — control via CLAUDE.md inclusion (always-on) vs skill (on-demand) |
+
+**Augment `type` values:**
+- `"always"` — include in every context (core standards: security, primary language)
+- `"auto"` — include when context is relevant (language/framework standards with globs)
+- `"manual"` — only when explicitly referenced (checklists, process rules, Jira workflows)
 
 ### Conventions
 
 - Keep rules concise and directive — short bullets, not long explanations
 - Group rules by concern (structure, naming, security, testing, etc.)
 - Reference the relevant golden path at the bottom
-- Use `alwaysApply: false` unless the rule applies to every file type
+- Use `alwaysApply: false` unless the rule truly applies to every file regardless of type
 - Match the `globs` pattern to the specific file types the rule governs
+- Set `type: "always"` only for rules that should load unconditionally (security, session triggers)
 
 ## Adding a Golden Path
 

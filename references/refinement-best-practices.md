@@ -1,11 +1,6 @@
----
-description: Comprehensive Three Amigos refinement guide with DoR checklist and confidence scoring
-alwaysApply: false
----
-
 # Refinement Best Practices
 
-Comprehensive guide for refining Jira tickets using the Three Amigos approach, ensuring work is well-defined before sprint commitment. For a quick ticket breakdown template, see [Refinement Assistant](refinement.md). For interactive refinement with Jira integration, use the [Refine Ticket Skill](../skills/refine-ticket/SKILL.md).
+Comprehensive guide for refining Jira tickets using the Three Amigos approach, ensuring work is well-defined before sprint commitment. For a quick ticket breakdown template, see [Refinement Assistant](../.cursor/rules/refinement.md). For interactive refinement with Jira integration, use the [Refine Ticket Skill](../.cursor/skills/refine-ticket/SKILL.md).
 
 ## Three Amigos Overview
 

@@ -1,6 +1,7 @@
 ---
 description: Ambient session retrospective trigger — proactively surfaces skill improvement opportunities based on session usage patterns.
 alwaysApply: true
+type: "always"
 ---
 
 # Session Retrospective Trigger

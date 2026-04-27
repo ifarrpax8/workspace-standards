@@ -2,6 +2,7 @@
 description: Vue 3 coding standards for MFE projects
 globs: ["**/*.vue", "**/*.ts"]
 alwaysApply: true
+type: "always"
 ---
 
 # Vue MFE Standards
@@ -117,6 +118,8 @@ const emit = defineEmits<{
 
 Prefer `async/await` over nested `.then()` chains. Use `Promise.all()` for independent parallel async operations.
 
+Any async function that calls an API **and can be re-invoked before the previous call settles** (search inputs, reactive watchers, filter changes) must use `AbortController` to prevent race conditions and stale state writes. Use the **`/abort-controller-pattern`** skill for the full pattern and checklist.
+
 ## Composables
 
 Return reactive state and actions:
@@ -143,24 +146,6 @@ export function useFeature() {
   return { data, loading, error, filtered, fetch }
 }
 ```
-
-## Platform shell sidebar menus (platform-mfe)
-
-Partner and persona menus in **platform-mfe** are built with `createMenuItem` from `@/composables/sidebar/useMenuHelpers` and filtered by `processMenuItems`, which evaluates each item’s `visible` rules via `useVisibility`.
-
-### LaunchDarkly and `visible` rules
-
-- Express feature flags on **`MenuItem.visible`** (`VisibilityRules`). Do **not** rely only on a top-level `useFlag(...).value` to conditionally splice items (e.g. avoid `...(flagOn ? [createMenuItem(...)] : [])`). That hides the flag from the menu config, is inconsistent with other rows, and is harder to assert in tests.
-- **Default for “flag must be on”:** `visible: { flags: ['namespace.flag.key'] }`. Multiple entries in `flags` are all required. Evaluation uses `VisibilityContext.useFlag` inside `useVisibility` (same underlying feature-flag service as elsewhere).
-- **Combine** `flags` with `features`, `userTypes`, `custom`, `or`, `and`, etc. on the **same** rule object when those conditions must all hold together, declared **inline on that `createMenuItem`** (duplicate the same `features`/`custom` block on another row if both need it—avoid extracting shared `VisibilityRules` into a `const` in the composable unless the team explicitly agrees).
-- **When logic is inverted or non-trivial:** `visible.custom: (ctx) => !ctx.useFlag('namespace.other.flag', false)` (see the Subscriptions → Trials item in `usePartnerMenuNew`).
-
-### Where to look
-
-- `platform-mfe/src/composables/sidebar/types.ts` — `VisibilityRules`, `VisibilityContext`
-- `platform-mfe/src/composables/sidebar/useVisibility.ts` — rule evaluation
-- `platform-mfe/src/composables/sidebar/useMenuHelpers.ts` — `createMenuItem`, `processMenuItems`
-- `platform-mfe/src/composables/sidebar/menus/usePartnerMenuNew.ts` — examples: Voyager and Integrations “Guides” (`visible.flags`), Data exports (shared billing visibility + `flags`), Trials (`visible.custom` + `ctx.useFlag`)
 
 ## Services
 
@@ -269,6 +254,18 @@ Use Vitest with Testing Library. See `vue-test-standards.md` for detailed test a
 
 Some repos or Propulsion examples use **PascalCase** in templates; others standardise on **kebab-case**. Follow **ESLint** and the dominant pattern in the same feature folder. Do not block review on PascalCase vs kebab-case when the project is internally consistent and lint-clean.
 
+## Related Rules and Skills
+
+- **Error handling** — `global-error-handling.md` rule; never swallow errors, always log `traceId`
+- **API error parsing** — `/error-response-parsing` skill (ADR 00081 format: `type`, `details[].code`, `traceId`)
+- **Loading states** — `/loading-state-patterns` skill; use `isLoading` / `isSubmitting` / `isPending`
+- **Feature flags** — `/feature-flag-discipline` skill (ADR 00035); use `useFlag()` from shell, never site settings
+- **Cross-MFE components** — `/async-component-error-handling` skill (ADR 00054); always provide `errorComponent` and `timeout`
+- **AbortController** — `/abort-controller-pattern` skill; required for any re-invocable async API call
+- **Accessibility** — `accessibility-standards.md` rule; WCAG 2.1 AA target
+- **Component size** — `component-decomposition.md` rule; 250-line limit
+- **Session replay** — `session-replay-masking.md` rule; `data-session-replay-mask` on payment/PII fields (ADR 00085)
+
 ## Avoid
 
 - `any` type (use proper types or `unknown`)
@@ -311,3 +308,16 @@ watchImmediate(source, () => fetchData())
 - Use Tailwind CSS classes
 - Scoped styles for component-specific CSS
 - No inline styles except for dynamic values
+
+## Before Handing Back
+
+Run these scripts in order before reporting work complete. All MFEs share these script names:
+
+```bash
+npm run lint:fix          # auto-fix ESLint/import-ordering issues
+npm run vitest:ci         # full test suite
+npm run check-for-errors  # lint + tsc + prettier + i18n in parallel (the gate)
+npm run prettier:w        # auto-fix prettier issues if check-for-errors reports them, then re-run
+```
+
+ESLint (import ordering, no-explicit-any) and TSC are compile-time guardrails — the dev server surfaces these immediately as a broken page. Prettier failures also block CI. A clean `check-for-errors` run is the minimum bar for a shippable change.

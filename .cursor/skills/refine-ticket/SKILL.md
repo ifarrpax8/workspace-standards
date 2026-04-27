@@ -17,12 +17,12 @@ This skill works best with the following MCP servers enabled:
 | MCP Server | Tools Used | Purpose | Required? |
 |------------|------------|---------|-----------|
 | **Atlassian MCP** (e.g. Cursor `plugin-atlassian-atlassian`) | `getJiraIssue` | Fetch Jira ticket details (`cloudId`, `issueIdOrKey`; use `responseContentFormat: adf` when editing descriptions) | Recommended |
-| | `editJiraIssue` | Update ticket description and `customfield_12636` | Recommended |
+| | `editJiraIssue` | Update ticket description | Recommended |
 | | `addCommentToJiraIssue` | Post implementation plan to Jira | Recommended |
 | | `getConfluencePage` | Fetch PRD from Confluence | Optional |
 | **user-github** | `search_code` | Search patterns across Pax8 org (via Deep Dive) | Optional |
 
-> **Important:** See [Jira Standards](../../../.cursor/rules/jira-standards.md) for custom field usage, **ADF requirements**, and Success Criteria spacing. The business uses `customfield_12636` for Story descriptions; Jira Cloud requires **Atlassian Document Format** for that field, not wiki or markdown strings.
+> **Important:** See [Jira Standards](../../../.cursor/rules/jira-standards.md) for **ADF requirements** and Success Criteria spacing. Jira Cloud requires **Atlassian Document Format** for the native `description` field, not wiki or markdown strings.
 
 ### Checking MCP Availability
 
@@ -102,12 +102,11 @@ Use the getJiraIssue tool with:
 Use the getJiraIssue tool with:
 - cloudId: [from getAccessibleAtlassianResources]
 - issueIdOrKey: [Epic key from step 3]
-- fields: ["customfield_12637", "description", "summary"]
+- fields: ["description", "summary"]
 ```
 
 5. Locate the PRD link in the Epic's description:
-   - Check `customfield_12637` first (the "Epic Description" custom field used by the business — see [Jira Standards](../../../.cursor/rules/jira-standards.md))
-   - Fall back to the standard `description` field if the custom field is empty
+   - Read the native `description` field
    - The Epic description template includes a "PRD Link" section — scan for a Confluence URL (e.g. `https://*.atlassian.net/wiki/spaces/...` or `https://*.atlassian.net/wiki/x/...`)
    - The link is typically preceded by a label such as "PRD Link", "PRD:", or "Product Requirements Document"
 
@@ -237,19 +236,17 @@ Only proceed after the user confirms. Then perform two Jira updates:
 
 #### Step 1: Update the ticket description
 
-Read the existing description from `customfield_12636` (fetched in Phase 1). Preserve the existing Overview panel and replace the Success Criteria panel with the enriched Gherkin criteria. Write the implementation plan into the Refinement Notes panel. See [Jira Standards](../../../.cursor/rules/jira-standards.md) for the panel template and **ADF** requirements.
+Read the existing description from the native `description` field (fetched in Phase 1). Preserve the existing Overview panel and replace the Success Criteria panel with the enriched Gherkin criteria. Write the implementation plan into the Refinement Notes panel. See [Jira Standards](../../../.cursor/rules/jira-standards.md) for the panel template and **ADF** requirements.
 
-**Jira Cloud / MCP:** Use `getJiraIssue` with `responseContentFormat: adf` to obtain the current document, then `editJiraIssue` with `contentFormat: adf` and the same ADF `doc` in **both** `fields.description` and `fields.customfield_12636`. Wiki-style `{panel:...}` strings are a human-readable reference only; the API expects ADF JSON for `customfield_12636`. Resolve `cloudId` via `getAccessibleAtlassianResources` when the tool requires it.
+**Jira Cloud / MCP:** Use `getJiraIssue` with `responseContentFormat: adf` to obtain the current document, then `editJiraIssue` with `contentFormat: adf` and the ADF `doc` in `fields.description`. Wiki-style `{panel:...}` strings are a human-readable reference only; the API expects ADF JSON. Resolve `cloudId` via `getAccessibleAtlassianResources` when the tool requires it.
 
 ```
 Use the editJiraIssue tool with:
 - cloudId: [from getAccessibleAtlassianResources]
 - issueIdOrKey: [ticket key]
 - contentFormat: adf
-- fields: { "description": { ADF doc }, "customfield_12636": { same ADF doc } }
+- fields: { "description": { ADF doc } }
 ```
-
-If the issue type does not use `customfield_12636`, update `description` only per [Jira Standards](../../../.cursor/rules/jira-standards.md).
 
 The description should follow this structure (express in ADF panels as documented in Jira Standards):
 ```
@@ -272,7 +269,7 @@ The description should follow this structure (express in ADF panels as documente
 {panel}
 ```
 
-> **Important:** Write the same ADF document to both `fields.description` and `fields.customfield_12636` when the issue uses that custom field. See [Jira Standards](../../../.cursor/rules/jira-standards.md).
+> **Note:** All issue types now use the native `description` field. See [Jira Standards](../../../.cursor/rules/jira-standards.md) for ADF requirements.
 
 #### Step 2: Post the implementation plan as a comment
 
@@ -379,11 +376,11 @@ If any items are not satisfied, flag them and ask if refinement should continue 
 
 After each critical operation, verify success:
 
-- **Phase 1 (Fetch)**: Confirm `getJiraIssue` returned ticket data with a non-empty summary. If `customfield_12636` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets. Confirm the Epic was fetched and check whether a Confluence PRD link was found in `customfield_12637` or `description`. If no link was found, flag this in the analysis.
+- **Phase 1 (Fetch)**: Confirm `getJiraIssue` returned ticket data with a non-empty summary. If `description` is empty, the ticket has no existing refinement notes — this is expected for unrefined tickets. Confirm the Epic was fetched and check whether a Confluence PRD link was found in the Epic's `description`. If no link was found, flag this in the analysis.
 - **Phase 2 (Analysis)**: Confirm at least one test scenario was generated per persona perspective used. If zero scenarios, the acceptance criteria may be too vague — flag in Q&A.
 - **Phase 4 (Score)**: Confirm the confidence score is a number between 1-12 and each factor has a valid rating. Present the breakdown for user confirmation.
 - **Phase 5 (Jira Update)**: Two verifications required:
-  1. **Description update** (`editJiraIssue` with ADF for `customfield_12636` when applicable): Verify the response indicates success. If it fails with an ADF validation error, switch from wiki/markdown strings to Atlassian Document Format per [Jira Standards](../../../.cursor/rules/jira-standards.md). If it still fails, present the description content for manual copy — flag that the Success Criteria panel needs updating.
+  1. **Description update** (`editJiraIssue` with ADF for `description`): Verify the response indicates success. If it fails with an ADF validation error, switch from wiki/markdown strings to Atlassian Document Format per [Jira Standards](../../../.cursor/rules/jira-standards.md). If it still fails, present the description content for manual copy — flag that the Success Criteria panel needs updating.
   2. **Comment** (`addCommentToJiraIssue`): Verify the response indicates success. If it fails, present the implementation plan as markdown for manual copy.
 
 ## Worked Example
@@ -500,7 +497,7 @@ If `getJiraIssue` returns an error:
 
 If `editJiraIssue` returns an error when updating the description:
 - Display the error message
-- If the error states the field must be an **Atlassian Document**, rebuild the payload as ADF (see [Jira Standards](../../../.cursor/rules/jira-standards.md)) and retry; `customfield_12636` on Stories typically requires this
+- If the error states the field must be an **Atlassian Document**, rebuild the payload as ADF (see [Jira Standards](../../../.cursor/rules/jira-standards.md)) and retry; the native `description` field requires ADF JSON
 - Otherwise present the full description content (all three panels) as formatted markdown for manual paste
 - Instruct: "Copy the Success Criteria section and paste it into the ticket description's Success Criteria panel on [ticket-key]"
 - Continue to post the comment (Step 2) regardless — the comment is independent
@@ -515,7 +512,7 @@ If `addCommentToJiraIssue` returns an error:
 ### PRD Not Found
 
 If no PRD link is found in the Epic description, or the Confluence page fetch fails:
-- Check both `customfield_12637` and `description` on the Epic before giving up
+- Check the `description` field on the Epic before giving up
 - If the Epic itself has no description content, note this explicitly
 - Note that PRD context is missing
 - Reduce confidence score for Requirements by 1 point
@@ -529,7 +526,7 @@ If no PRD link is found in the Epic description, or the Confluence page fetch fa
 ## Related Resources
 
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) - Structured implementation of refined tickets (next step after refinement)
-- [Refinement Best Practices](../../../.cursor/rules/refinement-best-practices.md)
+- [Refinement Best Practices](../../../references/refinement-best-practices.md)
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - Quick codebase investigation (hours)
 - [Spike Skill](../spike/SKILL.md) - Time-boxed research (days) for broader investigation
 - [Golden Paths](../../../golden-paths/)

@@ -1,6 +1,7 @@
 ---
 description: Lightweight template for quick Jira ticket refinement and story breakdown
 alwaysApply: false
+type: "manual"
 ---
 
 # Refinement Assistant

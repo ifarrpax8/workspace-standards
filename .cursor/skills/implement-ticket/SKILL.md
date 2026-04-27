@@ -18,7 +18,7 @@ Structured implementation workflow for refined Jira tickets with Definition of R
 | | `jira_add_comment` | Post implementation summary to Jira | Recommended |
 | **user-github** | `search_code` | Search patterns across Pax8 org (via Deep Dive) | Optional |
 
-> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. Stories use `customfield_12636`, not the standard description field.
+> **Note:** See [Jira Standards](../../rules/jira-standards.md) for Jira field usage. All issue types now use the native `description` field.
 
 ### Graceful Degradation
 
@@ -35,13 +35,11 @@ This skill may invoke:
 
 ### Engineering Codex Integration
 
-If `@engineering-codex` is in the workspace, this skill will:
-- Reference `best-practices.md` for the relevant facets during implementation (e.g., `@engineering-codex/facets/api-design/best-practices.md` when implementing an API endpoint)
-- Check `gotchas.md` to avoid known pitfalls before starting each task
-- Use the codex `architecture-review` guidance during the self-review phase (Phase 5) in addition to the code-review.md checklist
-- Check Pax8 standards for any technology choices made during implementation
+In Phase 2, this skill maps the ticket's domain to specific codex facets and reads `gotchas.md` + `best-practices.md` before writing any code. The mapping is explicit (see Phase 2 step 3) — no guessing required.
 
-If the codex is not available, the skill uses golden paths and code-review.md as before.
+During Phase 5 (self-review), the `architecture-review` skill can be invoked against changed files for a structured alignment check against codex patterns.
+
+If the codex is not available, the skill falls back to golden paths and code-review.md.
 
 ## When to Use
 
@@ -89,7 +87,7 @@ Use jira_get_issue with:
 - expand: "renderedFields"
 ```
 
-3. Extract the refinement notes from `customfield_12636`. The description has three panels:
+3. Extract the refinement notes from the native `description` field. The description has three panels:
    - **Overview** — original ticket context
    - **Refinement Notes** — the implementation plan (approach, tasks, test scenarios, etc.)
    - **Success Criteria** — Gherkin-format (Given/When/Then) acceptance criteria written during refinement
@@ -138,11 +136,28 @@ If the developer chooses to proceed, document the missing DoR items as known ris
 | Vue MFE (e.g., finance-mfe, order-management-mfe) | [vue-standards.md](../../rules/vue-standards.md) | [vue-mfe.md](../../../golden-paths/vue-mfe.md) |
 | All repositories | [security-standards.md](../../rules/security-standards.md), [pre-review-checklist.md](../../rules/pre-review-checklist.md) | - |
 
-3. **Load codex context** (if `@engineering-codex` is in the workspace):
-   - Identify relevant facets based on the ticket's domain (e.g., api-design for new endpoints, authentication for auth changes)
-   - Read `best-practices.md` for stack-specific guidance
-   - Read `gotchas.md` to be aware of common pitfalls before starting
-   - If this is a Pax8 project, check `pax8-context/standards-map.md` for mandated standards
+3. **Load codex context** from `engineering-codex/facets/` based on the ticket's domain. Use this mapping — read the `gotchas.md` and `best-practices.md` for each matched facet before writing any code:
+
+   | Ticket domain | Facets to load |
+   |---|---|
+   | New REST endpoint or API change | `api-design`, `error-handling`, `security` |
+   | Auth, permissions, roles | `authentication`, `security` |
+   | Background jobs, events, messaging | `event-driven-architecture`, `error-handling` |
+   | Frontend feature or component | `frontend-architecture`, `state-management`, `error-handling` |
+   | Database queries, persistence, migrations | `data-persistence`, `performance` |
+   | Test-only work | `testing` |
+   | Logging, tracing, alerting | `observability`, `error-handling` |
+   | Infrastructure, config, deployment | `configuration-management`, `ci-cd` |
+   | Performance investigation or optimisation | `performance`, `data-persistence` |
+   | Feature flags | `feature-toggles` |
+
+   For each matched facet, read:
+   - `engineering-codex/facets/{facet}/gotchas.md` — pitfalls to avoid before starting
+   - `engineering-codex/facets/{facet}/best-practices.md` — patterns to follow during implementation
+
+   If this is a Pax8 project, also check `engineering-codex/pax8-context/standards-map.md` for mandated standards that override codex defaults.
+
+   If the ticket spans multiple domains (e.g. a new authenticated API endpoint), union the facet lists — load all matched facets.
 
 4. **Create the feature branch** from main:
 
@@ -437,7 +452,7 @@ Remaining: none / [HRZN-XXX follow-up ticket]
 
 After each critical operation, verify success:
 
-- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data. If it errors, switch to manual input before proceeding.
+- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned ticket data with a non-empty `description`. If it errors, switch to manual input before proceeding.
 - **Phase 2 (Branch)**: Run `git rev-parse --abbrev-ref HEAD` and confirm the branch name matches the ticket key.
 - **Phase 4 (Tests)**: After each red-green cycle, confirm the test runner exit code. Parse output for pass/fail count — do not assume success.
 - **Phase 4 (Commits)**: Do not run `git commit` until the user has explicitly approved that commit; passing tests or completed tasks are not implicit approval.
@@ -534,6 +549,6 @@ If the branch already exists when attempting to create it:
 - [Pre-Qodo Review Skill](../pre-qodo-review/SKILL.md) — Qodo paths + Pax8 (+ optional ticket AC); local/uncommitted diff OK; push not required
 - [Code Review Rule](../../rules/code-review.md) - Self-review checklist used in Phase 5
 - [Pre-Review Checklist](../../rules/pre-review-checklist.md) - Cross-cutting quality checks used in Phase 5
-- [Refinement Best Practices](../../rules/refinement-best-practices.md) - DoR checklist reference
-- [Jira Standards](../../rules/jira-standards.md) - Custom field usage
+- [Refinement Best Practices](../../references/refinement-best-practices.md) - DoR checklist reference
+- [Jira Standards](../../rules/jira-standards.md) - Jira field usage and ADF requirements
 - [Golden Paths](../../../golden-paths/) - Architecture patterns

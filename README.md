@@ -339,42 +339,92 @@ All workflow skills optionally leverage the [Engineering Codex](https://github.c
 
 ## Getting Started
 
-### Cursor
+Clone `workspace-standards` alongside your existing project repos — all three tools discover content from a shared parent directory:
 
-1. Add `~/Development/workspace-standards` to your Cursor workspace
-2. (Optional) Add `~/Development/engineering-codex` to the same workspace for best practices, gotchas, and decision frameworks
-3. Reload the Cursor window — skills, subagents, and rules are auto-discovered from `.cursor/`
-4. For repo-specific auto-apply rules, copy files from `rules/auto-apply/` to your repo's `.cursor/rules/`
-5. See the [Onboarding Guide](docs/onboarding.md) for a full walkthrough
-6. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add new content
+```
+<your-dev-folder>/
+├── workspace-standards/   ← this repo
+├── my-service/
+├── my-mfe/
+└── engineering-codex/     ← optional but recommended
+```
 
-### Augment
+### Step 1 — Clone the repos
 
-1. Add `~/Development/workspace-standards` to your Augment workspace
-2. (Optional) Add `~/Development/engineering-codex` to the same workspace
-3. Skills are auto-discovered from `.agents/skills/` — use `/skills` to see the full list
-4. Rules are auto-loaded from `.augment/rules/` and `AGENTS.md`
-5. Configure MCP servers (Jira, GitHub) in Augment for full skill functionality — skills degrade gracefully without them
+```bash
+cd <your-dev-folder>
+git clone <workspace-standards-url> workspace-standards
+git clone <engineering-codex-url> engineering-codex   # optional
+```
+
+### Step 2 — Run setup
+
+```bash
+bash workspace-standards/scripts/setup.sh
+```
+
+That's it for Claude Code. The script self-locates — it works regardless of where your development folder lives. It:
+
+- Links all skills into `.claude/skills/` (Claude Code) and `.agents/skills/` (Augment)
+- Writes the `SessionStart` hook into `.claude/settings.json` with the correct absolute path
+- Creates a starter `CLAUDE.md` in the parent directory if one doesn't exist
+
+**Re-run whenever you add a new repository that contains `.cursor/skills/`.**
+
+### Step 3 — Edit your CLAUDE.md
+
+The starter `CLAUDE.md` is created one level above `workspace-standards/`. Uncomment the rules that apply to your stack:
+
+```markdown
+@workspace-standards/.cursor/rules/security-standards.md
+@workspace-standards/.cursor/rules/kotlin-standards.md     # if Kotlin
+@workspace-standards/.cursor/rules/vue-standards.md        # if Vue
+@workspace-standards/.cursor/rules/playwright-standards.md # if Playwright
+@engineering-codex/.cursor/rules/security-gotchas.md       # if codex cloned
+```
+
+Rules prefixed `@` are loaded into every Claude Code session opened in that directory or any subdirectory.
+
+### Step 4 — Wire up Cursor
+
+1. Add `<your-dev-folder>/workspace-standards` to your Cursor workspace
+2. Optionally add `<your-dev-folder>/engineering-codex`
+3. Reload the Cursor window — skills, subagents, and rules auto-discovered from `.cursor/`
+
+For Augment parity in a project repo, symlink its rule directory:
+
+```bash
+ln -s ../.cursor/rules my-repo/.augment/rules
+```
+
+### Step 5 — Wire up Augment
+
+1. Add `<your-dev-folder>/workspace-standards` to your Augment workspace
+2. Skills auto-discovered from `.agents/skills/` — use `/skills` to browse
+3. Rules auto-loaded from `.augment/rules/` and `AGENTS.md`
+4. Configure MCP servers (Jira, GitHub) for full skill functionality — all skills degrade gracefully without them
 
 ### Skills and Subagents
 
-Skills follow the [agentskills.io](https://agentskills.io/) specification and are auto-discovered by both Cursor and Augment. No manual registration required.
+Skills follow the [agentskills.io](https://agentskills.io/) specification and are auto-discovered by Cursor, Augment, and Claude Code. No manual registration required.
 
-| Type | Cursor | Augment |
-|------|--------|---------|
-| Skills | `.cursor/skills/` | `.agents/skills/` |
-| Rules | `.cursor/rules/` | `.augment/rules/` + `AGENTS.md` |
-| Subagents | `.cursor/agents/` (`standards-auditor`, `ticket-refiner`) | — |
+| Type | Claude Code | Cursor | Augment |
+|------|-------------|--------|---------|
+| Skills | `.claude/skills/` symlinks | `.cursor/skills/` | `.agents/skills/` |
+| Rules | `CLAUDE.md` @imports | `.cursor/rules/` | `.augment/rules/` + `AGENTS.md` |
+| Subagents | — | `.cursor/agents/` | — |
 
-**Cursor**: Invoke subagents explicitly with `/standards-auditor`, `/ticket-refiner`, or `/codex-navigator`, or let the agent delegate automatically based on your task.
+**Claude Code**: Invoke skills with `/skill-name` in the chat.
 
-**Augment**: Use `/skills` to browse available skills, then invoke them by describing the task (e.g. "refine ticket HRZN-123").
+**Cursor**: Invoke subagents explicitly with `/standards-auditor`, `/ticket-refiner`, or let the agent delegate automatically.
+
+**Augment**: Use `/skills` to browse, then invoke by describing the task (e.g. "refine ticket HRZN-123").
 
 ## Related Resources
 
 ### Ways of Working
 - [Onboarding Guide](docs/onboarding.md) - New developer orientation
-- [Refinement Best Practices](rules/refinement-best-practices.md) - Three Amigos guide, Definition of Ready
+- [Refinement Best Practices](references/refinement-best-practices.md) - Three Amigos guide, Definition of Ready
 - [Migration Paths](patterns/migration-paths.md) - Legacy to target state transitions
 - [Pattern Inventory](patterns/pattern-inventory.md) - Current state of all repos
 

@@ -2,6 +2,7 @@
 description: Standards for Terraform Infrastructure as Code
 globs: ["*.tf", "*.tfvars", "*.hcl"]
 alwaysApply: false
+type: "auto"
 ---
 
 # Terraform Standards

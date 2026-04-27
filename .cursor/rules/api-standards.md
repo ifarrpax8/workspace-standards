@@ -2,6 +2,7 @@
 description: API design and development standards for REST APIs and event-driven APIs
 globs: ["**/endpoint/**/*.kt", "**/controller/**/*.kt", "**/api/**/*.kt", "**/events/**/*.kt"]
 alwaysApply: false
+type: "auto"
 ---
 
 # API Standards

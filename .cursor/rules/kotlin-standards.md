@@ -2,6 +2,7 @@
 description: Kotlin coding standards for Spring Boot and Axon Framework projects
 globs: ["**/*.kt"]
 alwaysApply: true
+type: "always"
 ---
 
 # Kotlin Standards

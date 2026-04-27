@@ -2,6 +2,7 @@
 description: Standards for Vue MFE unit and component tests
 globs: ["**/*.test.ts", "**/*.test.js"]
 alwaysApply: false
+type: "auto"
 ---
 
 # Vue Test Standards

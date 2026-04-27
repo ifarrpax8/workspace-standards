@@ -52,7 +52,7 @@ Generate ADR from spike HRZN-456 findings
 
 1. **Understand the decision**
    - If user provided a spike ticket key: fetch via `jira_get_issue` with `fields: "*all"`
-   - Extract spike findings from `customfield_14303` (Spike Description) or comments
+   - Extract spike findings from `description` or comments
    - If no ticket: ask user what decision was made and why
 
 2. **Identify target repository**

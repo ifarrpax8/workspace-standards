@@ -59,7 +59,7 @@ Invoke Pax8 skills with `@workspace-standards/.cursor/skills/.../SKILL.md` (or y
 
 Common case: work starts with a **ticket that is not yet refined**. Use this sequence (aligns with compounding + harness-style backpressure: refine → spec in repo → implement with tests → automated + skill review → learnings):
 
-1. **[refine-ticket](../refine-ticket/SKILL.md)** — Three Amigos, Jira updated (`customfield_12636`), acceptance criteria and test scenarios in place.
+1. **[refine-ticket](../refine-ticket/SKILL.md)** — Three Amigos, Jira `description` updated, acceptance criteria and test scenarios in place.
 2. **Plan file (optional but useful)** — Superpowers **writing-plans** skill, or a short `docs/superpowers/plans/YYYY-MM-DD-<feature>.md` in the app repo with **Jira key** and file-touch hints (bridges sessions).
 3. **[implement-ticket](../implement-ticket/SKILL.md)** — DoR/DoD, TDD where suitable, QA handoff.
 4. **Review bundle** — [pre-qodo-review](../pre-qodo-review/SKILL.md) on **local diff** (optional; no push required) → open PR / Qodo when ready → [code-review](../code-review/SKILL.md) if needed → [generate-pr-description](../generate-pr-description/SKILL.md) (see above).
@@ -69,7 +69,7 @@ Skip steps only when the ticket is already refined and a plan is unnecessary.
 
 ## Spec-driven stack: Jira + local plans
 
-- **Jira** is **canonical** for HRZN: stories use `customfield_12636` (see [jira-standards](../../rules/jira-standards.md)). Refinement, acceptance criteria, and DoR for [implement-ticket](../implement-ticket/SKILL.md) live there.
+- **Jira** is **canonical** for HRZN: all issue types use the native `description` field (see [jira-standards](../../rules/jira-standards.md)). Refinement, acceptance criteria, and DoR for [implement-ticket](../implement-ticket/SKILL.md) live there.
 - **Local markdown** helps across sessions and fast iteration: optional plan under `docs/superpowers/plans/YYYY-MM-DD-<feature>.md` (Superpowers default) or your repo’s convention.
 
 **Local plan file header (suggested lines):**
@@ -153,7 +153,7 @@ Industry writeups on **agentic engineering** stress **context + compounding + ha
 - Start from an **unrefined** ticket: [refine-ticket](../refine-ticket/SKILL.md) → plan file → [implement-ticket](../implement-ticket/SKILL.md) (see [default flow](#default-flow-unrefined-ticket--delivery)).
 - Show [idea-to-implementation](../idea-to-implementation/SKILL.md) for greenfield vs jumping to [implement-ticket](../implement-ticket/SKILL.md) when the ticket is already refined.
 - Show Superpowers **writing-plans** for a repo-local implementation plan.
-- Show where **Jira** (`customfield_12636`) vs **local plan file** fit.
+- Show where **Jira** (native `description`) vs **local plan file** fit.
 - Optional: **`gh auth status`** and one **`gh`** command vs GitHub MCP for private org repos.
 
 ## MCP health (~30 seconds)
@@ -166,7 +166,7 @@ Industry writeups on **agentic engineering** stress **context + compounding + ha
 
 | Symptom | Action |
 | ------- | ------ |
-| Wrong or empty Jira description | Read [jira-standards](../../rules/jira-standards.md); stories use **customfield_12636**. |
+| Wrong or empty Jira description | Read [jira-standards](../../rules/jira-standards.md); all issue types use the native **description** field. |
 | Refinement missing | Run [refine-ticket](../refine-ticket/SKILL.md) before implement-ticket. |
 | Superpowers vs Pax8 conflict | User rules → team AGENTS → skills. |
 

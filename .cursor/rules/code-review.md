@@ -1,6 +1,7 @@
 ---
 description: Structured code review checklist covering standards, security, and quality across all languages
 alwaysApply: false
+type: "manual"
 ---
 
 # Code Review Assistant

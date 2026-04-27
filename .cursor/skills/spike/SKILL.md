@@ -23,7 +23,7 @@ Time-boxed research and investigation skill for answering specific technical que
 | **cursor-ide-browser** | `browser_navigate` | Fallback: Browse GitHub with SSO session | Optional |
 | | `browser_snapshot`, `browser_click` | Interact with GitHub UI | Optional |
 
-> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. Spikes use `customfield_14303` (Spike Description field), not the standard description field.
+> **Note:** See [Jira Standards](../../rules/jira-standards.md) for Jira field usage. Spikes use the native `description` field.
 
 ### Research Capabilities
 
@@ -362,11 +362,8 @@ Include this assessment in the spike findings posted to Jira. If gaps are identi
    ```
    Use jira_update_issue with:
    - issue_key: [spike ticket key]
-   - fields: {}
-   - additional_fields: { "customfield_14303": "[formatted findings]" }
+   - fields: { "description": "[formatted findings]" }
    ```
-
-   > **Note:** Spikes use `customfield_14303` (Spike Description field), not the standard description. See [Jira Standards](../../rules/jira-standards.md).
 
    Alternatively, add findings as a comment:
    ```
@@ -429,7 +426,7 @@ The spike always produces a Jira comment with:
 
 ## Verification
 
-- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned spike data. If `customfield_14303` is empty, the spike has no existing description — proceed with discovery.
+- **Phase 1 (Fetch)**: Confirm `jira_get_issue` returned spike data. If `description` is empty, the spike has no existing description — proceed with discovery.
 - **Phase 2 (Success Criteria)**: Confirm user approved the success criteria before starting investigation. Do not investigate without defined "done" criteria.
 - **Phase 6 (Post)**: If posting via `jira_update_issue` or `jira_add_comment`, verify the response indicates success. If it fails, present findings as markdown.
 - **Phase 5 (Readiness)**: Confirm the implementation readiness assessment addresses every task identified in the recommendation — no tasks silently omitted.
@@ -521,5 +518,5 @@ If investigation is taking longer than expected:
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) - Structured implementation after spike findings inform a refined ticket
 - [Technical Deep Dive Skill](../technical-deep-dive/SKILL.md) - For codebase investigation
 - [Refine Ticket Skill](../refine-ticket/SKILL.md) - For refining follow-up tickets
-- [Refinement Best Practices](../../rules/refinement-best-practices.md)
+- [Refinement Best Practices](../../references/refinement-best-practices.md)
 - [Golden Paths](../../golden-paths/) - Architecture patterns

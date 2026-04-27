@@ -186,6 +186,8 @@ If the user chooses **Save to log**, append to `docs/skill-improvements.md` in t
 
 **Session context:** The agent used `implement-ticket` to implement HRZN-731. Mid-session, the user had to manually provide the MCP fallback instructions because the skill's graceful degradation section didn't cover the case where Jira was reachable but returned a 403.
 
+> **Historical note:** This example predates the migration to native `description` fields. The reference to `customfield_12636` below reflects the old custom field pattern — the field and fallback approach are no longer applicable.
+
 **Output excerpt:**
 
 ```markdown
@@ -210,9 +212,9 @@ Implemented HRZN-731 (invoice currency select component) using implement-ticket.
 **Finding**:
 The graceful degradation section only covers MCP unavailability, not the case where Jira is reachable but returns a 403 (e.g., insufficient field permissions). The agent had to improvise a fallback.
 
-**Proposed change**:
+**Proposed change** (historical — `customfield_12636` no longer used):
 Add to the Graceful Degradation section:
-> **Jira 403 on custom field**: If `jira_get_issue` succeeds but `customfield_12636` is forbidden, fall back to the standard `description` field. If both are empty, ask the user to paste the acceptance criteria.
+> **Jira 403 on description**: If `jira_get_issue` succeeds but `description` is forbidden, ask the user to paste the acceptance criteria directly.
 
 **Prompt version bump**: 1.1 → 1.2
 ```

@@ -62,7 +62,7 @@ Generate PR description for HRZN-123
 
 3. **Fetch ticket context** (if ticket key in branch name or user input)
    - Use `jira_get_issue` with `fields: "*all"`
-   - Extract implementation notes from `customfield_12636` or comments
+   - Extract implementation notes from `description` or comments
 
 4. **Fetch existing PR** (if GitHub MCP available)
    - Use `get_pull_request` to fetch PR for current branch
@@ -72,7 +72,7 @@ Generate PR description for HRZN-123
 ### Phase 2: Extract Implementation Notes
 
 From the Jira ticket (if available):
-- Read `customfield_12636` (refinement/implementation notes)
+- Read `description` (refinement/implementation notes)
 - Scan comments for implementation summary
 - Extract acceptance criteria, technical approach, test scenarios
 
@@ -219,4 +219,4 @@ If `git diff main --stat` shows no changes:
 
 - [Implement Ticket Skill](../implement-ticket/SKILL.md) — Produces implementation that leads to PRs
 - [Post-Implementation Review Skill](../post-implementation-review/SKILL.md) — Reviews merged PRs
-- [Jira Standards](../../rules/jira-standards.md) — Custom field usage
+- [Jira Standards](../../rules/jira-standards.md) — Jira field usage and ADF requirements

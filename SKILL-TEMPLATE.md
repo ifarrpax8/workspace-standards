@@ -2,6 +2,22 @@
 
 Use this template when creating a new skill. Copy it to `.cursor/skills/<name>/SKILL.md` and fill in each section.
 
+## Cross-Tooling Discovery
+
+Skills placed in `.cursor/skills/<name>/SKILL.md` are the canonical source. The following symlinks make them available to each tool:
+
+| Tool | Discovery path | How to add |
+|------|---------------|------------|
+| **Cursor** | `.cursor/skills/<name>/` (native) | No action needed |
+| **Claude Code** | `.claude/skills/<name>/` → `../.cursor/skills/<name>` | Run `sync-skills.sh` at workspace root |
+| **Augment** | `.agents/skills/<name>/` → `../.cursor/skills/<name>` | Symlink in repo; run `sync-skills.sh` for workspace-level |
+
+Skills are **on-demand** in all three tools — they are not loaded into context automatically. Invoke them explicitly (e.g. `/skill-name` in Cursor, the `Skill` tool in Claude Code, `@skill-name` in Augment).
+
+For rules (always-on or auto-applied context), see the rule template in `CONTRIBUTING.md`.
+
+---
+
 ```markdown
 ---
 name: skill-name

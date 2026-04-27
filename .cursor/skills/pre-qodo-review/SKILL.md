@@ -25,15 +25,15 @@ Code review pass that combines **what Qodo Merge will enforce** (via [pr-agent-s
 
 | MCP / access | Tools / usage | Required? |
 |--------------|---------------|-----------|
-| **Atlassian** (e.g. `plugin-atlassian-atlassian`) | `getJiraIssue` — ticket summary, refinement (`customfield_12636`), repos line | Optional — omit when reviewing without a ticket |
+| **Atlassian** (e.g. `plugin-atlassian-atlassian`) | `getJiraIssue` — ticket summary, refinement notes (`description`), repos line | Optional — omit when reviewing without a ticket |
 | **GitHub** | PR file list / contents | Optional (`git diff` / local files are enough) |
 
-Use [Jira Standards](../../rules/jira-standards.md): Stories — read **`customfield_12636`** first; if empty, fall back to standard description.
+Use [Jira Standards](../../rules/jira-standards.md): read the native **`description`** field for all issue types.
 
 ### Graceful degradation
 
 - **No Jira key / no Jira MCP**: Skip ticket fetch and AC alignment (Phases 2 and 7); continue with pr-agent-settings paths + Pax8 + codex. If the user pastes refinement text later, you can still align to it in a follow-up.
-- **No Jira MCP but user has a key**: Ask the user to paste refinement (`customfield_12636`) or description; continue.
+- **No Jira MCP but user has a key**: Ask the user to paste the ticket description; continue.
 - **No pr-agent-settings in workspace**: Run Pax8 + codex review only; state clearly that **Qodo rules were not loaded**.
 - **Repo key missing from `metadata.yaml`**: Review with Pax8 + codex only for that repo; list the missing key and suggest adding it to pr-agent-settings.
 
@@ -88,7 +88,7 @@ If the user **names a ticket**, **infer target repos** from the Jira refinement 
 **If Jira key present:**
 
 1. Call Atlassian MCP **`getJiraIssue`** with `cloudId` from accessible resources, `issueIdOrKey`, and fields needed for summary + story panel (or use pasted content if MCP unavailable).
-2. From **`customfield_12636`** (or description fallback), extract:
+2. From **`description`**, extract:
    - **Repositories** (or equivalent) for scope
    - **Success Criteria / Acceptance Criteria** for alignment checks
 3. Summarise **scope** in one short paragraph for the review header.

@@ -21,7 +21,7 @@ Closing-the-loop skill that runs after a feature has been implemented and merged
 | | `get_pull_request_files` | Fetch changed file list | Optional |
 | | `get_pull_request_reviews` | Fetch review comments | Optional |
 
-> **Important:** See [Jira Standards](../../rules/jira-standards.md) for custom field usage. Refinement notes live in `customfield_12636`.
+> **Note:** See [Jira Standards](../../rules/jira-standards.md) for Jira field usage. Refinement notes live in the native `description` field.
 
 ### Graceful Degradation
 
@@ -59,7 +59,7 @@ Review how HRZN-123 went after implementation
 ### Phase 1: Gather Context
 
 1. **Fetch the ticket** (Jira MCP):
-   - Full history: original description, refinement notes (`customfield_12636`), implementation summary comment, spike findings (if any)
+   - Full history: original description, refinement notes (`description`), implementation summary comment, spike findings (if any)
 
 2. **Fetch the PR** (GitHub MCP):
    - Files changed count

@@ -2,6 +2,7 @@
 description: Cross-cutting quality checks to run before opening a pull request
 globs: ["**/*"]
 alwaysApply: false
+type: "manual"
 ---
 
 # Pre-Review Checklist
