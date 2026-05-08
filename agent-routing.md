@@ -24,6 +24,6 @@ On-demand lookup table mapping user tasks to the files an agent should read. Ski
 | Asks about Kotlin/Spring Boot patterns | `golden-paths/kotlin-spring-boot.md`, `.cursor/rules/kotlin-standards.md` | low |
 | Asks about Axon/CQRS patterns | `golden-paths/kotlin-axon-cqrs.md`, `.cursor/rules/kotlin-standards.md` | low |
 | Asks about Vue/MFE patterns | `golden-paths/vue-mfe.md`, `.cursor/rules/vue-standards.md` | low |
-| Asks about Groovy monolith patterns | `golden-paths/groovy-monolith.md`, `.cursor/rules/groovy-standards.md` | low |
+| Asks about Groovy monolith patterns | `golden-paths/groovy-monolith.md`, `.cursor/rules/groovy-java-monolith-standards.md` | low |
 | Asks about Terraform patterns | `golden-paths/terraform-iac.md`, `.cursor/rules/terraform-standards.md` | low |
 | Asks about E2E/Playwright patterns | `golden-paths/integration-testing.md`, `.cursor/rules/playwright-standards.md` | low |

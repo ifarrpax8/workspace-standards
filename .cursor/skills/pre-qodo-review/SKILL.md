@@ -120,7 +120,7 @@ If there are **no changed files**, stop and ask the user to stage changes, switc
 ### Phase 5 — Pax8 workspace standards
 
 1. Read and apply **[code-review.md](../../rules/code-review.md)** and **[pre-review-checklist.md](../../rules/pre-review-checklist.md)** to the changed files.
-2. For each file type present in the diff, load matching rules from **`.cursor/rules/`** (e.g. `vue-standards.md`, `kotlin-standards.md`, `api-standards.md`, `security-standards.md`, `terraform-standards.md`, `playwright-standards.md`, `groovy-standards.md`).
+2. For each file type present in the diff, load matching rules from **`.cursor/rules/`** (e.g. `vue-standards.md`, `kotlin-standards.md`, `api-standards.md`, `security-standards.md`, `terraform-standards.md`, `playwright-standards.md`, `groovy-java-monolith-standards.md`).
 
 ### Phase 6 — Engineering Codex (optional)
 

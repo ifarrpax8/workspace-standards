@@ -142,10 +142,59 @@ Use the `__mocks__/@pax8/propulsion.ts` auto-mock (already configured via `vi.mo
 
 ## Test Data
 
-Use domain-specific factory functions (e.g. `createMockLineItem`, `createMockInvoice`) from `src/test-utils/` instead of inline object literals. Factories provide sensible defaults so tests only specify fields relevant to the behaviour under test:
+### Factory Functions — Required for Domain Objects
+
+Use factory functions instead of inline object literals for any domain type that has more than ~5 fields or that appears in more than one test. Factories provide type-safe defaults so each test only specifies the fields relevant to the behaviour under test:
 
 ```typescript
-const item = createMockLineItem({ quantity: 0 })
+// ✅ Only the field under test is visible
+const item = makeMockLineItem({ quantity: 0 })
+
+// ❌ Every field is noise — the test intent is buried
+const item: LineItem = {
+  id: 'li-1', productId: 'p-1', quantity: 0, unitPrice: 10,
+  tax: 1, currency: 'USD', ...
+}
+```
+
+### Factory Naming and Signature
+
+Name factories `make<Type>` (e.g. `makeMockInvoice`, `makeMockLineItem`). Accept a single `Partial<T>` overrides argument and return the full type:
+
+```typescript
+const makeMockInvoice = (overrides: Partial<InvoiceRecord> = {}): InvoiceRecord => ({
+  identifier: 'inv-001',
+  invoiceNumber: 'INV-2024-001',
+  currencySymbol: '$',
+  currencyCode: 'USD',
+  // ... all required fields with sensible defaults
+  ...overrides,
+});
+```
+
+Defaults should be **realistic** — use matching `currencySymbol`/`currencyCode` pairs, valid state values, and plausible amounts. Nullable optional fields default to `null`, not `undefined`.
+
+### Where to Put Factories
+
+| Scope | Location |
+|-------|----------|
+| Used by one test file only | Top of that test file, before `describe` |
+| Used by multiple tests in the same feature area | `__tests__/fixtures/` alongside the test files |
+| Used across unrelated feature areas | `src/test-utils/` (create if it does not exist) |
+
+Export shared factories through the fixtures barrel (`index.ts`) so imports stay clean.
+
+### Typed Fixture Files
+
+Fixture files in `__tests__/fixtures/` must import and apply the TypeScript type — untyped object literals bypass compiler checks silently:
+
+```typescript
+// ✅ TypeScript catches missing or mistyped fields immediately
+import type { InvoiceRecord } from '@/services/EInvoiceService';
+export const mockInvoiceList: InvoiceRecord[] = [makeMockInvoice(), makeMockInvoice({ ... })];
+
+// ❌ Missing fields are invisible to tsc
+export const mockInvoiceList = [{ identifier: 'inv-001', invoiceNumber: 'INV-2024-001', ... }];
 ```
 
 ## Naming

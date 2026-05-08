@@ -76,12 +76,36 @@ fun create(@Valid @RequestBody request: CreateRequest): ResponseEntity<Response>
 - Use data classes for commands and events
 - Sagas coordinate across aggregates (use for long-running processes)
 
+## Code Comments
+
+- Write comments that explain **why**, not what — the code already shows what
+- Avoid comments that merely restate the code (`// increment counter` above `count++`)
+- Document design decisions, non-obvious side effects, and constraints
+- Keep comments concise; update them when the code changes — stale comments are worse than none
+- Use **KDoc** for all public APIs, service interfaces, and aggregate handlers:
+
+```kotlin
+/**
+ * Calculates the exchange rate for the given currency pair.
+ * Rates are cached for 15 minutes — do not call per-item in batch operations.
+ */
+fun getExchangeRate(from: Currency, to: Currency): ExchangeRate
+```
+
+## Quality Gates
+
+- **Never use `--no-verify`** or any mechanism that bypasses pre-commit hooks or static analysis
+- Fix Detekt and Spotless violations in the same PR that introduces them — do not defer
+- If a genuine edge case requires suppression, add a targeted exclusion in `detekt.yml` with a comment explaining why — never suppress wholesale
+- A build that fails static analysis is not releasable; fix it before asking for review
+
 ## Testing
 
 - Prefer integration tests with @SpringBootTest
 - Use AggregateTestFixture for Axon aggregates
 - Test naming: `should [expected behavior] when [condition]`
 - Given-When-Then structure for tests
+- `BUILD SUCCESSFUL` in Gradle output is the pass signal — warning logs in test output do not constitute failure
 
 ## Common Patterns
 

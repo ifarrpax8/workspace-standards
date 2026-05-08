@@ -93,7 +93,7 @@ else
 
 # Uncomment the rules that apply to your stack:
 # @workspace-standards/.cursor/rules/kotlin-standards.md
-# @workspace-standards/.cursor/rules/groovy-standards.md
+# @workspace-standards/.cursor/rules/groovy-java-monolith-standards.md
 # @workspace-standards/.cursor/rules/vue-standards.md
 # @workspace-standards/.cursor/rules/api-standards.md
 # @workspace-standards/.cursor/rules/playwright-standards.md

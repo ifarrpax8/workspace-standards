@@ -25,7 +25,7 @@ Always read the custom field first. If empty, fall back to the standard descript
 This repository contains detailed coding standards for specific technologies. They are available in `.cursor/rules/` (Cursor) and `.augment/rules/` (Augment):
 
 - **kotlin-standards.md** -- Spring Boot, Axon Framework, Kotlin idioms
-- **groovy-standards.md** -- Monolith conventions
+- **groovy-java-monolith-standards.md** -- Monolith conventions
 - **vue-standards.md** -- Vue 3, Pinia, composables, MFE patterns; platform-mfe sidebar `visible` / LaunchDarkly conventions
 - **api-standards.md** -- REST API design, versioning, error handling
 - **security-standards.md** -- OWASP, secrets, auth patterns

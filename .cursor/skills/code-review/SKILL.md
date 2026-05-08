@@ -78,7 +78,7 @@ Load the relevant rules based on file types present:
 | File Type | Rules to Load |
 |-----------|---------------|
 | `*.kt` | [kotlin-standards.md](../../rules/kotlin-standards.md) |
-| `*.groovy`, `*.java` | [groovy-standards.md](../../rules/groovy-standards.md) |
+| `*.groovy`, `*.java` | [groovy-java-monolith-standards.md](../../rules/groovy-java-monolith-standards.md) |
 | `*.vue`, `*.ts` | [vue-standards.md](../../rules/vue-standards.md) |
 | `*.tf` | [terraform-standards.md](../../rules/terraform-standards.md) |
 | All | [security-standards.md](../../rules/security-standards.md), [pre-review-checklist.md](../../rules/pre-review-checklist.md) |
